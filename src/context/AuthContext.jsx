@@ -5,6 +5,8 @@ import {
   logoutUser, 
   getCurrentLocalUser, 
   updateUserProfile,
+  changeUsername as fbChangeUsername,
+  changeDisplayName as fbChangeDisplayName,
   isFirebaseConnected 
 } from '../services/firebase';
 
@@ -29,8 +31,8 @@ export function AuthProvider({ children }) {
     return loggedUser;
   };
 
-  const signup = async (email, password, displayName) => {
-    const newUser = await signupWithEmail(email, password, displayName);
+  const signup = async (email, password, displayName, requestedUsername) => {
+    const newUser = await signupWithEmail(email, password, displayName, requestedUsername);
     setUser(newUser);
     return newUser;
   };
@@ -46,6 +48,25 @@ export function AuthProvider({ children }) {
     if (updated) {
       setUser(updated);
     }
+    return updated;
+  };
+
+  const changeUsername = async (newUsername) => {
+    if (!user) return;
+    const updated = await fbChangeUsername(user.uid, newUsername);
+    if (updated) {
+      setUser(updated);
+    }
+    return updated;
+  };
+
+  const changeDisplayName = async (newDisplayName) => {
+    if (!user) return;
+    const updated = await fbChangeDisplayName(user.uid, newDisplayName);
+    if (updated) {
+      setUser(updated);
+    }
+    return updated;
   };
 
   return (
@@ -56,6 +77,8 @@ export function AuthProvider({ children }) {
       signup,
       logout,
       updateProfile,
+      changeUsername,
+      changeDisplayName,
       isFirebase: isFirebaseConnected()
     }}>
       {children}

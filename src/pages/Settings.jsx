@@ -257,19 +257,21 @@ export default function Settings() {
             </div>
 
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '16px' }}>
-              Change your login password. Usernames are fixed per platform security policy and cannot be altered.
+              Manage password security for your account. You can update your display name anytime or unique username (once per 24 hours) in your Profile.
             </p>
 
-            {/* Locked Username Display */}
-            <div className="input-group" style={{ marginBottom: '16px' }}>
-              <label className="input-label">Username (Immutable)</label>
-              <input 
-                type="text" 
-                className="input-field" 
-                value={user.displayName}
-                disabled
-                style={{ opacity: 0.6, cursor: 'not-allowed' }}
-              />
+            {/* Account Identity Display */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px', backgroundColor: 'var(--bg-subtle)', padding: '12px 16px', borderRadius: 'var(--radius-sm)' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Display Name</span>
+                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{user.displayName}</span>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Unique Handle</span>
+                <span style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>
+                  @{user.username || 'user'}
+                </span>
+              </div>
             </div>
 
             {passwordStatus.error && (

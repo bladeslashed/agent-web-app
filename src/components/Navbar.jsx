@@ -146,7 +146,12 @@ export default function Navbar({ currentView, onNavigate, onRandomGame }) {
                     <span>{user.displayName}</span>
                     {isAdmin && <Shield size={13} style={{ color: 'var(--accent-primary)' }} />}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {user.username && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>
+                      @{user.username}
+                    </div>
+                  )}
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {user.email}
                   </div>
                 </div>

@@ -10,6 +10,7 @@ export default function Auth({ onComplete }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetSuccessMessage, setResetSuccessMessage] = useState(null);
@@ -24,7 +25,7 @@ export default function Auth({ onComplete }) {
         if (!email || !password) {
           throw new Error('Please provide both email and password.');
         }
-        await signup(email, password, displayName);
+        await signup(email, password, displayName, username);
       } else {
         if (!email || !password) {
           throw new Error('Please enter your email and password.');
@@ -175,16 +176,34 @@ export default function Auth({ onComplete }) {
           /* Normal Sign In / Sign Up Form */
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {isSignUp && (
-              <div className="input-group">
-                <label className="input-label">Username / Handle</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  placeholder="e.g. Mikhail T."
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                />
-              </div>
+              <>
+                <div className="input-group">
+                  <label className="input-label">Display Name</label>
+                  <input 
+                    type="text" 
+                    className="input-field" 
+                    placeholder="e.g. Mikhail Tal"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Unique Handle (@username)</label>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>@</span>
+                    <input 
+                      type="text" 
+                      className="input-field" 
+                      placeholder="misha_tal (optional, auto-generated if blank)"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                      style={{ paddingLeft: '28px' }}
+                      maxLength={20}
+                    />
+                  </div>
+                </div>
+              </>
             )}
 
             <div className="input-group">

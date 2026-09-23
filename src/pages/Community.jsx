@@ -76,19 +76,24 @@ export default function Community({ allGames = [], onSelectGame }) {
                       alt={profile.displayName} 
                       style={{ width: '52px', height: '52px', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: '1px solid var(--border-subtle)' }}
                     />
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>{profile.displayName}</h3>
-                        {isAdmin && (
-                          <span className="badge badge-eco" style={{ fontSize: '0.65rem', padding: '1px 5px', color: 'var(--accent-primary)', borderColor: 'var(--accent-primary)' }}>
-                            ADMIN
-                          </span>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>{profile.displayName}</h3>
+                          {isAdmin && (
+                            <span className="badge badge-eco" style={{ fontSize: '0.65rem', padding: '1px 5px', color: 'var(--accent-primary)', borderColor: 'var(--accent-primary)' }}>
+                              ADMIN
+                            </span>
+                          )}
+                        </div>
+                        {profile.username && (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>
+                            @{profile.username}
+                          </div>
                         )}
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          Member since {profile.joinedDate || '2026'}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                        Member since {profile.joinedDate || '2026'}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Bio */}

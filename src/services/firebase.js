@@ -36,12 +36,14 @@ export const ADMIN_USER = {
   email: 'christopher@mutiarabangsa.sch.id',
   password: 'admin',
   displayName: 'admin',
+  username: 'admin',
   role: 'admin',
   photoURL: DEFAULT_AVATARS[0].url,
   bio: 'Lead Administrator of The Chess Archive platform.',
   joinedDate: 'Sep 2026',
   isBanned: false,
-  favoriteGameIds: []
+  favoriteGameIds: [],
+  lastUsernameChange: null
 };
 
 export function initLocalDb(forceReset = false) {
@@ -64,12 +66,39 @@ export function initLocalDb(forceReset = false) {
     }
   }
 
+  // Ensure all existing accounts have a valid username
+  const takenUsernames = new Set();
+  accounts.forEach((a, idx) => {
+    if (a.uid === '1' || a.email.toLowerCase() === ADMIN_USER.email.toLowerCase()) {
+      a.username = 'admin';
+      a.role = 'admin';
+      a.displayName = a.displayName || 'admin';
+      takenUsernames.add('admin');
+    } else {
+      if (!a.username) {
+        let base = (a.displayName || a.email.split('@')[0] || `user_${idx}`).toLowerCase().replace(/[^a-z0-9_]/g, '');
+        if (base.length < 3) base = `user_${base}`.slice(0, 15);
+        let candidate = base;
+        let counter = 1;
+        while (takenUsernames.has(candidate)) {
+          candidate = `${base.slice(0, 12)}_${counter++}`;
+        }
+        a.username = candidate;
+      }
+      takenUsernames.add(a.username.toLowerCase());
+      if (a.lastUsernameChange === undefined) {
+        a.lastUsernameChange = null;
+      }
+    }
+  });
+
   const adminIndex = accounts.findIndex(a => a.uid === '1' || a.email.toLowerCase() === ADMIN_USER.email.toLowerCase());
   if (adminIndex === -1) {
     accounts.unshift(ADMIN_USER);
   } else {
     accounts[adminIndex].uid = '1';
-    accounts[adminIndex].displayName = 'admin';
+    accounts[adminIndex].displayName = accounts[adminIndex].displayName || 'admin';
+    accounts[adminIndex].username = 'admin';
     accounts[adminIndex].role = 'admin';
   }
 
@@ -81,6 +110,7 @@ export function initLocalDb(forceReset = false) {
       uid: a.uid,
       email: a.email,
       displayName: a.displayName,
+      username: a.username || 'user',
       photoURL: a.photoURL,
       bio: a.bio,
       joinedDate: a.joinedDate,
@@ -88,6 +118,24 @@ export function initLocalDb(forceReset = false) {
       favoriteGameIds: a.favoriteGameIds || []
     }));
   localStorage.setItem('tca_community_users', JSON.stringify(community));
+
+  // Sync active user if present
+  try {
+    const rawActive = localStorage.getItem('tca_active_user');
+    if (rawActive) {
+      const active = JSON.parse(rawActive);
+      const matched = accounts.find(a => a.uid === active.uid);
+      if (matched) {
+        const synced = {
+          ...active,
+          displayName: matched.displayName,
+          username: matched.username,
+          lastUsernameChange: matched.lastUsernameChange || null
+        };
+        localStorage.setItem('tca_active_user', JSON.stringify(synced));
+      }
+    }
+  } catch (e) {}
 }
 
 initLocalDb();
@@ -149,21 +197,58 @@ export async function loginWithEmail(email, password) {
     uid: found.uid,
     email: found.email,
     displayName: found.displayName,
+    username: found.username || found.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, ''),
     role: found.role || (found.uid === '1' ? 'admin' : 'user'),
     photoURL: found.photoURL,
     bio: found.bio,
     joinedDate: found.joinedDate,
-    favoriteGameIds: found.favoriteGameIds || []
+    favoriteGameIds: found.favoriteGameIds || [],
+    lastUsernameChange: found.lastUsernameChange || null
   };
   localStorage.setItem('tca_active_user', JSON.stringify(currentUser));
   return currentUser;
 }
 
-export async function signupWithEmail(email, password, displayName = '') {
+export function isUsernameAvailable(username, currentUid = null) {
+  if (!username) return { available: false, error: 'Username cannot be empty.' };
+  const clean = username.trim().toLowerCase();
+  if (clean.length < 3) return { available: false, error: 'Username must be at least 3 characters long.' };
+  if (clean.length > 20) return { available: false, error: 'Username cannot exceed 20 characters.' };
+  if (!/^[a-z0-9_]+$/.test(clean)) return { available: false, error: 'Username may only contain letters, numbers, and underscores.' };
+
+  initLocalDb();
+  const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  const exists = accounts.some(a => a.uid !== currentUid && a.username && a.username.toLowerCase() === clean);
+  if (exists) {
+    return { available: false, error: `The username @${clean} is already taken.` };
+  }
+  return { available: true, error: '' };
+}
+
+export async function signupWithEmail(email, password, displayName = '', requestedUsername = '') {
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
   if (accounts.some(a => a.email.toLowerCase() === email.trim().toLowerCase())) {
     throw new Error('An account with this email already exists.');
+  }
+
+  // Determine unique username
+  let usernameToSet = '';
+  if (requestedUsername && requestedUsername.trim()) {
+    const val = isUsernameAvailable(requestedUsername);
+    if (!val.available) {
+      throw new Error(val.error);
+    }
+    usernameToSet = requestedUsername.trim().toLowerCase();
+  } else {
+    let base = (displayName || email.split('@')[0] || 'player').toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (base.length < 3) base = `player_${base}`.slice(0, 15);
+    let candidate = base;
+    let counter = 1;
+    while (accounts.some(a => a.username && a.username.toLowerCase() === candidate)) {
+      candidate = `${base.slice(0, 14)}_${counter++}`;
+    }
+    usernameToSet = candidate;
   }
 
   const newUid = 'usr_' + Date.now();
@@ -173,12 +258,14 @@ export async function signupWithEmail(email, password, displayName = '') {
     email: email.trim(),
     password: password,
     displayName: displayName.trim() || email.split('@')[0],
+    username: usernameToSet,
     role: 'user',
     photoURL: defaultAvatar,
     bio: 'Chess enthusiast studying World Championship matches.',
     joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
     isBanned: false,
-    favoriteGameIds: []
+    favoriteGameIds: [],
+    lastUsernameChange: Date.now()
   };
 
   accounts.push(newAccount);
@@ -189,6 +276,7 @@ export async function signupWithEmail(email, password, displayName = '') {
     uid: newAccount.uid,
     email: newAccount.email,
     displayName: newAccount.displayName,
+    username: newAccount.username,
     role: 'user',
     photoURL: newAccount.photoURL,
     bio: newAccount.bio,
@@ -201,14 +289,114 @@ export async function signupWithEmail(email, password, displayName = '') {
     uid: newAccount.uid,
     email: newAccount.email,
     displayName: newAccount.displayName,
+    username: newAccount.username,
     role: 'user',
     photoURL: newAccount.photoURL,
     bio: newAccount.bio,
     joinedDate: newAccount.joinedDate,
-    favoriteGameIds: []
+    favoriteGameIds: [],
+    lastUsernameChange: newAccount.lastUsernameChange
   };
   localStorage.setItem('tca_active_user', JSON.stringify(currentUser));
   return currentUser;
+}
+
+export async function changeUsername(uid, newUsername) {
+  if (!uid) throw new Error('You must be signed in to change your username.');
+  initLocalDb();
+  const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  const index = accounts.findIndex(a => a.uid === uid);
+  if (index === -1) throw new Error('User account not found.');
+
+  const account = accounts[index];
+  const clean = newUsername.trim().toLowerCase();
+
+  // If identical to current
+  if (account.username && account.username.toLowerCase() === clean) {
+    return account;
+  }
+
+  // Check 24-hour rate limit (once a day) - exempt primary admin uid '1' if desired
+  const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+  if (account.lastUsernameChange && uid !== '1') {
+    const elapsed = Date.now() - account.lastUsernameChange;
+    if (elapsed < COOLDOWN_MS) {
+      const remainingMs = COOLDOWN_MS - elapsed;
+      const hours = Math.floor(remainingMs / (60 * 60 * 1000));
+      const minutes = Math.ceil((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+      const waitStr = hours > 0 ? `${hours} hour(s) and ${minutes} minute(s)` : `${minutes} minute(s)`;
+      throw new Error(`Username can only be changed once every 24 hours. You can change your username again in ${waitStr}.`);
+    }
+  }
+
+  // Validate format and uniqueness
+  const validation = isUsernameAvailable(clean, uid);
+  if (!validation.available) {
+    throw new Error(validation.error);
+  }
+
+  // Update account
+  account.username = clean;
+  account.lastUsernameChange = Date.now();
+  accounts[index] = account;
+  localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
+
+  // Update community listing
+  const community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');
+  const commIdx = community.findIndex(u => u.uid === uid);
+  if (commIdx !== -1) {
+    community[commIdx].username = clean;
+    localStorage.setItem('tca_community_users', JSON.stringify(community));
+  }
+
+  // Update active session
+  const active = getCurrentLocalUser();
+  if (active && active.uid === uid) {
+    const updated = {
+      ...active,
+      username: clean,
+      lastUsernameChange: account.lastUsernameChange
+    };
+    localStorage.setItem('tca_active_user', JSON.stringify(updated));
+    return updated;
+  }
+
+  return account;
+}
+
+export async function changeDisplayName(uid, newDisplayName) {
+  if (!uid) throw new Error('You must be signed in to change your display name.');
+  const trimmed = (newDisplayName || '').trim();
+  if (!trimmed || trimmed.length < 2) {
+    throw new Error('Display name must be at least 2 characters long.');
+  }
+
+  initLocalDb();
+  const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  const index = accounts.findIndex(a => a.uid === uid);
+  if (index === -1) throw new Error('User account not found.');
+
+  accounts[index].displayName = trimmed;
+  localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
+
+  const community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');
+  const commIdx = community.findIndex(u => u.uid === uid);
+  if (commIdx !== -1) {
+    community[commIdx].displayName = trimmed;
+    localStorage.setItem('tca_community_users', JSON.stringify(community));
+  }
+
+  const active = getCurrentLocalUser();
+  if (active && active.uid === uid) {
+    const updated = {
+      ...active,
+      displayName: trimmed
+    };
+    localStorage.setItem('tca_active_user', JSON.stringify(updated));
+    return updated;
+  }
+
+  return accounts[index];
 }
 
 export async function logoutUser() {
@@ -384,11 +572,13 @@ export async function getAllUsersForAdmin() {
     uid: a.uid,
     email: a.email,
     displayName: a.displayName,
+    username: a.username || 'user',
     role: a.role || (a.uid === '1' ? 'admin' : 'user'),
     joinedDate: a.joinedDate,
     photoURL: a.photoURL,
     isBanned: !!a.isBanned,
-    favoritesCount: (a.favoriteGameIds || []).length
+    favoritesCount: (a.favoriteGameIds || []).length,
+    lastUsernameChange: a.lastUsernameChange || null
   }));
 }
 

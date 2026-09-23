@@ -38,8 +38,12 @@ export default function App() {
     loadGames();
   }, []);
 
-  const handleSelectGame = (game) => {
-    setSelectedGame(game);
+  const handleSelectGame = (game, initialPly = undefined) => {
+    if (initialPly !== undefined) {
+      setSelectedGame({ ...game, initialPly });
+    } else {
+      setSelectedGame(game);
+    }
     setCurrentView('replay');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

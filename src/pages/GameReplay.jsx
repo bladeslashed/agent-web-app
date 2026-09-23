@@ -23,7 +23,7 @@ import {
 
 export default function GameReplay({ game, onBack }) {
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [currentPly, setCurrentPly] = useState(-1);
+  const [currentPly, setCurrentPly] = useState(() => (game && game.initialPly !== undefined ? game.initialPly : -1));
   const [flipped, setFlipped] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playSpeed, setPlaySpeed] = useState(1200); // ms
@@ -31,6 +31,12 @@ export default function GameReplay({ game, onBack }) {
   const [evalData, setEvalData] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  useEffect(() => {
+    if (game && game.initialPly !== undefined) {
+      setCurrentPly(game.initialPly);
+    }
+  }, [game]);
 
   const fav = isFavorite(game.id);
 
