@@ -1,0 +1,23 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.5"]
+[White "Tregubov,P"]
+[Black "Rustemov,A"]
+[Result "1-0"]
+[MoveCount "59"]
+[PlyCount "117"]
+[GameLength "59 moves (117 ply)"]
+[WhiteElo "2620"]
+[BlackElo "2534"]
+[ECO "D37"]
+
+1.d4 d5 2.c4 e6 3.Nf3 Nf6 4.Nc3 Be7 5.Bf4 O-O 6.e3 c5 7.dxc5 Bxc5 8.cxd5 Nxd5
+9.Nxd5 exd5 10.a3 Nc6 11.Bd3 Bb6 12.O-O Bg4 13.h3 Bh5 14.b4 a6 15.Be2 Re8
+16.Ra2 Bg6 17.Rd2 Be4 18.Ng5 Qf6 19.Nxe4 dxe4 20.Rd7 Re7 21.Bc4 Rae8 22.Qd5 Rxd7
+23.Qxd7 Qe7 24.Qxe7 Rxe7 25.Rd1 h6 26.Kf1 g5 27.Bh2 Kg7 28.g4 Bc7 29.Bxc7 Rxc7
+30.Bd5 Ne5 31.Bxe4 Nc4 32.Rd3 b5 33.Ke2 Ra7 34.Bd5 Ne5 35.Rc3 Rd7 36.Bb3 Rd6
+37.Rc5 Nc6 38.Rf5 Rd7 39.Rd5 Ra7 40.Rc5 Ne7 41.f4 gxf4 42.exf4 Ng6 43.Kf3 a5
+44.bxa5 Rxa5 45.a4 Ra7 46.Rxb5 Ne7 47.Ke4 Rc7 48.a5 Ra7 49.Rc5 Rb7 50.Bc4 f5+
+51.gxf5 Rb1 52.a6 Ra1 53.Ke5 Re1+ 54.Kd6 Kf6 55.a7 Ra1 56.Rc7 Rxa7 57.Rxa7 Nc8+
+58.Kc5 Nxa7 59.Be6  1-0

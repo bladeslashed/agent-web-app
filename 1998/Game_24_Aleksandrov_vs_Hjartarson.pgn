@@ -1,0 +1,27 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.13"]
+[Round "2.4"]
+[White "Aleksandrov, Aleksej"]
+[Black "Hjartarson, Johann"]
+[Result "1-0"]
+[MoveCount "88"]
+[PlyCount "175"]
+[GameLength "88 moves (175 ply)"]
+[WhiteElo "2660"]
+[BlackElo "2605"]
+[ECO "E52"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 Bb4 4.e3 O-O 5.Nf3 d5 6.Be2 b6 7.O-O Bb7 8.a3 Bd6
+9.b4 dxc4 10.Bxc4 a5 11.Rb1 axb4 12.axb4 Nbd7 13.Be2 Qe7 14.Nb5 Be4 15.Bd3 c6
+16.Nxd6 Qxd6 17.Bxe4 Nxe4 18.Qc2 Qd5 19.Nd2 Nxd2 20.Bxd2 Ra2 21.Rb2 Rfa8
+22.Rc1 b5 23.Be1 Rxb2 24.Qxb2 Nb6 25.Ra1 Rxa1 26.Qxa1 Na4 27.Qc1 f5 28.Qc2 Kf7
+29.h3 g6 30.f3 Ke7 31.Kf1 Kd7 32.Bg3 Qc4+ 33.Qxc4 bxc4 34.Ke2 Kc8 35.Kd2 Kb7
+36.Kc2 Ka6 37.Bd6 Kb5 38.e4 fxe4 39.fxe4 Kb6 40.Be5 Ka6 41.Bc7 Kb5 42.Bd6 c3
+43.Kb3 c2 44.Bf4 Nb6 45.Kxc2 Kc4 46.Be5 Na4 47.Kd2 Kxb4 48.Kd3 Nb2+ 49.Ke2 Nc4
+50.Bg7 Kb3 51.Kd3 Nb2+ 52.Ke3 Nc4+ 53.Kf4 Kc2 54.Kg5 Kd3 55.Kh6 Kxe4 56.Kxh7 e5
+57.dxe5 Nxe5 58.Bxe5 Kxe5 59.Kxg6 c5 60.h4 c4 61.h5 c3 62.h6 c2 63.h7 c1=Q
+64.h8=Q+ Ke6 65.Qf6+ Kd7 66.g4 Ke8 67.Qf7+ Kd8 68.g5 Qd2 69.Qf6+ Ke8 70.Qe6+ Kd8
+71.Qf5 Ke8 72.Qf7+ Kd8 73.Qe6 Qc1 74.Qe5 Qb1+ 75.Qf5 Qc1 76.Kg7 Ke8 77.Qe6+ Kd8
+78.g6 Qb1 79.Kf7 Qb7+ 80.Kg8 Qb1 81.g7 Qa1 82.Kf7 Qa7+ 83.Kf6 Qa1+ 84.Qe5 Qf1+
+85.Kg6 Qb1+ 86.Qf5 Qa2 87.Qf8+ Kd7 88.Qf7+  1-0

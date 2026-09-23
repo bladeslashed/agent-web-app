@@ -1,0 +1,22 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.8"]
+[White "El Taher,F"]
+[Black "Aleksandrov,A"]
+[Result "0-1"]
+[MoveCount "56"]
+[PlyCount "112"]
+[GameLength "56 moves (112 ply)"]
+[WhiteElo "2485"]
+[BlackElo "2591"]
+[ECO "C77"]
+
+1.e4 e5 2.Nf3 Nc6 3.Bb5 Nf6 4.d3 d6 5.c3 g6 6.O-O Bg7 7.Re1 O-O 8.Nbd2 a6
+9.Ba4 Nd7 10.Nf1 Nc5 11.Bc2 Ne6 12.Be3 f5 13.exf5 gxf5 14.d4 e4 15.d5 exf3
+16.dxc6 fxg2 17.Ng3 f4 18.Qh5 Ng5 19.h4 h6 20.hxg5 Qxg5 21.Bd2 bxc6 22.Qxg5 hxg5
+23.Nh5 Be5 24.Kxg2 Kf7 25.Rh1 Rh8 26.f3 Be6 27.Kf2 Rab8 28.b3 Rbg8 29.Rag1 Ke7
+30.Rg2 Bf7 31.Rgh2 Rh6 32.Bf5 a5 33.Rh3 a4 34.Nxf4 Rf6 35.Be4 gxf4 36.bxa4 d5
+37.Bc2 Bd6 38.R1h2 Kd7 39.Rh7 Bc5+ 40.Ke2 Re6+ 41.Kd3 Re7 42.Bxf4 Bg6+ 43.Kd2 Rxh7
+44.Rxh7+ Bxh7 45.Bxh7 Rf8 46.Be3 Kd6 47.f4 Rh8 48.Bd3 Bxe3+ 49.Kxe3 Rh3+
+50.Kd2 Rf3 51.f5 Rf2+ 52.Be2 Rxf5 53.a5 Rf8 54.a6 Ra8 55.Kc2 c5 56.c4 Rxa6  0-1

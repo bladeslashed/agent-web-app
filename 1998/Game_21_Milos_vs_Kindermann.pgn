@@ -1,0 +1,20 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.11"]
+[Round "2.1"]
+[White "Milos, Gilberto"]
+[Black "Kindermann, Stefan"]
+[Result "1-0"]
+[MoveCount "39"]
+[PlyCount "77"]
+[GameLength "39 moves (77 ply)"]
+[WhiteElo "2590"]
+[BlackElo "2570"]
+[ECO "C18"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Bb4 4.e5 c5 5.a3 Bxc3+ 6.bxc3 Ne7 7.h4 Qa5 8.Bd2 cxd4
+9.cxd4 Qa4 10.c3 Qxd1+ 11.Rxd1 Nbc6 12.h5 h6 13.Bd3 Bd7 14.Ne2 Na5 15.Rb1 b6
+16.g4 Nc4 17.Bc1 Rc8 18.f3 Rf8 19.Kf2 Bc6 20.g5 hxg5 21.Bxg5 Nf5 22.Bxf5 exf5
+23.Rbg1 Rh8 24.Bc1 Rh7 25.Nf4 Bb7 26.h6 gxh6 27.Nh5 Ke7 28.Nf6 Rhh8 29.Rg7 Na5
+30.Bxh6 Rxc3 31.Nh7 Rc2+ 32.Kg3 Kd7 33.Rxf7+ Kc8 34.Bg7 Rd8 35.e6 Re2 36.e7 Re8
+37.Be5 Kd7 38.Nf6+ Ke6 39.Rhh7  1-0

@@ -1,0 +1,21 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.12"]
+[Round "2.2"]
+[White "Polgar, Judit"]
+[Black "Almasi, Zoltan"]
+[Result "0-1"]
+[MoveCount "48"]
+[PlyCount "96"]
+[GameLength "48 moves (96 ply)"]
+[WhiteElo "2670"]
+[BlackElo "2615"]
+[ECO "C89"]
+
+1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 O-O 8.c3 d5
+9.exd5 Nxd5 10.Nxe5 Nxe5 11.Rxe5 c6 12.Bxd5 cxd5 13.d4 Bd6 14.Re3 Qh4 15.h3 Qf4
+16.Re5 Qf6 17.Re1 Qg6 18.Qf3 Be6 19.Be3 Rac8 20.Nd2 b4 21.cxb4 Bxb4 22.a3 Bd6
+23.Rac1 Rc2 24.b4 Rxc1 25.Rxc1 Qd3 26.Rc6 Bb8 27.a4 Bd7 28.Rc1 Qa3 29.Rb1 Be6
+30.b5 Qxa4 31.b6 Qa3 32.b7 h6 33.h4 Qe7 34.Bf4 Qxh4 35.Bxb8 Rxb8 36.Qd3 Qf4
+37.Qc3 Kh7 38.Rb6 a5 39.g3 Qg4 40.Nf3 Bf5 41.Ne5 Qd1+ 42.Kg2 f6 43.Nc6 Be4+
+44.f3 Qe2+ 45.Kg1 Bxf3 46.Rb2 Qd1+ 47.Kf2 Rxb7 48.Rd2 Rb3  0-1

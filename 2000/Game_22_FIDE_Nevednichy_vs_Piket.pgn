@@ -1,0 +1,18 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.12.01"]
+[Round "2.2"]
+[White "Nevednichy,V"]
+[Black "Piket,Je"]
+[Result "0-1"]
+[MoveCount "29"]
+[PlyCount "58"]
+[GameLength "29 moves (58 ply)"]
+[WhiteElo "2582"]
+[BlackElo "2649"]
+[ECO "C43"]
+
+1.e4 e5 2.Nf3 Nf6 3.d4 Nxe4 4.Bd3 d5 5.dxe5 Nc6 6.O-O Be7 7.Nc3 Bf5 8.Qe1 Nb4
+9.Nd4 Bg6 10.f4 c5 11.f5 Nxd3 12.cxd3 cxd4 13.fxg6 hxg6 14.Nxe4 dxe4 15.Qxe4 Qb6
+16.b3 O-O 17.Bb2 Rad8 18.Rac1 Bg5 19.Rc4 Be3+ 20.Kh1 Rfe8 21.Ba3 f5 22.Qf3 Rxe5
+23.Bb2 Re6 24.Qd1 Rc6 25.Ba3 Rdc8 26.Qf3 Qb5 27.h3 Qe5 28.Re1 Rxc4 29.bxc4 Qa5  0-1

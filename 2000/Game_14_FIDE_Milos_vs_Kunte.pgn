@@ -1,0 +1,18 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.4"]
+[White "Milos,G"]
+[Black "Kunte,A"]
+[Result "1-0"]
+[MoveCount "26"]
+[PlyCount "51"]
+[GameLength "26 moves (51 ply)"]
+[WhiteElo "2633"]
+[BlackElo "2556"]
+[ECO "E52"]
+
+1.d4 Nf6 2.c4 e6 3.Nf3 b6 4.Nc3 Bb4 5.e3 O-O 6.Bd3 d5 7.O-O Bb7 8.cxd5 exd5
+9.Bd2 a6 10.Ne5 Bd6 11.f4 c5 12.Qf3 Nc6 13.Qh3 g6 14.Rad1 cxd4 15.Nxc6 Bxc6
+16.exd4 Ne4 17.Bxe4 dxe4 18.f5 Ra7 19.d5 Bc5+ 20.Kh1 Bb5 21.Rf4 f6 22.fxg6 hxg6
+23.Rh4 f5 24.Rh8+ Kf7 25.Rh7+ Kf6 26.Bg5+  1-0

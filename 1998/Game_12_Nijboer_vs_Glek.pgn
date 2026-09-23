@@ -1,0 +1,22 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.2"]
+[White "Nijboer, Friso"]
+[Black "Glek, Igor V"]
+[Result "1-0"]
+[MoveCount "57"]
+[PlyCount "113"]
+[GameLength "57 moves (113 ply)"]
+[WhiteElo "2605"]
+[BlackElo "2505"]
+[ECO "B12"]
+
+1.e4 c6 2.d4 d5 3.e5 c5 4.dxc5 e6 5.Be3 Nh6 6.c3 Nf5 7.Bd4 Bd7 8.Nf3 Nc6
+9.Qd2 f6 10.b4 a5 11.exf6 gxf6 12.b5 Ncxd4 13.cxd4 e5 14.Nc3 e4 15.g4 Ne7
+16.Ng1 Bxg4 17.Qf4 f5 18.h3 Bh5 19.b6 Bg7 20.Bb5+ Kf7 21.Nge2 Rg8 22.O-O-O Bf6
+23.Rhg1 Rg6 24.Kb1 a4 25.Qe3 Ra5 26.Bxa4 Bxe2 27.Qxe2 Rxg1 28.Rxg1 Bxd4 29.Qh5+ Ke6
+30.Be8 Rxc5 31.Qf7+ Kd6 32.Nb5+ Rxb5+ 33.Bxb5 Qxb6 34.Qe8 Nc6 35.a4 Qc5 36.Qf8+ Ne7
+37.Rc1 Qb4+ 38.Kc2 Qb2+ 39.Kd1 Qb3+ 40.Rc2 Qb1+ 41.Kd2 Ke6 42.Be8 Qb4+ 43.Ke2 Bf6
+44.Bf7+ Ke5 45.Qb8+ Qd6 46.Qxb7 d4 47.Kd1 Bh4 48.a5 Qa3 49.Qb6 Qd3+ 50.Kc1 Qf1+
+51.Kb2 d3 52.Qe6+ Kf4 53.Qh6+ Kf3 54.Qxh4 dxc2 55.Qg3+ Ke2 56.Qe3+ Kd1 57.Bh5+  1-0

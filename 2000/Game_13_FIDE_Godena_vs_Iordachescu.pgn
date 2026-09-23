@@ -1,0 +1,22 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.3"]
+[White "Godena,M"]
+[Black "Iordachescu,V"]
+[Result "0-1"]
+[MoveCount "51"]
+[PlyCount "101"]
+[GameLength "51 moves (101 ply)"]
+[WhiteElo "2485"]
+[BlackElo "2594"]
+[ECO "C41"]
+
+1.e4 e5 2.Nf3 Nf6 3.Nc3 d6 4.d4 Nbd7 5.Bc4 Be7 6.O-O O-O 7.Re1 c6 8.a4 b6
+9.b3 a6 10.Bb2 Bb7 11.Bd3 Re8 12.Ne2 Bf8 13.Ng3 Qc7 14.Qd2 g6 15.h3 Rad8
+16.Rad1 Bg7 17.Qc1 h6 18.Qa1 Nh7 19.Qc1 Ndf8 20.Bf1 Ne6 21.c3 Nf6 22.Ba3 Nf4
+23.Qc2 Bc8 24.Ne2 N6h5 25.Nxf4 Nxf4 26.dxe5 dxe5 27.Kh2 Bf8 28.Bxf8 Kxf8
+29.g3 Ne6 30.Qc1 Kg7 31.b4 c5 32.b5 c4 33.bxa6 Bxa6 34.Rxd8 Rxd8 35.Rd1 Rxd1
+36.Qxd1 Nc5 37.Qd5 Nxa4 38.Nxe5 Nxc3 39.Qd4 Nb5 40.Qa1 Qc5 41.Qxa6 Qxe5 42.Bxc4 Nd6
+43.Bd5 Qd4 44.Qa2 b5 45.f4 Nc4 46.Bxc4 bxc4 47.Kg2 c3 48.Qe2 Qc5 49.Qc2 Qe3
+50.Kf1 Qxg3 51.Qc1  0-1

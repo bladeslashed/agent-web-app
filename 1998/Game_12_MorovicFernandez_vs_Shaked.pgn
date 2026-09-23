@@ -1,0 +1,19 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.2"]
+[White "Morovic Fernandez, Ivan"]
+[Black "Shaked, Tal"]
+[Result "1/2-1/2"]
+[MoveCount "32"]
+[PlyCount "64"]
+[GameLength "32 moves (64 ply)"]
+[WhiteElo "2600"]
+[BlackElo "2500"]
+[ECO "C19"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Bb4 4.e5 c5 5.a3 Bxc3+ 6.bxc3 Ne7 7.a4 Nbc6 8.Nf3 Qa5
+9.Qd2 Bd7 10.Ba3 cxd4 11.cxd4 Qxd2+ 12.Kxd2 Nf5 13.Rb1 b6 14.c3 Na5 15.Bb4 Nc4+
+16.Bxc4 dxc4 17.a5 Bc6 18.Ne1 f6 19.exf6 gxf6 20.Rg1 Kf7 21.Nc2 e5 22.dxe5 Rad8+
+23.Kc1 fxe5 24.Ra1 Rhg8 25.axb6 axb6 26.Ra7+ Rd7 27.Rxd7+ Bxd7 28.g3 h5 29.Rd1 Bc6
+30.Ne3 Nxe3 31.fxe3 Rg6 32.Rd8 Rf6  1/2-1/2

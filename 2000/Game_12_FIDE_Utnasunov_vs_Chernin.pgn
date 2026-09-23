@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.28"]
+[Round "1.2"]
+[White "Utnasunov,A"]
+[Black "Chernin,A"]
+[Result "1/2-1/2"]
+[MoveCount "35"]
+[PlyCount "69"]
+[GameLength "35 moves (69 ply)"]
+[WhiteElo "2257"]
+[BlackElo "2572"]
+[ECO "E25"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 Bb4 4.f3 d5 5.a3 Bxc3+ 6.bxc3 c5 7.cxd5 Nxd5 8.dxc5 Qa5
+9.e4 Nf6 10.Be3 O-O 11.Qb3 Nfd7 12.Rd1 Qc7 13.Qb5 b6 14.Nh3 Nxc5 15.Bxc5 bxc5
+16.Qa4 Nd7 17.Bb5 Nb6 18.Qa5 c4 19.Rd4 e5 20.Rxc4 Qe7 21.Qb4 Qh4+ 22.Nf2 Nxc4
+23.Bxc4 Qh6 24.O-O Ba6 25.Ng4 Qb6+ 26.Qxb6 axb6 27.Nxe5 Bxc4 28.Nxc4 b5 29.Nd6 Rxa3
+30.Nxb5 Rb3 31.c4 Rd8 32.Kf2 Rb2+ 33.Kg3 Rc2 34.Nc7 Rxc4 35.Kf4  1/2-1/2

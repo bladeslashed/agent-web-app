@@ -1,0 +1,24 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.4"]
+[White "Lutz,C"]
+[Black "Ghaem Maghami,E"]
+[Result "1-0"]
+[MoveCount "66"]
+[PlyCount "131"]
+[GameLength "66 moves (131 ply)"]
+[WhiteElo "2595"]
+[BlackElo "2488"]
+[ECO "B42"]
+
+1.e4 c5 2.Nf3 e6 3.d4 cxd4 4.Nxd4 a6 5.Bd3 g6 6.Nc3 Bg7 7.Nb3 Ne7 8.Be3 Nbc6
+9.Qd2 d5 10.Bh6 O-O 11.Bxg7 Kxg7 12.exd5 exd5 13.O-O-O Be6 14.Nc5 Qd6 15.Nxe6+ fxe6
+16.Kb1 Qf4 17.Qxf4 Rxf4 18.f3 Rd8 19.Rhe1 e5 20.Ne2 Rff8 21.c3 b5 22.Bc2 a5
+23.Nc1 Kf6 24.Nd3 h5 25.Nc5 h4 26.Rd2 b4 27.Bb3 Rfe8 28.Ka1 bxc3 29.bxc3 d4
+30.cxd4 Nxd4 31.Ba4 Nec6 32.f4 e4 33.Nxe4+ Kg7 34.Rdd1 Re6 35.Ng5 Rxe1 36.Rxe1 Rb8
+37.Rc1 Rb6 38.g3 hxg3 39.hxg3 Kf6 40.g4 Ke7 41.a3 Kd6 42.Ka2 Kd5 43.Rd1 Kc4
+44.Ne4 Ne2 45.Bb3+ Rxb3 46.Nd2+ Kb5 47.Kxb3 Nxf4 48.a4+ Kb6 49.Nf3 Kc5 50.Rd7 Nd5
+51.Rg7 Nf4 52.Rf7 Nd5 53.Nh4 Ne5 54.Rb7 Kc6 55.Rb5 g5 56.Nf5 Nxg4 57.Rxa5 Ngf6
+58.Nd4+ Kc7 59.Ne6+ Kb6 60.Rb5+ Kc6 61.Nxg5 Nc7 62.Rf5 Ncd5 63.Rf1 Kb6 64.Ne6 Ne4
+65.Rd1 Nef6 66.Nf4  1-0

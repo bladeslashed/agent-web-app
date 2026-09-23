@@ -1,0 +1,19 @@
+[Event "FIDE-Wch k.o."]
+[Site "Las Vegas"]
+[Date "1999.08.03"]
+[Round "2.1"]
+[White "Stefansson, Hannes"]
+[Black "Shipov, Sergei"]
+[Result "1/2-1/2"]
+[MoveCount "29"]
+[PlyCount "57"]
+[GameLength "29 moves (57 ply)"]
+[WhiteElo "2584"]
+[BlackElo "2658"]
+[ECO "B84"]
+
+1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6 6.Be2 e6 7.O-O Be7 8.f4 Qc7
+9.a4 O-O 10.Be3 b6 11.Bf3 Bb7 12.g4 Nc6 13.g5 Nd7 14.Nde2 Rfe8 15.Bg2 Bf8
+16.h4 Nc5 17.Ng3 Rad8 18.Qe2 d5 19.exd5 Nb4 20.Qf2 Nxd5 21.Nxd5 Bxd5 22.b3 Qc6
+23.Rad1 b5 24.axb5 axb5 25.f5 Bxg2 26.Qxg2 Qxg2+ 27.Kxg2 Rxd1 28.Rxd1 exf5
+29.Nxf5  1/2-1/2

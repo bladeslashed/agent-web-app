@@ -1,0 +1,23 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi ITA"]
+[Date "2000.11.27"]
+[Round "1.1"]
+[White "Barua,D"]
+[Black "Vladimirov,E"]
+[Result "0-1"]
+[MoveCount "58"]
+[PlyCount "116"]
+[GameLength "58 moves (116 ply)"]
+[WhiteElo "2502"]
+[BlackElo "2598"]
+[ECO "C03"]
+
+1.e4 e6 2.d4 d5 3.Nd2 Nc6 4.Ngf3 Bd7 5.c3 Nge7 6.Bd3 Ng6 7.O-O Nce7 8.Re1 Bc6
+9.e5 Qd7 10.a4 Nf5 11.b4 Qc8 12.Nb3 Be7 13.b5 Bd7 14.Ba3 Bxa3 15.Rxa3 b6
+16.a5 O-O 17.Qc2 Qe8 18.c4 Nf4 19.Bxf5 exf5 20.Qd2 Qe7 21.Rea1 dxc4 22.Qxf4 cxb3
+23.Rxb3 Be6 24.Rb2 h6 25.h3 Rad8 26.Rc2 Rd5 27.Qc1 Rc8 28.axb6 axb6 29.Ra7 Rd7
+30.Qa3 Qd8 31.Qe3 Bd5 32.Qf4 Be6 33.Qe3 Qe7 34.Qa3 Qe8 35.Qc1 Kh7 36.Raxc7 Rdxc7
+37.Rxc7 Rxc7 38.Qxc7 Qxb5 39.Kh2 Qb3 40.d5 Bxd5 41.Qd6 Bxf3 42.gxf3 Qxf3
+43.Qxb6 Qf4+ 44.Kg1 Qxe5 45.Qa7 Qe6 46.Qc5 Kg6 47.Qd4 Qe1+ 48.Kh2 Qe4 49.Qb6+ Kg5
+50.Qd8+ f6 51.Qd7 g6 52.Qd8 Qe5+ 53.Kg2 Kh4 54.Qb6 Qc3 55.f3 Qd2+ 56.Kf1 Kg3
+57.Qg1+ Kxf3 58.Qh1+ Kf4  0-1

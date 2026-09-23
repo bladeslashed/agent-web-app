@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.28"]
+[Round "1.2"]
+[White "Galkin,A"]
+[Black "Wohl,A"]
+[Result "1-0"]
+[MoveCount "29"]
+[PlyCount "57"]
+[GameLength "29 moves (57 ply)"]
+[WhiteElo "2587"]
+[BlackElo "2461"]
+[ECO "B40"]
+
+1.e4 c5 2.Nf3 e6 3.d4 cxd4 4.Nxd4 Bc5 5.Nc3 Nc6 6.Nb3 Bb6 7.Nb5 Qh4 8.Nd6+ Ke7
+9.g3 Qf6 10.f4 h5 11.Nc4 Bc7 12.Be3 b6 13.Qd2 Qg6 14.Bg2 Nf6 15.e5 Nd5 16.O-O-O Ba6
+17.Bxd5 exd5 18.Qxd5 Qxc2+ 19.Kxc2 Nb4+ 20.Kc3 Nxd5+ 21.Rxd5 Rac8 22.Rhd1 h4
+23.Kb4 hxg3 24.hxg3 Ke6 25.Nd6 Bxd6+ 26.Rxd6+ Kf5 27.Rxd7 Rc4+ 28.Ka3 b5
+29.Nc5  1-0

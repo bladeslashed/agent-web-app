@@ -1,0 +1,20 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.09"]
+[Round "1.1"]
+[White "Glek, Igor V"]
+[Black "Nijboer, Friso"]
+[Result "1-0"]
+[MoveCount "38"]
+[PlyCount "75"]
+[GameLength "38 moves (75 ply)"]
+[WhiteElo "2505"]
+[BlackElo "2605"]
+[ECO "A08"]
+
+1.e4 c5 2.Nf3 e6 3.g3 Nc6 4.Bg2 Nf6 5.d3 d5 6.Nbd2 Be7 7.O-O b5 8.a4 bxa4
+9.Rxa4 O-O 10.exd5 exd5 11.d4 Nd7 12.Re1 Nb6 13.Ra1 c4 14.c3 a5 15.Ne5 Nxe5
+16.dxe5 Be6 17.Nf1 a4 18.Ne3 Ra5 19.f4 Bc5 20.Kh1 d4 21.cxd4 Bxd4 22.Qc2 Nd5
+23.f5 Nb4 24.Qd2 Nd3 25.fxe6 fxe6 26.Re2 Rxe5 27.Qc2 Qb6 28.Nxc4 Nf2+ 29.Kg1 Nh3+
+30.Kh1 Nf2+ 31.Kg1 Ng4+ 32.Kh1 Rh5 33.Bf3 Qc7 34.Bf4 e5 35.Nxe5 Qxc2 36.Rxc2 Nxe5
+37.Bxh5 Nd3 38.Rxa4  1-0

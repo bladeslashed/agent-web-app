@@ -1,0 +1,36 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi ITA"]
+[Date "2000.11.27"]
+[Round "1.1"]
+[White "Chernin,A"]
+[Black "Utnasunov,A"]
+[Result "1-0"]
+[MoveCount "146"]
+[PlyCount "291"]
+[GameLength "146 moves (291 ply)"]
+[WhiteElo "2572"]
+[BlackElo "2257"]
+[ECO "D46"]
+
+1.d4 d5 2.c4 c6 3.Nc3 Nf6 4.e3 e6 5.Nf3 Nbd7 6.Qc2 Bd6 7.Bd3 O-O 8.O-O dxc4
+9.Bxc4 b5 10.Be2 Bb7 11.Rd1 Qe7 12.e4 e5 13.dxe5 Nxe5 14.Nd4 g6 15.Bg5 Rad8
+16.Nb3 b4 17.Na4 h6 18.Bh4 Ned7 19.Na5 Ba8 20.Nc4 Bb8 21.f3 c5 22.b3 g5 23.Bf2 Nh5
+24.Ne3 Ng7 25.Rac1 Rc8 26.Ba6 Rc6 27.Bb5 Rd6 28.Nc4 Rxd1+ 29.Rxd1 Rd8 30.Qd2 Ne6
+31.Bxd7 Bc6 32.Bxc6 Rxd2 33.Rxd2 Qf6 34.Rd1 Nf4 35.Bd7 Ne2+ 36.Kf1 Nc3 37.Nxc3 bxc3
+38.Rc1 Qd8 39.Bf5 Qd3+ 40.Ke1 c2 41.g3 a5 42.Bh3 a4 43.Bf1 Qxf3 44.Rxc2 Qxe4+
+45.Ne3 axb3 46.axb3 Be5 47.Bc4 Bd4 48.Ke2 g4 49.Bd5 Qe5 50.Rd2 Kg7 51.b4 Bc3
+52.bxc5 Bxd2 53.Kxd2 Qd4+ 54.Ke2 Kf8 55.c6 Qc5 56.Kf1 h5 57.Be4 Qe5 58.Bf5 Qb5+
+59.Kg1 Qxc6 60.h4 Qf3 61.Bd3 Ke7 62.Bf1 Qe4 63.Bg2 Qb1+ 64.Kh2 f5 65.Nd5+ Kf7
+66.Nf4 Qb2 67.Bc5 Qh8 68.Bg1 Ke8 69.Bf2 Kf7 70.Bf1 Qb2 71.Kg1 Qh8 72.Bc4+ Ke8
+73.Kg2 Qc3 74.Bd3 Qc6+ 75.Kh2 Qf3 76.Kg1 Qd1+ 77.Bf1 Kf7 78.Nxh5 Kg6 79.Nf4+ Kh6
+80.Ng2 Kg6 81.Be3 Qf3 82.Bf4 Qc3 83.Ne3 Qe1 84.Kh2 Qf2+ 85.Bg2 Qe2 86.Bg5 Qf2
+87.Nd5 Kg7 88.Be3 Qe2 89.Bd4+ Kh6 90.Nf4 Qd2 91.Bc5 Kg7 92.Bg1 Kh6 93.Nd5 Kg6
+94.Be3 Qc2 95.Nf4+ Kh7 96.Kg1 Qd1+ 97.Kf2 Qc2+ 98.Ne2 Qd3 99.Bc6 Qc2 100.Bg2 Kg6
+101.Bf1 Kh7 102.Kg1 Qd3 103.Bf2 Qd1 104.Nf4 Kh6 105.Ng2 Kg6 106.Ne3 Qb1 107.Ng2 Qd1
+108.Be3 Kh7 109.Bf4 Kg6 110.Ne3 Qb1 111.Kh2 Qe1 112.Bb5 Qf2+ 113.Ng2 Kf7
+114.Bd3 Kg6 115.Be3 Qf3 116.Nf4+ Kh6 117.Bg1 Qd1 118.Bxf5 Qd2+ 119.Ng2 Qe2
+120.Bd7 Kh7 121.Be3 Kg6 122.Be8+ Kg7 123.Bc6 Qc2 124.Bb5 Kg6 125.Bf1 Qd1
+126.Nf4+ Kf6 127.Be2 Qc2 128.Kg1 Qe4 129.Kf2 Qc2 130.Ng2 Kf5 131.Bf4 Kg6
+132.Ne3 Qa2 133.Nxg4 Qa7+ 134.Ne3 Qd4 135.Kf3 Qc3 136.Bc4 Qe1 137.h5+ Kg7
+138.h6+ Kh8 139.Bf1 Qb1 140.g4 Qb7+ 141.Kg3 Qe4 142.Bg2 Qd3 143.g5 Kh7 144.Bh3 Qe2
+145.Bf5+ Kg8 146.h7+  1-0

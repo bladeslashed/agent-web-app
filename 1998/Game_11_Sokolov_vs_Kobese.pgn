@@ -1,0 +1,19 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.09"]
+[Round "1.1"]
+[White "Sokolov, Andrei"]
+[Black "Kobese, Watu"]
+[Result "1-0"]
+[MoveCount "34"]
+[PlyCount "67"]
+[GameLength "34 moves (67 ply)"]
+[WhiteElo "2585"]
+[BlackElo "2315"]
+[ECO "C82"]
+
+1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Nxe4 6.d4 b5 7.Bb3 d5 8.dxe5 Be6
+9.c3 Bc5 10.Qd3 O-O 11.Nbd2 f5 12.exf6 Nxf6 13.a4 Rb8 14.axb5 axb5 15.Ng5 Ne5
+16.Qg3 Qd6 17.Bc2 Bd7 18.Nb3 Bb6 19.Bf4 Rbe8 20.Nd4 Nh5 21.Bxe5 Rxe5 22.Bxh7+ Kh8
+23.Qh4 Qh6 24.Ndf3 Ree8 25.Rae1 Rxe1 26.Rxe1 Rf4 27.g4 g6 28.h3 Bc5 29.b4 Bd6
+30.Ne5 Bxe5 31.Rxe5 Qg7 32.Rxd5 Nf6 33.Bxg6+ Kg8 34.Bf7+  1-0

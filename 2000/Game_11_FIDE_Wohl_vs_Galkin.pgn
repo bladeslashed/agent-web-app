@@ -1,0 +1,23 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi ITA"]
+[Date "2000.11.27"]
+[Round "1.1"]
+[White "Wohl,A"]
+[Black "Galkin,A"]
+[Result "0-1"]
+[MoveCount "62"]
+[PlyCount "124"]
+[GameLength "62 moves (124 ply)"]
+[WhiteElo "2461"]
+[BlackElo "2587"]
+[ECO "A00"]
+
+1.g3 d5 2.Bg2 g6 3.c4 c6 4.cxd5 cxd5 5.Qb3 Nf6 6.Nc3 e6 7.Nf3 Nc6 8.d4 Bg7
+9.O-O O-O 10.Bf4 Nh5 11.Rfd1 Nxf4 12.gxf4 b6 13.Rac1 Bb7 14.Qa4 Qe7 15.e3 Rfc8
+16.Ne5 Na5 17.Nb5 f6 18.Nf3 Bc6 19.Qa3 Qd7 20.Nc3 Bf8 21.b4 Qd6 22.Rb1 Bd7
+23.Qb2 Nc4 24.Qb3 a5 25.b5 Na3 26.Rbc1 Ra7 27.Nd2 Rac7 28.Bf1 Qb4 29.Nxd5 Qxb3
+30.Nxf6+ Kf7 31.Nxb3 Kxf6 32.Rxc7 Rxc7 33.e4 Nxb5 34.e5+ Kf7 35.d5 exd5 36.e6+ Bxe6
+37.Bxb5 Bh6 38.Nd4 Bg4 39.f3 Bh3 40.Bc6 Bxf4 41.Bxd5+ Kf6 42.Re1 Rc1 43.Rxc1 Be3+
+44.Kh1 Bxc1 45.Ne2 Be3 46.Bc6 Ke5 47.Nc3 Bd4 48.Ne2 Be3 49.Nc3 g5 50.a4 h5
+51.Ne4 h4 52.Nc3 Bf1 53.Ne4 h3 54.f4+ gxf4 55.Ng5 Kd6 56.Bf3 Kc5 57.Ne6+ Kb4
+58.Bc6 b5 59.axb5 Bxb5 60.Nd4 Bf1 61.Nc2+ Kc3 62.Ne1 Bf2  0-1

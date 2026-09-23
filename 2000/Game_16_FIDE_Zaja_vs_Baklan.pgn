@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.6"]
+[White "Zaja,I"]
+[Black "Baklan,V"]
+[Result "0-1"]
+[MoveCount "37"]
+[PlyCount "73"]
+[GameLength "37 moves (73 ply)"]
+[WhiteElo "2513"]
+[BlackElo "2599"]
+[ECO "E11"]
+
+1.d4 Nf6 2.c4 e6 3.Nf3 Bb4+ 4.Nbd2 b6 5.a3 Bxd2+ 6.Bxd2 Bb7 7.Bg5 d6 8.e3 Nbd7
+9.Be2 a5 10.b4 h6 11.Bh4 g5 12.Bg3 Ne4 13.Qc1 h5 14.h3 Qf6 15.b5 O-O-O 16.Ra2 h4
+17.Bh2 g4 18.hxg4 h3 19.c5 hxg2 20.Rg1 Ndxc5 21.dxc5 Nxc5 22.g5 Qf5 23.Qc2 Be4
+24.Qd1 Bxf3 25.Bxf3 Rxh2 26.Ke2 Qxg5 27.Qd4 d5 28.Rc2 e5 29.Qg4+ Qxg4 30.Bxg4+ Kb8
+31.Bf3 e4 32.Bxg2 Rg8 33.Kf1 Nd3 34.Rc6 Rg6 35.Rxg6 fxg6 36.f3 exf3 37.Bxf3  0-1

@@ -1,0 +1,17 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.2"]
+[White "Murshed, Niaz"]
+[Black "Milos, Gilberto"]
+[Result "0-1"]
+[MoveCount "21"]
+[PlyCount "42"]
+[GameLength "21 moves (42 ply)"]
+[WhiteElo "2490"]
+[BlackElo "2590"]
+[ECO "D36"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 d5 4.cxd5 exd5 5.Bg5 Be7 6.Qc2 O-O 7.e3 Re8 8.Bd3 Nbd7
+9.Nf3 Nf8 10.O-O c6 11.Rae1 Ne4 12.Bxe7 Qxe7 13.Bxe4 dxe4 14.Nd2 f5 15.d5 Bd7
+16.f3 exf3 17.Nxf3 cxd5 18.Nd4 Qc5 19.Nxf5 Ng6 20.Kh1 Be6 21.Qb3 d4  0-1

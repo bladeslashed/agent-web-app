@@ -1,0 +1,19 @@
+[Event "FIDE-Wch k.o."]
+[Site "Las Vegas"]
+[Date "1999.08.01"]
+[Round "1.2"]
+[White "Kozak, Alexander"]
+[Black "Antonio, Rogelio Jr"]
+[Result "0-1"]
+[MoveCount "35"]
+[PlyCount "70"]
+[GameLength "35 moves (70 ply)"]
+[WhiteElo "2350"]
+[BlackElo "2558"]
+[ECO "C02"]
+
+1.e4 e6 2.d4 d5 3.e5 c5 4.c3 Nc6 5.Nf3 Qb6 6.a3 Nh6 7.b4 cxd4 8.cxd4 Nf5
+9.Bb2 Bd7 10.h4 Rc8 11.g4 Nh6 12.Rg1 Na5 13.Nfd2 Be7 14.Bc3 Nc4 15.Nxc4 dxc4
+16.Nd2 O-O 17.g5 Nf5 18.Ne4 Kh8 19.Bh3 Rcd8 20.Ra2 a5 21.Kf1 axb4 22.axb4 Bc8
+23.Rd2 Qb5 24.Qe2 b6 25.Rg4 Bb7 26.f3 Ra8 27.Kf2 Ra3 28.Bb2 Re3 29.Qf1 Qxb4
+30.Bc1 Rb3 31.Rf4 Ne3 32.Qe2 Nd5 33.Rg4 Nc3 34.Qf1 Nxe4+ 35.fxe4 Qc3  0-1

@@ -1,0 +1,24 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.12.01"]
+[Round "2.2"]
+[White "Peng Xiaomin"]
+[Black "Adianto,U"]
+[Result "0-1"]
+[MoveCount "71"]
+[PlyCount "142"]
+[GameLength "71 moves (142 ply)"]
+[WhiteElo "2657"]
+[BlackElo "2583"]
+[ECO "B01"]
+
+1.e4 d5 2.exd5 Nf6 3.Nf3 Nxd5 4.d4 g6 5.Be2 Bg7 6.O-O O-O 7.c3 Nd7 8.Re1 c5
+9.c4 N5f6 10.d5 b5 11.a4 bxc4 12.a5 Ba6 13.Nc3 Rb8 14.h3 Ne8 15.Bf1 Nd6 16.Ra2 Nf5
+17.Ne4 Nd4 18.Be3 Nxf3+ 19.Qxf3 Bd4 20.Qd1 Bxe3 21.Rxe3 Rb4 22.Qd2 Qb8 23.d6 e6
+24.h4 Qb7 25.h5 Rb8 26.Qc3 e5 27.hxg6 hxg6 28.Ng5 Qd5 29.Re1 Rb3 30.Qc2 Kg7
+31.Rd1 Rd3 32.Raa1 Qxd6 33.Bxd3 cxd3 34.Qc3 Qd5 35.Nh3 Rb3 36.Qd2 Bb7 37.f3 Qd4+
+38.Kh1 c4 39.Rab1 Nf6 40.Qf2 Qd5 41.Ng5 Qxa5 42.Qh4 Qc5 43.Rbc1 Bd5 44.Rc3 Rb8
+45.Nh3 Qd4 46.Qf2 Be6 47.Rd2 Bxh3 48.Qxd4 exd4 49.Rxc4 Bd7 50.Kg1 Bb5 51.Rxd4 Rc8
+52.Kf2 Rc1 53.b4 a6 54.Ke3 Bc4 55.Rb2 Nd5+ 56.Kd2 Rg1 57.Rxc4 Rxg2+ 58.Kc1 Rxb2
+59.Kxb2 d2 60.Rd4 Ne3 61.Rxd2 Nc4+ 62.Kc3 Nxd2 63.Kxd2 Kf6 64.Kd3 Ke5 65.Kc4 Kd6
+66.Kd4 g5 67.Ke4 Ke6 68.Kd4 f5 69.Kc5 g4 70.fxg4 fxg4 71.Kd4 g3  0-1

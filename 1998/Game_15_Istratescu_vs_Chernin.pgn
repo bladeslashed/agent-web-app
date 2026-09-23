@@ -1,0 +1,23 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.5"]
+[White "Istratescu, Andrei"]
+[Black "Chernin, Alexander"]
+[Result "1-0"]
+[MoveCount "59"]
+[PlyCount "117"]
+[GameLength "59 moves (117 ply)"]
+[WhiteElo "2550"]
+[BlackElo "2640"]
+[ECO "C00"]
+
+1.e4 e6 2.d3 d5 3.Nd2 Nc6 4.Ngf3 Nf6 5.g3 Bc5 6.Bg2 dxe4 7.dxe4 e5 8.O-O O-O
+9.c3 a5 10.h3 b6 11.Qa4 Bb7 12.Re1 Qe8 13.Qc2 Ba6 14.Bf1 Bxf1 15.Nxf1 Qe6
+16.Kg2 h6 17.b3 Rfd8 18.Bb2 Ne7 19.a3 Nc8 20.b4 Bf8 21.c4 Nd7 22.Red1 axb4
+23.axb4 Rxa1 24.Bxa1 Bxb4 25.Nxe5 Bd6 26.Nxd7 Rxd7 27.Ne3 Bf8 28.Re1 Ne7
+29.Re2 Qc6 30.Ng4 Ng6 31.Ne3 Ne7 32.Nd5 b5 33.cxb5 Qxb5 34.Nf4 c5 35.Re1 c4
+36.Qe2 Qc6 37.Kg1 Rd8 38.Bc3 Re8 39.h4 Kh7 40.e5 Ng6 41.Nxg6 fxg6 42.h5 gxh5
+43.Qxh5 g6 44.Qg4 Bg7 45.Re4 Qd5 46.Qe2 Rc8 47.Rd4 Qe6 48.Rd6 Qe8 49.Qe4 Rc7
+50.Qd5 Re7 51.f4 Qa4 52.Qe4 Qe8 53.Qxc4 Qb8 54.Qd3 Qe8 55.Qd5 Qa4 56.Rd8 Re8
+57.Rd7 Qc2 58.Rxg7+ Kxg7 59.Qd7+  1-0

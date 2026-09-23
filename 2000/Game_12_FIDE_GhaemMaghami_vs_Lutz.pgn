@@ -1,0 +1,17 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.28"]
+[Round "1.2"]
+[White "Ghaem Maghami,E"]
+[Black "Lutz,C"]
+[Result "1/2-1/2"]
+[MoveCount "21"]
+[PlyCount "41"]
+[GameLength "21 moves (41 ply)"]
+[WhiteElo "2488"]
+[BlackElo "2595"]
+[ECO "B90"]
+
+1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6 6.Be3 Ng4 7.Bc1 Nf6 8.Be3 e5
+9.Nb3 Be6 10.f3 Be7 11.Qd2 h5 12.Be2 Nbd7 13.Nd5 Bxd5 14.exd5 a5 15.a4 O-O
+16.O-O Qc7 17.c4 Nc5 18.Nxc5 dxc5 19.Bg5 Ra6 20.Bd3 Re8 21.Rae1  1/2-1/2

@@ -1,0 +1,23 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.29"]
+[Round "1.3"]
+[White "Villamayor,B"]
+[Black "Minasian,Art"]
+[Result "1-0"]
+[MoveCount "61"]
+[PlyCount "121"]
+[GameLength "61 moves (121 ply)"]
+[WhiteElo "2495"]
+[BlackElo "2595"]
+[ECO "B07"]
+
+1.d4 d6 2.e4 Nf6 3.Nc3 c6 4.g3 Nbd7 5.Bg2 e5 6.Nge2 Be7 7.a4 O-O 8.O-O a5
+9.h3 Re8 10.Be3 Bf8 11.g4 exd4 12.Bxd4 Nb6 13.Ng3 d5 14.Re1 Nxe4 15.Ncxe4 dxe4
+16.Nxe4 Nd5 17.Qf3 Be6 18.Rad1 Qc7 19.Ng5 Qf4 20.Nxe6 Rxe6 21.Rxe6 Qxf3 22.Bxf3 fxe6
+23.c4 Nf4 24.Be3 Ng6 25.Be4 Ne5 26.b3 Re8 27.Bb6 Bb4 28.f4 Nf7 29.Rd7 e5
+30.Bxh7+ Kxh7 31.Rxf7 exf4 32.Rxf4 Kg6 33.Kf2 Re1 34.Rf3 Rb1 35.Bc7 Rb2+
+36.Kg3 Be1+ 37.Kf4 Re2 38.Rd3 Re7 39.Bd6 Re6 40.Kf3 Rf6+ 41.Bf4 Rf7 42.Rd6+ Kh7
+43.g5 g6 44.Kg4 Bb4 45.Rd8 Re7 46.Rc8 Re4 47.Kf3 Re1 48.Rc7+ Kg8 49.Rxb7 Rf1+
+50.Kg4 Rg1+ 51.Kf3 Rf1+ 52.Kg3 Rg1+ 53.Kh2 Rf1 54.Be5 Rf5 55.Bf6 Rf3 56.Rg7+ Kf8
+57.Rxg6 Bd6+ 58.Kg2 Rg3+ 59.Kf2 Rxh3 60.Rh6 Rxb3 61.g6  1-0

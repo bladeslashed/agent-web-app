@@ -1,0 +1,17 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.12"]
+[Round "2.2"]
+[White "Hjartarson, Johann"]
+[Black "Aleksandrov, Aleksej"]
+[Result "1/2-1/2"]
+[MoveCount "18"]
+[PlyCount "35"]
+[GameLength "18 moves (35 ply)"]
+[WhiteElo "2605"]
+[BlackElo "2660"]
+[ECO "C54"]
+
+1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.O-O Nf6 5.d3 d6 6.c3 a6 7.Bb3 Ba7 8.Nbd2 O-O
+9.h3 Be6 10.Re1 Bxb3 11.Qxb3 Qd7 12.Nf1 h6 13.Ng3 Rfe8 14.Nh4 d5 15.Nhf5 dxe4
+16.dxe4 Na5 17.Qc2 Rad8 18.Be3  1/2-1/2

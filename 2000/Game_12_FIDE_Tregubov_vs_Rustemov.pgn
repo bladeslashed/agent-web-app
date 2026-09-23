@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.28"]
+[Round "1.2"]
+[White "Tregubov,P"]
+[Black "Rustemov,A"]
+[Result "1/2-1/2"]
+[MoveCount "32"]
+[PlyCount "64"]
+[GameLength "32 moves (64 ply)"]
+[WhiteElo "2620"]
+[BlackElo "2534"]
+[ECO "D37"]
+
+1.d4 d5 2.c4 e6 3.Nf3 Nf6 4.Nc3 Be7 5.Bf4 O-O 6.e3 c5 7.dxc5 Bxc5 8.Be2 dxc4
+9.Bxc4 a6 10.Bd3 Nbd7 11.O-O b5 12.Ne4 Bb7 13.Nxc5 Nxc5 14.Be2 Nd5 15.Be5 f6
+16.Bd4 Na4 17.b3 Nac3 18.Qd2 Nxe2+ 19.Qxe2 e5 20.Bc5 Rf7 21.Rfc1 Rd7 22.a3 Qe8
+23.Rc2 Rad8 24.Rac1 Qg6 25.h3 Qh5 26.Nd4 Qxe2 27.Nxe2 Kf7 28.e4 Nf4 29.Nxf4 Rd1+
+30.Kh2 exf4 31.f3 Ke6 32.Bb6 Rxc1  1/2-1/2

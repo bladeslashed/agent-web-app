@@ -1,0 +1,22 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.11.28"]
+[Round "1.2"]
+[White "Vasquez,R"]
+[Black "Lesiege,A"]
+[Result "0-1"]
+[MoveCount "51"]
+[PlyCount "102"]
+[GameLength "51 moves (102 ply)"]
+[WhiteElo "2454"]
+[BlackElo "2584"]
+[ECO "B99"]
+
+1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 a6 6.Bg5 e6 7.f4 Be7 8.Qf3 Qc7
+9.O-O-O Nbd7 10.g4 b5 11.Bxf6 Nxf6 12.g5 Nd7 13.f5 Bxg5+ 14.Kb1 Ne5 15.Qh5 Qe7
+16.Nxe6 Bxe6 17.fxe6 g6 18.exf7+ Kxf7 19.Qh3 Kg7 20.Nd5 Qd8 21.Qc3 Ra7 22.Qa3 Rf8
+23.Bxb5 Rf3 24.Qa4 Qc8 25.h4 Bh6 26.Be2 Rf2 27.Qd4 Qc5 28.Nc3 Qxd4 29.Rxd4 Nf7
+30.Ra4 a5 31.Bc4 Ne5 32.Bd5 Bd2 33.Nb5 Ra6 34.Nd4 Be3 35.Ne6+ Kh6 36.Ra3 Bd2
+37.Rg3 Ra7 38.h5 g5 39.Nd4 g4 40.Nf5+ Kg5 41.Nxd6 Bf4 42.Rgg1 Rd7 43.Nb7 g3
+44.Nc5 Rd6 45.Ne6+ Kg4 46.Nd4 g2 47.Be6+ Kg5 48.Bh3 Rxd4 49.Bxg2 Rdd2 50.Bf3+ Kf6
+51.Bd1 Nc4  0-1

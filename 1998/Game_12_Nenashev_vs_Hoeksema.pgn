@@ -1,0 +1,20 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.2"]
+[White "Nenashev, Alexander"]
+[Black "Hoeksema, Hendrik Pieter"]
+[Result "1-0"]
+[MoveCount "36"]
+[PlyCount "71"]
+[GameLength "36 moves (71 ply)"]
+[WhiteElo "2585"]
+[BlackElo "2400"]
+[ECO "E20"]
+
+1.d4 Nf6 2.c4 e6 3.Nc3 Bb4 4.Nf3 c5 5.g3 d5 6.cxd5 Nxd5 7.Bd2 cxd4 8.Nxd5 Bxd2+
+9.Qxd2 Qxd5 10.Qxd4 Qxd4 11.Nxd4 Bd7 12.Bg2 Nc6 13.Nxc6 Bxc6 14.Bxc6+ bxc6
+15.O-O-O Ke7 16.Rd4 Rhc8 17.Rhd1 Rc7 18.Rg4 g6 19.Rb4 e5 20.Rd3 f5 21.Ra4 Rd8
+22.Rxd8 Kxd8 23.Ra5 Re7 24.Kd2 Kc8 25.e4 Kb7 26.exf5 Kb6 27.b4 gxf5 28.Ke3 h5
+29.h4 Re6 30.a3 Re7 31.f4 Rg7 32.fxe5 Rxg3+ 33.Kf4 Rg4+ 34.Kxf5 Rxh4 35.e6 Rh1
+36.e7  1-0

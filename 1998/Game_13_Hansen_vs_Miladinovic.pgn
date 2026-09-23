@@ -1,0 +1,19 @@
+[Event "FIDE-Wch k.o."]
+[Site "Groningen"]
+[Date "1997.12.10"]
+[Round "1.3"]
+[White "Hansen, Curt"]
+[Black "Miladinovic, Igor"]
+[Result "0-1"]
+[MoveCount "36"]
+[PlyCount "72"]
+[GameLength "36 moves (72 ply)"]
+[WhiteElo "2600"]
+[BlackElo "2500"]
+[ECO "D02"]
+
+1.d4 d5 2.Nf3 Nc6 3.Bf4 Bf5 4.e3 e6 5.Bd3 Nge7 6.O-O Bxd3 7.Qxd3 Ng6 8.Bg3 Bd6
+9.Bxd6 cxd6 10.Nbd2 O-O 11.c3 Rc8 12.Rfc1 e5 13.Qb5 e4 14.Ne1 Nge7 15.Qxb7 Na5
+16.Qa6 f5 17.Nc2 Nc4 18.Nxc4 dxc4 19.Nb4 f4 20.exf4 Rxf4 21.Re1 d5 22.Qe6+ Kh8
+23.Qe5 Rf5 24.Qg3 a5 25.Nc2 Ng6 26.h4 Nxh4 27.Ne3 Rh5 28.b3 Rc6 29.bxc4 Rg6
+30.Ng4 h6 31.Rab1 Kh7 32.f3 exf3 33.Rb8 Rxg4 34.Qxg4 Qxb8 35.cxd5 Qb2 36.Qe4+ Rf5  0-1

@@ -1,0 +1,26 @@
+[Event "FIDE WCh KO"]
+[Site "New Delhi IND"]
+[Date "2000.12.02"]
+[Round "2.4"]
+[White "Vladimirov,E"]
+[Black "Almasi,Z"]
+[Result "1/2-1/2"]
+[MoveCount "82"]
+[PlyCount "163"]
+[GameLength "82 moves (163 ply)"]
+[WhiteElo "2598"]
+[BlackElo "2668"]
+[ECO "B07"]
+
+1.d4 g6 2.e4 Bg7 3.c3 d6 4.Nf3 Nf6 5.Nbd2 O-O 6.Be2 c5 7.dxc5 dxc5 8.O-O Nc6
+9.Qc2 Qc7 10.Re1 h6 11.a4 Na5 12.Nc4 Be6 13.Nxa5 Qxa5 14.Bf4 Rfd8 15.Nd2 g5
+16.Bg3 Qb6 17.Nc4 Qc6 18.e5 Nd7 19.Bf3 Qc7 20.Qe4 Nf8 21.h4 Ng6 22.hxg5 hxg5
+23.b3 Rd7 24.Bg4 Nf8 25.Ne3 Qb6 26.Bxe6 Nxe6 27.Qc4 Rad8 28.Nf5 Kf8 29.Rab1 Qc6
+30.Qg4 Kg8 31.Rbd1 Kf8 32.Qh5 Rxd1 33.Rxd1 Rxd1+ 34.Qxd1 Ke8 35.Qe2 c4 36.b4 a6
+37.a5 Bf8 38.Ne3 Nc7 39.Nxc4 Nd5 40.Qd3 e6 41.f3 Qa4 42.Be1 Qa2 43.Ne3 Nf4
+44.Qd2 Qb1 45.Ng4 Be7 46.Kh2 Qh7+ 47.Kg1 Qb1 48.Kh2 Nd5 49.Bf2 Qb3 50.Bd4 Qb1
+51.Ne3 Qh7+ 52.Kg1 Nf4 53.Ng4 Qb1+ 54.Kh2 Qf5 55.Bc5 Qh7+ 56.Kg1 Bxc5+ 57.bxc5 Qd3
+58.Nf6+ Kf8 59.Qxd3 Nxd3 60.c6 bxc6 61.Nh7+ Ke7 62.Nxg5 Nxe5 63.Ne4 Nd3 64.g4 f5
+65.gxf5 exf5 66.Nd2 Kd6 67.Kf1 Kc5 68.Ke2 Ne5 69.Ke3 Nc4+ 70.Nxc4 Kxc4 71.Kf4 Kxc3
+72.Kxf5 c5 73.f4 c4 74.Ke6 Kd4 75.f5 c3 76.f6 c2 77.f7 c1=Q 78.f8=Q Qc4+
+79.Kd7 Qb5+ 80.Kc8 Kc4 81.Qd8 Qc6+ 82.Kb8  1/2-1/2
