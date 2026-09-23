@@ -1,0 +1,25 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.3"]
+[White "Volkov,S"]
+[Black "Luther,T"]
+[Result "0-1"]
+[MoveCount "77"]
+[PlyCount "154"]
+[GameLength "77 moves (154 ply)"]
+[WhiteElo "2578"]
+[BlackElo "2604"]
+[ECO "D30"]
+
+1.d4 d5 2.c4 c6 3.Nf3 Nf6 4.e3 e6 5.Nbd2 c5 6.cxd5 exd5 7.b3 Nc6 8.Bb5 Bd7
+9.Bb2 cxd4 10.Nxd4 Nxd4 11.Bxd7+ Qxd7 12.Bxd4 Be7 13.O-O O-O 14.Qf3 a6 15.Rfd1 Qe6
+16.Nf1 Rac8 17.Ng3 g6 18.Ne2 Rfd8 19.Nf4 Qf5 20.h3 Ne4 21.Rac1 Bh4 22.g3 Rxc1
+23.Rxc1 Bf6 24.g4 Qg5 25.Rd1 Bxd4 26.Rxd4 Qe5 27.Nxd5 Ng5 28.Qd1 Nxh3+ 29.Kg2 Nxf2
+30.Kxf2 Qh2+ 31.Ke1 Qh1+ 32.Kd2 Qxd5 33.Kc3 Qc5+ 34.Kb2 Rxd4 35.exd4 Qd5
+36.Qd2 Kg7 37.g5 f6 38.gxf6+ Kxf6 39.Qf4+ Kg7 40.Qc7+ Kh6 41.Qh2+ Kg5 42.Qxh7 Qxd4+
+43.Ka3 Qc5+ 44.Kb2 Qe5+ 45.Kb1 Qe4+ 46.Kb2 Kg4 47.a4 Qd4+ 48.Ka2 Qd2+ 49.Ka3 Qc1+
+50.Ka2 Qc2+ 51.Ka3 Qc5+ 52.Ka2 Qc6 53.Qh2 g5 54.Qe2+ Qf3 55.Qc4+ Kh3 56.Ka3 g4
+57.Qc8 Qc6 58.Qf5 Qd6+ 59.Ka2 Qd2+ 60.Ka3 Qd6+ 61.Ka2 Qc6 62.Qh5+ Kg3 63.Qe5+ Kg2
+64.Qb2+ Kf3 65.Qb1 g3 66.Qf1+ Kg4 67.Qd1+ Qf3 68.Qd7+ Kf4 69.Qd4+ Qe4 70.Qd6+ Kf3
+71.Qf6+ Ke2 72.Qb2+ Kf1 73.Qc1+ Qe1 74.Qh6 g2 75.Qh3 Qe4 76.Ka3 Kf2 77.Qh2 Qg4  0-1

@@ -1,0 +1,21 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.4"]
+[White "Xu Yuanyuan"]
+[Black "Pina,S"]
+[Result "1-0"]
+[MoveCount "47"]
+[PlyCount "93"]
+[GameLength "47 moves (93 ply)"]
+[WhiteElo "2409"]
+[BlackElo "2345"]
+[ECO "A44"]
+
+1.d4 c5 2.d5 e5 3.e4 d6 4.Nc3 Be7 5.Bb5+ Nd7 6.Be2 a6 7.Nf3 b5 8.a4 b4 9.Nb1 Ngf6
+10.Nfd2 Nf8 11.f3 Ng6 12.Nc4 a5 13.Be3 O-O 14.Nbd2 Nh5 15.g3 Bh3 16.Bf1 Bxf1
+17.Rxf1 Qb8 18.Qe2 Bd8 19.b3 Nf6 20.O-O-O Re8 21.Qg2 Bc7 22.f4 exf4 23.gxf4 Nf8
+24.Bf2 Qc8 25.e5 dxe5 26.d6 exf4 27.dxc7 Qxc7 28.Bh4 N6d7 29.Ne4 Ng6 30.Ned6 Rf8
+31.Nf5 Nde5 32.Ncd6 c4 33.Kb1 cxb3 34.cxb3 Qc3 35.Qb2 Qh3 36.Be7 Rfb8 37.Bg5 f3
+38.Ne7+ Nxe7 39.Qxe5 Ng6 40.Qd5 Ra7 41.Rxf3 Qg4 42.Nxf7 Rxf7 43.Rxf7 Qxd1+
+44.Qxd1 Kxf7 45.Qd5+ Ke8 46.Qe6+ Kf8 47.Qd6+  1-0

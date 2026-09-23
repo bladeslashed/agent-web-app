@@ -2,8 +2,8 @@
 
 This archive contains historical games from official World Chess Championship matches of the 20th century (and 2000).
 
-- **Total Matches Cataloged**: 37
-- **Total Games Recorded**: 1756
+- **Total Matches Cataloged**: 53
+- **Total Games Recorded**: 2854
 
 ## Match Catalog by Year
 
@@ -46,6 +46,22 @@ This archive contains historical games from official World Chess Championship ma
 | **1999** | [FIDE World Championship 1999 (Khalifman vs Akopian)](./1999) | 303 | `events/FideChamp1999.pgn` |
 | **2000** | [Classical World Championship 2000 (Kramnik vs Kasparov)](./2000) | 15 | `events/WorldChamp2000.pgn` |
 | **2000** | [FIDE World Championship 2000 (Anand vs Shirov)](./2000) | 345 | `events/FideChamp2000.pgn` |
+| **2002** | [FIDE World Championship 2001/2002 (Ponomariov vs Ivanchuk)](./2002) | 418 | `events/FideChamp2002.pgn` |
+| **2004** | [Classical World Championship 2004 (Kramnik vs Leko)](./2004) | 14 | `events/WorldChamp2004.pgn` |
+| **2004** | [FIDE World Championship 2004 (Kasimdzhanov vs Adams)](./2004) | 408 | `events/FideChamp2004.pgn` |
+| **2005** | [FIDE World Championship 2005 Tournament (Topalov 1st)](./2005) | 56 | `events/FideChamp2005.pgn` |
+| **2006** | [World Championship Reunification 2006 (Kramnik vs Topalov)](./2006) | 16 | `events/WorldChamp2006.pgn` |
+| **2007** | [World Championship Tournament 2007 (Anand 1st)](./2007) | 56 | `events/WorldChamp2007.pgn` |
+| **2008** | [World Championship 2008 (Anand vs Kramnik)](./2008) | 11 | `events/WorldChamp2008.pgn` |
+| **2010** | [World Championship 2010 (Anand vs Topalov)](./2010) | 12 | `events/WorldChamp2010.pgn` |
+| **2012** | [World Championship 2012 (Anand vs Gelfand)](./2012) | 16 | `events/WorldChamp2012.pgn` |
+| **2013** | [World Championship 2013 (Carlsen vs Anand)](./2013) | 10 | `events/WorldChamp2013.pgn` |
+| **2014** | [World Championship 2014 (Carlsen vs Anand)](./2014) | 11 | `events/WorldChamp2014.pgn` |
+| **2016** | [World Championship 2016 (Carlsen vs Karjakin)](./2016) | 16 | `events/WorldChamp2016.pgn` |
+| **2018** | [World Championship 2018 (Carlsen vs Caruana)](./2018) | 15 | `events/WorldChamp2018.pgn` |
+| **2021** | [World Championship 2021 (Carlsen vs Nepomniachtchi)](./2021) | 11 | `events/WorldChamp2021.pgn` |
+| **2023** | [World Championship 2023 (Ding Liren vs Nepomniachtchi)](./2023) | 14 | `events/WorldChamp2023.pgn` |
+| **2024** | [World Championship 2024 (Ding Liren vs Gukesh D)](./2024) | 14 | `events/WorldChamp2024.pgn` |
 
 ## Metadata Included in Each Game File
 

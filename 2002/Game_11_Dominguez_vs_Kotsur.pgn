@@ -1,0 +1,24 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Dominguez,L"]
+[Black "Kotsur,P"]
+[Result "1/2-1/2"]
+[MoveCount "67"]
+[PlyCount "133"]
+[GameLength "67 moves (133 ply)"]
+[WhiteElo "2596"]
+[BlackElo "2572"]
+[ECO "B36"]
+
+1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4 g6 5.c4 Nf6 6.Nc3 d6 7.Be2 Nxd4 8.Qxd4 Bg7
+9.Bg5 O-O 10.Qd2 Be6 11.Rc1 Qa5 12.f3 Rfc8 13.b3 a6 14.Na4 Qxd2+ 15.Kxd2 Rc6
+16.Be3 Nd7 17.g4 Kf8 18.h4 f5 19.exf5 gxf5 20.g5 d5 21.cxd5 Bxd5 22.Rxc6 Bxc6
+23.Nc5 Nxc5 24.Bxc5 Rd8+ 25.Ke3 Be5 26.Rd1 Rxd1 27.Bxd1 Bg3 28.h5 f4+ 29.Ke2 Bb5+
+30.Kd2 Be8 31.Bc2 Bxh5 32.Be4 b5 33.Ke2 Bg6 34.Bb7 a5 35.Bc6 Be8 36.Be4 Bh4
+37.Bxh7 Bxg5 38.Bd4 Kf7 39.Be5 Ke6 40.Bc7 a4 41.Be4 Kd7 42.Be5 axb3 43.axb3 Bf7
+44.b4 Bc4+ 45.Kd2 Ke6 46.Bc7 Kd7 47.Be5 Ke6 48.Bc7 Bh6 49.Kc2 Kf6 50.Bd3 Bd5
+51.Bxb5 Bxf3 52.Bd7 Be2 53.b5 f3 54.b6 f2 55.Bh3 Ba6 56.b7 Bxb7 57.Bb6 Be4+
+58.Kd1 Bf3+ 59.Kc2 e5 60.Bxf2 e4 61.Bd4+ Kg6 62.Be6 Bf4 63.Bd5 Kf5 64.Kb2 Bd1
+65.Bxe4+ Kxe4 66.Bg7 Kd3 67.Bf6  1/2-1/2

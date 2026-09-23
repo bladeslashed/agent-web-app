@@ -52,7 +52,7 @@ export default function FilterPanel({ filters, setFilters, onReset, totalMatches
             value={filters.year}
             onChange={(e) => handleTextChange('year', e.target.value)}
           >
-            <option value="">All Years (1907 - 2000)</option>
+            <option value="">All Years (1907 - Present)</option>
             <optgroup label="Decades">
               <option value="1900s">1900s (Lasker era)</option>
               <option value="1910s">1910s (Lasker defenses)</option>
@@ -64,7 +64,9 @@ export default function FilterPanel({ filters, setFilters, onReset, totalMatches
               <option value="1970s">1970s (Fischer, Karpov)</option>
               <option value="1980s">1980s (Kasparov vs Karpov)</option>
               <option value="1990s">1990s (Short, Anand, Kamsky)</option>
-              <option value="2000">2000 (Kramnik vs Kasparov)</option>
+              <option value="2000s">2000s (Kramnik, Topalov, Anand)</option>
+              <option value="2010s">2010s (Carlsen era)</option>
+              <option value="2020s">2020s (Nepo, Ding Liren, Gukesh)</option>
             </optgroup>
             <optgroup label="Specific Years">
               {yearsList.map(y => (

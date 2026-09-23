@@ -1,0 +1,21 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Anastasian,A"]
+[Black "Fedorov,Alex"]
+[Result "1-0"]
+[MoveCount "48"]
+[PlyCount "95"]
+[GameLength "48 moves (95 ply)"]
+[WhiteElo "2588"]
+[BlackElo "2599"]
+[ECO "A26"]
+
+1.Nf3 Nf6 2.c4 g6 3.Nc3 Bg7 4.g3 O-O 5.Bg2 d6 6.O-O Nc6 7.d3 h6 8.Rb1 a5
+9.a3 e5 10.b4 axb4 11.axb4 Bg4 12.h3 Be6 13.e4 Ne8 14.Nd5 Qd7 15.b5 Ne7 16.Kh2 Nc8
+17.d4 c6 18.Ne3 Qc7 19.Bb2 cxb5 20.cxb5 Nb6 21.Ra1 Rd8 22.Qd2 Nf6 23.Rac1 Qb8
+24.Qa5 Nc8 25.Qb4 exd4 26.Nxd4 Bd7 27.Ne2 Rfe8 28.Bd4 Nh7 29.Rfd1 Bxd4 30.Rxd4 Qa7
+31.Rd2 Nf6 32.Nf4 Be6 33.Qb2 Nd7 34.Rc7 Qb8 35.Rc1 Ncb6 36.Nxe6 Rxe6 37.Rcd1 h5
+38.h4 Ne5 39.Qd4 Nbd7 40.f4 Ng4+ 41.Nxg4 hxg4 42.f5 Rf6 43.e5 Rxf5 44.Qxd6 Rxe5
+45.Qxb8 Rxb8 46.Rxd7 Rxb5 47.Bd5 Rb2+ 48.Kg1  1-0

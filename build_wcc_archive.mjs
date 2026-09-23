@@ -44,7 +44,23 @@ const MATCH_FILES = [
   { file: 'events/FideChamp1998.pgn', year: 1998, match: 'FIDE World Championship 1998 (Karpov vs Anand)' },
   { file: 'events/FideChamp1999.pgn', year: 1999, match: 'FIDE World Championship 1999 (Khalifman vs Akopian)' },
   { file: 'events/WorldChamp2000.pgn', year: 2000, match: 'Classical World Championship 2000 (Kramnik vs Kasparov)' },
-  { file: 'events/FideChamp2000.pgn', year: 2000, match: 'FIDE World Championship 2000 (Anand vs Shirov)' }
+  { file: 'events/FideChamp2000.pgn', year: 2000, match: 'FIDE World Championship 2000 (Anand vs Shirov)' },
+  { file: 'events/FideChamp2002.pgn', year: 2002, match: 'FIDE World Championship 2001/2002 (Ponomariov vs Ivanchuk)' },
+  { file: 'events/WorldChamp2004.pgn', year: 2004, match: 'Classical World Championship 2004 (Kramnik vs Leko)' },
+  { file: 'events/FideChamp2004.pgn', year: 2004, match: 'FIDE World Championship 2004 (Kasimdzhanov vs Adams)' },
+  { file: 'events/FideChamp2005.pgn', year: 2005, match: 'FIDE World Championship 2005 Tournament (Topalov 1st)' },
+  { file: 'events/WorldChamp2006.pgn', year: 2006, match: 'World Championship Reunification 2006 (Kramnik vs Topalov)' },
+  { file: 'events/WorldChamp2007.pgn', year: 2007, match: 'World Championship Tournament 2007 (Anand 1st)' },
+  { file: 'events/WorldChamp2008.pgn', year: 2008, match: 'World Championship 2008 (Anand vs Kramnik)' },
+  { file: 'events/WorldChamp2010.pgn', year: 2010, match: 'World Championship 2010 (Anand vs Topalov)' },
+  { file: 'events/WorldChamp2012.pgn', year: 2012, match: 'World Championship 2012 (Anand vs Gelfand)' },
+  { file: 'events/WorldChamp2013.pgn', year: 2013, match: 'World Championship 2013 (Carlsen vs Anand)' },
+  { file: 'events/WorldChamp2014.pgn', year: 2014, match: 'World Championship 2014 (Carlsen vs Anand)' },
+  { file: 'events/WorldChamp2016.pgn', year: 2016, match: 'World Championship 2016 (Carlsen vs Karjakin)' },
+  { file: 'events/WorldChamp2018.pgn', year: 2018, match: 'World Championship 2018 (Carlsen vs Caruana)' },
+  { file: 'events/WorldChamp2021.pgn', year: 2021, match: 'World Championship 2021 (Carlsen vs Nepomniachtchi)' },
+  { file: 'events/WorldChamp2023.pgn', year: 2023, match: 'World Championship 2023 (Ding Liren vs Nepomniachtchi)' },
+  { file: 'events/WorldChamp2024.pgn', year: 2024, match: 'World Championship 2024 (Ding Liren vs Gukesh D)' }
 ];
 
 function sanitizeName(name) {
@@ -240,6 +256,8 @@ async function run() {
       else if (matchInfo.file.includes('FideChamp1993')) eventPrefix = 'FIDE_';
       else if (matchInfo.file.includes('FideChamp2000')) eventPrefix = 'FIDE_';
       else if (matchInfo.file.includes('WorldChamp2000')) eventPrefix = 'Classical_';
+      else if (matchInfo.file.includes('FideChamp2004')) eventPrefix = 'FIDE_';
+      else if (matchInfo.file.includes('WorldChamp2004')) eventPrefix = 'Classical_';
 
       let fileName = `Game_${roundStr}_${eventPrefix}${white}_vs_${black}.pgn`;
       let counter = 1;

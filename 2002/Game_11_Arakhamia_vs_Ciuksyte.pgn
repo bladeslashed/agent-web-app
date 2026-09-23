@@ -1,0 +1,20 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Arakhamia,K"]
+[Black "Ciuksyte,D"]
+[Result "0-1"]
+[MoveCount "42"]
+[PlyCount "84"]
+[GameLength "42 moves (84 ply)"]
+[WhiteElo "2437"]
+[BlackElo "2271"]
+[ECO "B43"]
+
+1.e4 c5 2.Nf3 e6 3.Nc3 a6 4.d4 cxd4 5.Nxd4 b5 6.Bd3 Qb6 7.Nb3 Qc7 8.f4 Bb7
+9.Qe2 d6 10.O-O Nd7 11.a4 b4 12.Nd1 Ngf6 13.Nf2 e5 14.a5 Be7 15.Ra4 d5 16.fxe5 Nxe5
+17.exd5 Nxd5 18.Be4 O-O 19.Nd4 g6 20.Ra1 Bd6 21.h3 Rfe8 22.Qd1 Rad8 23.Bg5 Be7
+24.Qc1 Qd7 25.Bxe7 Rxe7 26.Qg5 f6 27.Qg3 Kh8 28.Rae1 Rde8 29.Nd3 Nxd3 30.Bxd3 Ne3
+31.Rf4 Nxg2 32.Rxe7 Rxe7 33.Rg4 Ne3 34.Rh4 g5 35.Qb8+ Bc8 36.Rh6 Kg8 37.Qb6 Qd5
+38.Bf1 Nxf1 39.Qxf6 Rf7 40.Qb6 Ne3 41.Qc6 Rf1+ 42.Kh2 Qe5+  0-1

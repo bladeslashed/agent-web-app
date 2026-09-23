@@ -1,0 +1,24 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.5"]
+[White "Khenkin,I"]
+[Black "Asrian,K"]
+[Result "1-0"]
+[MoveCount "69"]
+[PlyCount "137"]
+[GameLength "69 moves (137 ply)"]
+[WhiteElo "2572"]
+[BlackElo "2604"]
+[ECO "D36"]
+
+1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.cxd5 exd5 5.Bg5 Be7 6.e3 Nbd7 7.Bd3 O-O 8.Nf3 c6
+9.Qc2 Re8 10.h3 Nf8 11.O-O g6 12.Rab1 Ne6 13.Bh4 Ng7 14.b4 a6 15.a4 Bf5 16.Bxf5 Nxf5
+17.Bxf6 Bxf6 18.b5 axb5 19.axb5 Nd6 20.bxc6 bxc6 21.Nd2 Ra3 22.Ne2 Qa8 23.Rfc1 Ra2
+24.Rb2 Rxb2 25.Qxb2 Nf5 26.Nf4 Ne7 27.Nf3 Rb8 28.Ra1 Rxb2 29.Rxa8+ Kg7 30.g4 h6
+31.h4 Ng8 32.g5 hxg5 33.hxg5 Be7 34.Ra7 Rb8 35.Rc7 Rb6 36.Ne5 Ra6 37.Kg2 Kf8
+38.Kf3 Ra1 39.Nxc6 Bxg5 40.Nxd5 Ra2 41.Ne5 Nh6 42.Nb4 Ra4 43.Nbc6 Ra1 44.d5 Rd1
+45.e4 Rd2 46.Nc4 Rd3+ 47.Ke2 Rc3 48.Nd4 Bf4 49.Rc8+ Ke7 50.d6+ Bxd6 51.Nxd6 Ra3
+52.e5 Ng4 53.Rc7+ Kf8 54.Rxf7+ Kg8 55.f4 g5 56.Rf5 Ra2+ 57.Kd3 Nf2+ 58.Kc4 Ra4+
+59.Kd5 Ra5+ 60.Ke6 gxf4 61.Rg5+ Kh7 62.N4f5 Ra7 63.Kf6 f3 64.Rh5+ Kg8 65.Ne7+ Rxe7
+66.Kxe7 Nd3 67.Rf5 f2 68.e6 Kg7 69.Ne4  1-0

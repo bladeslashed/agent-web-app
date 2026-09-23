@@ -1,0 +1,21 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.6"]
+[White "Asrian,K"]
+[Black "Khenkin,I"]
+[Result "1/2-1/2"]
+[MoveCount "49"]
+[PlyCount "98"]
+[GameLength "49 moves (98 ply)"]
+[WhiteElo "2604"]
+[BlackElo "2572"]
+[ECO "A04"]
+
+1.e4 c5 2.Nf3 e6 3.d3 Nc6 4.g3 Nge7 5.Bg2 g6 6.O-O Bg7 7.Re1 d6 8.c3 e5 9.Na3 O-O
+10.Nc4 b5 11.Ne3 Rb8 12.a4 a6 13.axb5 axb5 14.Bd2 h6 15.Nh4 g5 16.Nhf5 Nxf5
+17.Nxf5 Bxf5 18.exf5 d5 19.h4 gxh4 20.Qh5 hxg3 21.fxg3 Qf6 22.Bxd5 Rfd8 23.Be4 Ne7
+24.g4 Qb6 25.f6 Qxf6 26.Rf1 Qe6 27.Ra7 c4 28.g5 Rxd3 29.Bxd3 cxd3 30.gxh6 Bf6
+31.Kh2 e4 32.Bf4 Rd8 33.Rg1+ Kh8 34.Qxb5 e3 35.Ra6 Qd5 36.Qxd5 Nxd5 37.Rxf6 Nxf6
+38.Be5 Rd5 39.Bxf6+ Kh7 40.c4 Rd7 41.Bc3 d2 42.Bxd2 Rxd2+ 43.Kg3 Rxb2 44.Rc1 Rb7
+45.Kf3 Re7 46.Rh1 e2 47.Kf2 Re4 48.c5 Re5 49.c6 Rc5  1/2-1/2

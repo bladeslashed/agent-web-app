@@ -1,0 +1,17 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Conquest,S"]
+[Black "Gyimesi,Z"]
+[Result "1/2-1/2"]
+[MoveCount "18"]
+[PlyCount "35"]
+[GameLength "18 moves (35 ply)"]
+[WhiteElo "2601"]
+[BlackElo "2605"]
+[ECO "E54"]
+
+1.Nf3 d5 2.c4 e6 3.d4 Nf6 4.Nc3 Bb4 5.e3 O-O 6.Bd3 c5 7.O-O cxd4 8.exd4 dxc4
+9.Bxc4 a6 10.a3 Bxc3 11.bxc3 Qc7 12.Qe2 Nbd7 13.Bg5 b5 14.Bd3 Bb7 15.Rfc1 Bd5
+16.a4 Bc4 17.axb5 axb5 18.Bxf6  1/2-1/2

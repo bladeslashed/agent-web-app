@@ -1,0 +1,26 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Al Modiahki,M"]
+[Black "Polgar,Ju"]
+[Result "0-1"]
+[MoveCount "83"]
+[PlyCount "166"]
+[GameLength "83 moves (166 ply)"]
+[WhiteElo "2506"]
+[BlackElo "2686"]
+[ECO "B50"]
+
+1.e4 c5 2.Nf3 d6 3.c3 Nf6 4.Be2 g6 5.O-O Bg7 6.Bb5+ Bd7 7.Bxd7+ Qxd7 8.Re1 O-O
+9.d4 Na6 10.Bg5 Rfe8 11.Nbd2 cxd4 12.cxd4 Rac8 13.Bxf6 Bxf6 14.e5 dxe5 15.dxe5 Bg7
+16.Nb3 Red8 17.Nbd4 Nc5 18.Qe2 Qd5 19.h4 Ne6 20.Nxe6 Qxe6 21.b3 Rc5 22.Rad1 Rdc8
+23.Qe4 b6 24.Qf4 Qc6 25.Qg4 h5 26.Qd7 Qxd7 27.Rxd7 R5c7 28.Red1 Bh6 29.g3 Kf8
+30.Rd8+ Rxd8 31.Rxd8+ Kg7 32.Nd4 Bc1 33.e6 Bb2 34.Rd7 Rc1+ 35.Kg2 a5 36.exf7 Kxf7
+37.Nf3 Bf6 38.Rd5 Ke6 39.Rb5 Rc6 40.a4 Kd6 41.Nd2 Kc7 42.Nc4 Re6 43.Kf1 Bc3
+44.f4 Re1+ 45.Kg2 Bd4 46.Kf3 Rb1 47.Ke4 Bc5 48.Kf3 Rf1+ 49.Ke4 Rc1 50.Ne5 Rc3
+51.Nd3 Bg1 52.b4 Ra3 53.bxa5 Rxa4+ 54.Kf3 Rxa5 55.Rb1 Bd4 56.Ke4 Bf6 57.Nb4 Kd6
+58.Rd1+ Ke6 59.Nd5 Ra4+ 60.Ke3 Ra3+ 61.Kf2 Rb3 62.Nxf6 exf6 63.Rd8 Rc3 64.Rb8 Rc6
+65.Re8+ Kd5 66.f5 gxf5 67.Rh8 b5 68.Rxh5 b4 69.Rxf5+ Kc4 70.Ke3 b3 71.Rf1 b2
+72.Kf4 Kd3 73.Rf3+ Kc2 74.Rf2+ Kb3 75.Rxb2+ Kxb2 76.g4 Rc1 77.Kf5 Rf1+ 78.Ke6 Kc3
+79.h5 Kd4 80.h6 Rh1 81.Kxf6 Rxh6+ 82.Kf5 Kd5 83.g5 Rh1  0-1

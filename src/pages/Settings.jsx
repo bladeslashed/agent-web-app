@@ -14,6 +14,10 @@ import {
   Moon, 
   Sun, 
   Leaf,
+  Flame,
+  Sparkles,
+  Zap,
+  Droplets,
   KeyRound,
   ShieldCheck,
   RefreshCw
@@ -209,6 +213,138 @@ export default function Settings() {
               </div>
               <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '10px' }}>
                 Clean, high-contrast daylight theme.
+              </div>
+            </div>
+
+            {/* Coral Theme Card */}
+            <div 
+              onClick={() => setTheme('coral')}
+              style={{
+                cursor: 'pointer',
+                padding: '16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: '#1d0e12',
+                border: theme === 'coral' ? '2px solid #f43f5e' : '1px solid #4c2230',
+                color: '#fff1f2',
+                transition: 'all 150ms ease',
+                position: 'relative'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Flame size={16} style={{ color: '#f43f5e' }} />
+                  <span>Coral</span>
+                </div>
+                {theme === 'coral' && <CheckCircle size={16} style={{ color: '#f43f5e' }} />}
+              </div>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#12080a', border: '1px solid #4c2230' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#1d0e12', border: '1px solid #4c2230' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#f43f5e' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#fff1f2' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#9f1239' }} />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#fecdd3', marginTop: '10px' }}>
+                Warm coral pink &amp; crimson rose tones.
+              </div>
+            </div>
+
+            {/* Void Theme Card */}
+            <div 
+              onClick={() => setTheme('void')}
+              style={{
+                cursor: 'pointer',
+                padding: '16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: '#0b0716',
+                border: theme === 'void' ? '2px solid #a855f7' : '1px solid #2d1c59',
+                color: '#f5f3ff',
+                transition: 'all 150ms ease',
+                position: 'relative'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Sparkles size={16} style={{ color: '#a855f7' }} />
+                  <span>Void</span>
+                </div>
+                {theme === 'void' && <CheckCircle size={16} style={{ color: '#a855f7' }} />}
+              </div>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#040209', border: '1px solid #2d1c59' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#0b0716', border: '1px solid #2d1c59' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#a855f7' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#f5f3ff' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#4c1d95' }} />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#ddd6fe', marginTop: '10px' }}>
+                Deep AMOLED cosmic dark with electric violet.
+              </div>
+            </div>
+
+            {/* Amber Theme Card */}
+            <div 
+              onClick={() => setTheme('amber')}
+              style={{
+                cursor: 'pointer',
+                padding: '16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: '#181209',
+                border: theme === 'amber' ? '2px solid #f59e0b' : '1px solid #483318',
+                color: '#fefce8',
+                transition: 'all 150ms ease',
+                position: 'relative'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Zap size={16} style={{ color: '#f59e0b' }} />
+                  <span>Amber</span>
+                </div>
+                {theme === 'amber' && <CheckCircle size={16} style={{ color: '#f59e0b' }} />}
+              </div>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#0e0a05', border: '1px solid #483318' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#181209', border: '1px solid #483318' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#f59e0b' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#fef9c3' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#78350f' }} />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#fef08a', marginTop: '10px' }}>
+                Rich bourbon &amp; vintage mahogany chess wood.
+              </div>
+            </div>
+
+            {/* Ocean Theme Card */}
+            <div 
+              onClick={() => setTheme('ocean')}
+              style={{
+                cursor: 'pointer',
+                padding: '16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: '#071524',
+                border: theme === 'ocean' ? '2px solid #06b6d4' : '1px solid #1c426b',
+                color: '#ecfeff',
+                transition: 'all 150ms ease',
+                position: 'relative'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Droplets size={16} style={{ color: '#06b6d4' }} />
+                  <span>Ocean</span>
+                </div>
+                {theme === 'ocean' && <CheckCircle size={16} style={{ color: '#06b6d4' }} />}
+              </div>
+              <div style={{ display: 'flex', gap: '6px', marginTop: '12px' }}>
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#030a12', border: '1px solid #1c426b' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#071524', border: '1px solid #1c426b' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#06b6d4' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#e0f2fe' }} />
+                <span style={{ width: '18px', height: '18px', borderRadius: '4px', background: '#0369a1' }} />
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#a5f3fc', marginTop: '10px' }}>
+                Abyssal navy with electric cyan highlights.
               </div>
             </div>
           </div>

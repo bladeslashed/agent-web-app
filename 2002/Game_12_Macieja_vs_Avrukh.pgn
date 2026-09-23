@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.28"]
+[Round "1.2"]
+[White "Macieja,B"]
+[Black "Avrukh,B"]
+[Result "1-0"]
+[MoveCount "31"]
+[PlyCount "61"]
+[GameLength "31 moves (61 ply)"]
+[WhiteElo "2582"]
+[BlackElo "2606"]
+[ECO "B07"]
+
+1.e4 d6 2.d4 g6 3.Nf3 Bg7 4.c3 Nf6 5.Bd3 O-O 6.O-O Nc6 7.Na3 Bg4 8.h3 Bxf3
+9.Qxf3 e5 10.Nc2 Nd7 11.Be3 Kh8 12.Qg3 f5 13.f4 exd4 14.Nxd4 Nxd4 15.Bxd4 Bxd4+
+16.cxd4 fxe4 17.Bxe4 c6 18.f5 g5 19.d5 Ne5 20.dxc6 bxc6 21.Rae1 Qf6 22.Re2 Rg8
+23.Rd1 g4 24.h4 Rae8 25.Bxc6 Rc8 26.Bd5 Rg7 27.Be6 Rd8 28.Kh1 Rc7 29.Red2 Rc6
+30.Rd5 h6 31.Qxe5  1-0

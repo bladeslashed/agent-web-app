@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.28"]
+[Round "1.2"]
+[White "Shipov,S"]
+[Black "Lesiege,A"]
+[Result "1-0"]
+[MoveCount "30"]
+[PlyCount "60"]
+[GameLength "30 moves (60 ply)"]
+[WhiteElo "2625"]
+[BlackElo "2588"]
+[ECO "D27"]
+
+1.d4 d5 2.c4 dxc4 3.Nf3 Nf6 4.e3 e6 5.Bxc4 c5 6.O-O a6 7.e4 b5 8.Bd3 cxd4
+9.a4 b4 10.e5 Nd5 11.Nbd2 Nd7 12.Nb3 Nc5 13.Nxc5 Bxc5 14.Ng5 Be7 15.Qg4 g6
+16.h4 Qc7 17.Re1 Bf8 18.Bd2 Bg7 19.Rac1 Qd7 20.h5 Bb7 21.Ne4 O-O 22.Nc5 Qc6
+23.Ne4 Qxa4 24.Ng5 Qd7 25.Nxh7 Kxh7 26.hxg6+ Kg8 27.Qh5 fxg6 28.Bxg6 Rfc8
+29.Qh7+ Kf8 30.Bh6 Bxh6  1-0

@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.4"]
+[White "Luther,T"]
+[Black "Volkov,S"]
+[Result "1-0"]
+[MoveCount "33"]
+[PlyCount "65"]
+[GameLength "33 moves (65 ply)"]
+[WhiteElo "2604"]
+[BlackElo "2578"]
+[ECO "C11"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Nf6 4.e5 Nfd7 5.f4 c5 6.Nf3 Qb6 7.Be3 a6 8.Na4 Qc7
+9.dxc5 Nxc5 10.Nxc5 Bxc5 11.Qd2 Nd7 12.Bd3 Qb6 13.Bxc5 Nxc5 14.b4 Nxd3+ 15.cxd3 a5
+16.bxa5 Rxa5 17.Qf2 Qa6 18.O-O Bd7 19.Nd4 O-O 20.Nb3 Rb5 21.Nc5 Qc6 22.Rfc1 Ra8
+23.Na4 Rxa4 24.Rxc6 Bxc6 25.f5 Rab4 26.h3 Rb2 27.Qa7 h6 28.fxe6 fxe6 29.Rf1 Re2
+30.Rf2 Rb1+ 31.Kh2 Rxe5 32.Qb8+ Kh7 33.Qxe5  1-0

@@ -1,0 +1,21 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.28"]
+[Round "1.2"]
+[White "Milos,G"]
+[Black "Dao Thien Hai"]
+[Result "1-0"]
+[MoveCount "44"]
+[PlyCount "87"]
+[GameLength "44 moves (87 ply)"]
+[WhiteElo "2610"]
+[BlackElo "2531"]
+[ECO "C42"]
+
+1.e4 e5 2.Nf3 Nf6 3.Nxe5 d6 4.Nf3 Nxe4 5.d4 d5 6.Bd3 Nc6 7.O-O Be7 8.c4 Nb4
+9.Be2 O-O 10.a3 Nc6 11.cxd5 Qxd5 12.Nc3 Nxc3 13.bxc3 Bf5 14.c4 Qd6 15.d5 Bf6
+16.Ra2 Ne7 17.Nd4 Bd7 18.a4 c5 19.Nb5 Bxb5 20.axb5 Nf5 21.Bd3 Nd4 22.Re1 g6
+23.Qg4 Rfe8 24.Rxe8+ Rxe8 25.Be3 Qb6 26.Qd1 Be5 27.g3 Bb8 28.Kg2 Qf6 29.Bb1 Qb6
+30.Ra3 Bd6 31.Bd2 Bb8 32.Re3 Qd8 33.Qe1 Rf8 34.Re7 Qc8 35.Bh6 Rd8 36.Qe3 Bd6
+37.Qg5 Bxe7 38.Qxe7 Qd7 39.Qf6 Ne6 40.dxe6 fxe6 41.Be4 Re8 42.h4 Qe7 43.Qe5 a6
+44.h5  1-0

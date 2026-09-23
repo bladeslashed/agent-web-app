@@ -1,0 +1,25 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.28"]
+[Round "1.2"]
+[White "Aseev,K"]
+[Black "Kobalija,M"]
+[Result "1/2-1/2"]
+[MoveCount "75"]
+[PlyCount "150"]
+[GameLength "75 moves (150 ply)"]
+[WhiteElo "2591"]
+[BlackElo "2603"]
+[ECO "A87"]
+
+1.d4 f5 2.c4 Nf6 3.Nc3 g6 4.g3 Bg7 5.Bg2 O-O 6.Nf3 d6 7.O-O Qe8 8.d5 a5 9.Nd4 Na6
+10.b3 Bd7 11.Bb2 g5 12.e3 Qg6 13.f4 h6 14.Qc2 Ng4 15.Qd2 Nc5 16.Rae1 Nf6
+17.Qc2 Ng4 18.Ncb5 Rac8 19.h3 Nf6 20.g4 Nh7 21.fxg5 Qxg5 22.Nf3 Qg6 23.Nh4 Qg5
+24.Nf3 Qg6 25.Nbd4 Qf6 26.Nh2 Qh4 27.Nhf3 Qf6 28.gxf5 Bxf5 29.e4 Bd7 30.e5 dxe5
+31.Nxe5 Qd6 32.Nxd7 Qxd7 33.Qg6 Kh8 34.Nf5 Bxb2 35.Rxe7 Qxe7 36.Nxe7 Rxf1+
+37.Bxf1 Rf8 38.Bg2 Bf6 39.Nf5 Ne4 40.Bxe4 Rg8 41.Qxg8+ Kxg8 42.Nxh6+ Kg7
+43.Nf5+ Kf7 44.d6 c6 45.Nh6+ Kg7 46.Bxh7 Kxh6 47.Bf5 Kg5 48.Bc8 b6 49.Bb7 c5
+50.Bf3 Kf4 51.Kf2 Be5 52.d7 Bf6 53.Ke2 Bd8 54.Bd5 Bf6 55.Kd3 Bd8 56.Be6 Bf6
+57.Bg4 Bd8 58.Kc2 Bf6 59.a3 Ke5 60.b4 axb4 61.axb4 cxb4 62.Kb3 Be7 63.Ka4 Kd6
+64.Kxb4 Kc6+ 65.Kc3 b5 66.cxb5+ Kxb5 67.Kd4 Kc6 68.Ke5 Bd8 69.Ke6 Kc7 70.Bd1 Bh4
+71.Ba4 Bd8 72.Bb5 Bh4 73.Kf5 Kd6 74.Kg4 Bd8 75.h4 Ke5  1/2-1/2

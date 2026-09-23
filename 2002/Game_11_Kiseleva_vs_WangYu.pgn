@@ -1,0 +1,20 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Kiseleva,N"]
+[Black "Wang Yu"]
+[Result "1-0"]
+[MoveCount "38"]
+[PlyCount "75"]
+[GameLength "38 moves (75 ply)"]
+[WhiteElo "2382"]
+[BlackElo "2378"]
+[ECO "D46"]
+
+1.d4 d5 2.c4 c6 3.Nf3 Nf6 4.e3 e6 5.Bd3 Be7 6.Nbd2 O-O 7.O-O Nbd7 8.e4 dxe4
+9.Nxe4 Nxe4 10.Bxe4 Nf6 11.Bc2 c5 12.Bg5 cxd4 13.Qd3 g6 14.Rad1 Nh5 15.Bh6 Ng7
+16.Qxd4 Qxd4 17.Nxd4 e5 18.Nb5 Bg4 19.f3 Bc5+ 20.Kh1 Be6 21.b3 Rac8 22.Be4 a6
+23.Nd6 Bxd6 24.Rxd6 b5 25.Bb7 Rb8 26.Bxa6 bxc4 27.bxc4 Rb2 28.a4 Rc2 29.Rc1 Rxc1+
+30.Bxc1 Nf5 31.Rd3 Ra8 32.Bb5 Nd4 33.Bh6 f5 34.Rd1 Rc8 35.Rc1 Nxb5 36.cxb5 Rxc1+
+37.Bxc1 Bb3 38.a5  1-0

@@ -559,6 +559,88 @@ export async function toggleUserFavorite(uid, gameId) {
   return favs;
 }
 
+// Move Favorites with Personal Notes
+const MOVE_FAV_KEY = 'tca_user_move_favorites';
+
+export async function getUserMoveFavorites(uid) {
+  if (!uid) return [];
+  try {
+    const raw = localStorage.getItem(MOVE_FAV_KEY);
+    const all = raw ? JSON.parse(raw) : [];
+    return all
+      .filter(item => item.uid === uid)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function saveUserMoveFavorite(uid, moveFavData) {
+  if (!uid) throw new Error('Authentication required.');
+  const raw = localStorage.getItem(MOVE_FAV_KEY);
+  let all = [];
+  try {
+    all = raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    all = [];
+  }
+
+  // If already exists for this game and plyIndex, update note
+  const existingIdx = all.findIndex(item => item.uid === uid && item.gameId === moveFavData.gameId && item.plyIndex === moveFavData.plyIndex);
+  if (existingIdx !== -1) {
+    all[existingIdx].note = (moveFavData.note || '').trim();
+    all[existingIdx].updatedAt = new Date().toISOString();
+    localStorage.setItem(MOVE_FAV_KEY, JSON.stringify(all));
+    return all[existingIdx];
+  }
+
+  const newFav = {
+    id: `mfav_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    uid,
+    gameId: moveFavData.gameId,
+    gameTitle: moveFavData.gameTitle || `${moveFavData.white} vs ${moveFavData.black} (${moveFavData.year})`,
+    year: moveFavData.year,
+    white: moveFavData.white,
+    black: moveFavData.black,
+    event: moveFavData.event,
+    result: moveFavData.result,
+    eco: moveFavData.eco,
+    plyIndex: moveFavData.plyIndex,
+    moveNumber: moveFavData.moveNumber,
+    moveSan: moveFavData.moveSan,
+    fen: moveFavData.fen,
+    note: (moveFavData.note || '').trim(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  all.unshift(newFav);
+  localStorage.setItem(MOVE_FAV_KEY, JSON.stringify(all));
+  return newFav;
+}
+
+export async function updateUserMoveFavoriteNote(uid, favId, note) {
+  if (!uid) throw new Error('Authentication required.');
+  const raw = localStorage.getItem(MOVE_FAV_KEY);
+  const all = raw ? JSON.parse(raw) : [];
+  const idx = all.findIndex(item => item.id === favId && item.uid === uid);
+  if (idx === -1) throw new Error('Move favorite not found.');
+
+  all[idx].note = (note || '').trim();
+  all[idx].updatedAt = new Date().toISOString();
+  localStorage.setItem(MOVE_FAV_KEY, JSON.stringify(all));
+  return all[idx];
+}
+
+export async function deleteUserMoveFavorite(uid, favId) {
+  if (!uid) throw new Error('Authentication required.');
+  const raw = localStorage.getItem(MOVE_FAV_KEY);
+  let all = raw ? JSON.parse(raw) : [];
+  all = all.filter(item => !(item.id === favId && item.uid === uid));
+  localStorage.setItem(MOVE_FAV_KEY, JSON.stringify(all));
+  return true;
+}
+
 export async function getAllCommunityProfiles() {
   initLocalDb();
   const community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');

@@ -30,6 +30,7 @@ import {
   Shield, 
   Check, 
   X, 
+  ChevronLeft,
   ChevronRight, 
   User, 
   Clock, 
@@ -335,6 +336,27 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
     return calculatePositionAtPly(selectedGameForNew, newPlyIndex);
   }, [selectedGameForNew, selectedGameMoves, newPlyIndex]);
 
+  // Board state preview for create modal
+  const modalBoardState = useMemo(() => {
+    if (!newHighlightPositionPreview?.fenBefore) return null;
+    try {
+      const c = new Chess(newHighlightPositionPreview.fenBefore);
+      return c.board();
+    } catch (e) {
+      return null;
+    }
+  }, [newHighlightPositionPreview]);
+
+  // Scroll active move bubble into view
+  useEffect(() => {
+    if (isCreating && selectedGameForNew) {
+      const el = document.getElementById(`move-bubble-${newPlyIndex}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [newPlyIndex, isCreating, selectedGameForNew]);
+
   // Submit new Community Highlight
   const handleSubmitNewHighlight = async (e) => {
     e.preventDefault();
@@ -472,10 +494,27 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
         </div>
       ) : !selectedHighlight ? (
         <div className="card" style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>No highlights match your filter.</p>
-          <button className="btn btn-secondary" onClick={() => { setActiveTab('popular'); setSearchQuery(''); }}>
-            Reset Filters
-          </button>
+          <Sparkles size={40} style={{ margin: '0 auto 16px', color: 'var(--accent-primary)', opacity: 0.8 }} />
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 600, marginBottom: '8px' }}>
+            {highlights.length === 0 ? 'No Community Highlights Yet' : 'No highlights match your filter'}
+          </h3>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '440px', margin: '0 auto 20px', fontSize: '0.9rem' }}>
+            {highlights.length === 0 
+              ? 'Be the first to share an iconic move, sacrifice, or tactical masterclass from the World Championship archive!' 
+              : 'Try changing your search query or switching tabs to see more highlights.'}
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+            {highlights.length === 0 ? (
+              <button className="btn btn-primary" onClick={() => setIsCreating(true)}>
+                <Plus size={16} />
+                <span>Submit the First Highlight</span>
+              </button>
+            ) : (
+              <button className="btn btn-secondary" onClick={() => { setActiveTab('popular'); setSearchQuery(''); }}>
+                Reset Filters
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 480px) 1fr', gap: '28px', alignItems: 'start' }}>
@@ -734,7 +773,7 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
       {/* CREATE COMMUNITY HIGHLIGHT MODAL */}
       {isCreating && (
         <div className="modal-overlay" onClick={() => setIsCreating(false)}>
-          <div className="modal-content" style={{ maxWidth: '640px' }} onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" style={{ maxWidth: '680px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Sparkles size={18} style={{ color: 'var(--accent-primary)' }} />
@@ -762,14 +801,14 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
                   <input 
                     type="text" 
                     className="input-field" 
-                    placeholder="Search player name, year (e.g. Fischer, Kasparov, 1972)..."
+                    placeholder="Search player name, year (e.g. Fischer, Kasparov, Carlsen, 2024)..."
                     value={gameSearch}
                     onChange={(e) => setGameSearch(e.target.value)}
                     style={{ paddingLeft: '32px', fontSize: '0.85rem' }}
                   />
                 </div>
 
-                <div style={{ maxHeight: '130px', overflowY: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '4px' }}>
+                <div style={{ maxHeight: '120px', overflowY: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '4px' }}>
                   {matchingGamesForModal.map(g => {
                     const isPicked = selectedGameForNew && selectedGameForNew.id === g.id;
                     return (
@@ -777,7 +816,8 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
                         key={g.id}
                         onClick={() => {
                           setSelectedGameForNew(g);
-                          setNewPlyIndex(Math.floor((getGameMoveHistory(g).length || 2) / 2));
+                          const moves = getGameMoveHistory(g);
+                          setNewPlyIndex(moves.length > 0 ? Math.floor(moves.length / 2) : 0);
                         }}
                         style={{
                           padding: '6px 10px',
@@ -801,34 +841,117 @@ export default function DailyHighlights({ allGames = [], onSelectGame }) {
                 </div>
               </div>
 
-              {/* Step 2: Choose Decisive Move */}
+              {/* Step 2: Choose Decisive Move with Board Display & Scrollable Text Bubbles */}
               {selectedGameForNew && selectedGameMoves.length > 0 && (
                 <div>
-                  <label className="input-label" style={{ fontWeight: 600, marginBottom: '6px' }}>
-                    2. Select the Decisive Move / Shot
-                  </label>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                    <input 
-                      type="range" 
-                      min={0} 
-                      max={selectedGameMoves.length - 1}
-                      value={newPlyIndex}
-                      onChange={(e) => setNewPlyIndex(parseInt(e.target.value, 10))}
-                      style={{ flex: 1 }}
-                    />
-                    <span className="badge badge-eco" style={{ fontSize: '0.85rem', padding: '4px 10px' }}>
-                      Move {Math.floor(newPlyIndex / 2) + 1}: {selectedGameMoves[newPlyIndex]?.san}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <label className="input-label" style={{ fontWeight: 600, margin: 0 }}>
+                      2. Select the Decisive Move / Position
+                    </label>
+                    <span className="badge badge-eco" style={{ fontSize: '0.82rem' }}>
+                      {newPlyIndex % 2 === 0 ? `${Math.floor(newPlyIndex / 2) + 1}. ${selectedGameMoves[newPlyIndex]?.san}` : `${Math.floor(newPlyIndex / 2) + 1}... ${selectedGameMoves[newPlyIndex]?.san}`}
                     </span>
                   </div>
 
-                  {newHighlightPositionPreview && (
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>Turn: {newHighlightPositionPreview.turn}</span>
-                      <span>•</span>
-                      <span>FEN: {newHighlightPositionPreview.fenBefore.slice(0, 30)}...</span>
+                  {/* Board Display within Interface */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '14px' }}>
+                    <div style={{ 
+                      width: '260px', 
+                      aspectRatio: '1/1', 
+                      borderRadius: 'var(--radius-sm)', 
+                      overflow: 'hidden', 
+                      border: '1px solid var(--border-subtle)',
+                      boxShadow: '0 4px 14px rgba(0, 0, 0, 0.35)',
+                      backgroundColor: 'var(--bg-card)'
+                    }}>
+                      {modalBoardState ? (
+                        <ChessBoard 
+                          boardState={modalBoardState} 
+                          lastMove={selectedGameMoves[newPlyIndex] ? { from: selectedGameMoves[newPlyIndex].from, to: selectedGameMoves[newPlyIndex].to } : null}
+                        />
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                          Position preview
+                        </div>
+                      )}
                     </div>
-                  )}
+
+                    <div style={{ marginTop: '8px', fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span>Turn: <strong style={{ color: 'var(--text-primary)' }}>{newHighlightPositionPreview?.turn}</strong></span>
+                      <span>•</span>
+                      <span>Move {newPlyIndex + 1} of {selectedGameMoves.length}</span>
+                    </div>
+                  </div>
+
+                  {/* Horizontal Scrollable Text Bubble Ribbon */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <button 
+                      type="button" 
+                      className="btn-icon" 
+                      style={{ width: '32px', height: '32px', flexShrink: 0, border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-full)' }}
+                      onClick={() => setNewPlyIndex(prev => Math.max(0, prev - 1))}
+                      disabled={newPlyIndex === 0}
+                      title="Previous Move"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+
+                    <div 
+                      style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '6px', 
+                        overflowX: 'auto', 
+                        padding: '8px 8px',
+                        backgroundColor: 'var(--bg-subtle)',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '1px solid var(--border-subtle)',
+                        scrollbarWidth: 'thin'
+                      }}
+                    >
+                      {selectedGameMoves.map((m, idx) => {
+                        const isPicked = idx === newPlyIndex;
+                        const moveNum = Math.floor(idx / 2) + 1;
+                        const label = idx % 2 === 0 ? `${moveNum}. ${m.san}` : `${moveNum}... ${m.san}`;
+                        return (
+                          <button
+                            key={idx}
+                            id={`move-bubble-${idx}`}
+                            type="button"
+                            onClick={() => setNewPlyIndex(idx)}
+                            style={{
+                              flexShrink: 0,
+                              padding: '5px 12px',
+                              borderRadius: '9999px',
+                              fontSize: '0.82rem',
+                              fontWeight: isPicked ? 700 : 500,
+                              fontFamily: 'var(--font-mono, monospace)',
+                              backgroundColor: isPicked ? 'var(--accent-primary)' : 'var(--bg-card)',
+                              color: isPicked ? '#ffffff' : 'var(--text-secondary)',
+                              border: isPicked ? '1px solid var(--accent-primary)' : '1px solid var(--border-subtle)',
+                              cursor: 'pointer',
+                              boxShadow: isPicked ? '0 2px 8px rgba(99, 102, 241, 0.4)' : 'none',
+                              transition: 'all 120ms ease'
+                            }}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <button 
+                      type="button" 
+                      className="btn-icon" 
+                      style={{ width: '32px', height: '32px', flexShrink: 0, border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-full)' }}
+                      onClick={() => setNewPlyIndex(prev => Math.min(selectedGameMoves.length - 1, prev + 1))}
+                      disabled={newPlyIndex >= selectedGameMoves.length - 1}
+                      title="Next Move"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
                 </div>
               )}
 

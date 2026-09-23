@@ -1,0 +1,24 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Zhang Zhong"]
+[Black "Yu Shaoteng"]
+[Result "0-1"]
+[MoveCount "71"]
+[PlyCount "142"]
+[GameLength "71 moves (142 ply)"]
+[WhiteElo "2657"]
+[BlackElo "2518"]
+[ECO "C11"]
+
+1.e4 e6 2.d4 d5 3.Nc3 Nf6 4.e5 Nfd7 5.f4 c5 6.Nce2 Nc6 7.Nf3 Qb6 8.c3 f6
+9.Qb3 Be7 10.Be3 O-O 11.exf6 Nxf6 12.g3 c4 13.Qxb6 axb6 14.a3 b5 15.Rd1 Bd7
+16.Bh3 Ne4 17.O-O h6 18.Kg2 g6 19.Rfe1 Rae8 20.Nd2 Nxd2 21.Bxd2 Kh7 22.Ng1 Bd6
+23.Re2 Rf6 24.Rde1 Nd8 25.Nf3 Ref8 26.Bg4 Kg7 27.Be3 Re8 28.Bf2 Bc7 29.Ne5 Bxe5
+30.dxe5 Rf7 31.Rd2 Nc6 32.Bc5 Ne7 33.Bd1 Bc6 34.Kg1 h5 35.Bxe7 Rfxe7 36.Kf2 Rh8
+37.Bc2 Rf7 38.Ke3 b6 39.Rg1 Rh6 40.Rdd1 Rf8 41.Ra1 Ra8 42.Kd4 Ra7 43.Rg2 Be8
+44.h4 Rf7 45.Rgg1 Rh8 46.Rg2 Bc6 47.Rgg1 Be8 48.Ke3 Rff8 49.g4 hxg4 50.Rxg4 Rh6
+51.Kf2 Rfh8 52.Kg3 Bf7 53.f5 exf5 54.Bxf5 Re8 55.e6 Bxe6 56.Re1 Bf7 57.Rxe8 Bxe8
+58.Be6 Rh5 59.Rg5 Bc6 60.Kg4 Kf6 61.Bc8 Rh8 62.Ba6 Re8 63.Kf4 Re4+ 64.Kg3 Re2
+65.Rg4 Rxb2 66.Rf4+ Ke5 67.Rg4 Kf6 68.Rf4+ Kg7 69.Bc8 Rc2 70.Be6 Rxc3+ 71.Kg4 Re3  0-1

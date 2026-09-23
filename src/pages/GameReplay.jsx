@@ -18,11 +18,15 @@ import {
   Cpu,
   Volume2,
   VolumeX,
-  Share2
+  Share2,
+  Bookmark,
+  X,
+  Trash2,
+  Edit3
 } from 'lucide-react';
 
 export default function GameReplay({ game, onBack }) {
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite, getMoveFavorite, saveMoveFavorite, deleteMoveFavorite } = useFavorites();
   const [currentPly, setCurrentPly] = useState(() => (game && game.initialPly !== undefined ? game.initialPly : -1));
   const [flipped, setFlipped] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -31,6 +35,11 @@ export default function GameReplay({ game, onBack }) {
   const [evalData, setEvalData] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Move Bookmark with Notes Modal State
+  const [isBookmarkModalOpen, setIsBookmarkModalOpen] = useState(false);
+  const [bookmarkNote, setBookmarkNote] = useState('');
+  const [bookmarkSubmitting, setBookmarkSubmitting] = useState(false);
 
   useEffect(() => {
     if (game && game.initialPly !== undefined) {
@@ -187,16 +196,80 @@ export default function GameReplay({ game, onBack }) {
     };
   }, [currentPos.fen, showStockfish]);
 
+  // Current move favorite item if bookmarked
+  const currentMoveFav = currentPly >= 0 ? getMoveFavorite(game.id, currentPly) : null;
+
+  const handleOpenBookmarkModal = () => {
+    if (currentPly < 0) return;
+    const existing = getMoveFavorite(game.id, currentPly);
+    setBookmarkNote(existing ? existing.note : '');
+    setIsBookmarkModalOpen(true);
+  };
+
+  const handleSaveBookmark = async (e) => {
+    e.preventDefault();
+    if (currentPly < 0) return;
+    const moveObj = movesList[currentPly];
+    const moveNumber = Math.floor(currentPly / 2) + 1;
+    const moveSan = currentPly % 2 === 0 ? `${moveNumber}. ${moveObj?.san || ''}` : `${moveNumber}... ${moveObj?.san || ''}`;
+
+    setBookmarkSubmitting(true);
+    try {
+      await saveMoveFavorite({
+        gameId: game.id,
+        gameTitle: `${game.white} vs ${game.black} (${game.year})`,
+        year: game.year,
+        white: game.white,
+        black: game.black,
+        event: game.event,
+        result: game.result,
+        eco: game.eco,
+        plyIndex: currentPly,
+        moveNumber,
+        moveSan,
+        fen: currentPos.fen,
+        note: bookmarkNote
+      });
+      setIsBookmarkModalOpen(false);
+    } finally {
+      setBookmarkSubmitting(false);
+    }
+  };
+
+  const handleDeleteBookmark = async () => {
+    if (!currentMoveFav) return;
+    if (!window.confirm('Delete this move bookmark and note?')) return;
+    await deleteMoveFavorite(currentMoveFav.id);
+    setIsBookmarkModalOpen(false);
+  };
+
   return (
     <div>
       {/* Top Bar Navigation & Info */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <button className="btn btn-secondary" onClick={onBack}>
           <ArrowLeft size={16} />
           <span>Back to Catalog</span>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Bookmark Specific Move with Notes */}
+          <button 
+            className={`btn ${currentMoveFav ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={handleOpenBookmarkModal}
+            disabled={currentPly < 0}
+            title={currentPly < 0 ? 'Step to a move to bookmark it' : 'Bookmark this move with study notes'}
+            style={{
+              borderColor: currentMoveFav ? 'var(--accent-warning)' : undefined,
+              backgroundColor: currentMoveFav ? 'rgba(245, 158, 11, 0.15)' : undefined,
+              color: currentMoveFav ? 'var(--accent-warning)' : undefined
+            }}
+          >
+            <Bookmark size={15} fill={currentMoveFav ? 'currentColor' : 'none'} />
+            <span>{currentMoveFav ? 'Move Bookmarked (Edit Note)' : 'Bookmark Move & Note'}</span>
+          </button>
+
+          {/* Favorite Entire Game */}
           <button 
             className={`btn btn-secondary ${fav ? 'active' : ''}`}
             onClick={() => toggleFavorite(game.id)}
@@ -342,6 +415,83 @@ export default function GameReplay({ game, onBack }) {
           result={game.result}
         />
       </div>
+
+      {/* BOOKMARK MOVE & STUDY NOTE MODAL */}
+      {isBookmarkModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsBookmarkModalOpen(false)}>
+          <div className="modal-content" style={{ maxWidth: '520px' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Bookmark size={18} style={{ color: 'var(--accent-warning)' }} />
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Bookmark Move &amp; Note</h3>
+              </div>
+              <button className="btn-icon" onClick={() => setIsBookmarkModalOpen(false)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', marginBottom: '16px' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                {game.white} vs {game.black} ({game.year})
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="badge badge-eco" style={{ fontSize: '0.9rem', padding: '4px 10px' }}>
+                  {currentPly % 2 === 0 ? `${Math.floor(currentPly / 2) + 1}. ${movesList[currentPly]?.san || ''}` : `${Math.floor(currentPly / 2) + 1}... ${movesList[currentPly]?.san || ''}`}
+                </span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                  Ply {currentPly + 1}
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveBookmark} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="input-group">
+                <label className="input-label" style={{ fontWeight: 600 }}>Personal Study Note</label>
+                <textarea 
+                  className="input-field" 
+                  rows={4}
+                  placeholder="Record tactical breakthrough ideas, key variations, opening nuances, or critical blunder analysis..."
+                  value={bookmarkNote}
+                  onChange={(e) => setBookmarkNote(e.target.value)}
+                  autoFocus
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', marginTop: '6px' }}>
+                {currentMoveFav ? (
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    style={{ color: 'var(--accent-danger)', borderColor: 'var(--accent-danger)' }}
+                    onClick={handleDeleteBookmark}
+                  >
+                    <Trash2 size={15} />
+                    <span>Delete Bookmark</span>
+                  </button>
+                ) : <div />}
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsBookmarkModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={bookmarkSubmitting}
+                  >
+                    <Bookmark size={15} fill="currentColor" />
+                    <span>{bookmarkSubmitting ? 'Saving...' : 'Save Move & Note'}</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

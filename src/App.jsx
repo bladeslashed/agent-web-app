@@ -82,7 +82,7 @@ export default function App() {
               Loading The Chess Archive...
             </div>
             <div style={{ fontSize: '0.85rem' }}>
-              Indexed 1,756 World Championship games (1907 - 2000)
+              Indexed 4,600+ World Championship games (1907 - Present)
             </div>
           </div>
         ) : (

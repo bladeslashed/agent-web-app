@@ -1,0 +1,19 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Cvitan,O"]
+[Black "Lastin,A"]
+[Result "1/2-1/2"]
+[MoveCount "34"]
+[PlyCount "67"]
+[GameLength "34 moves (67 ply)"]
+[WhiteElo "2550"]
+[BlackElo "2628"]
+[ECO "D34"]
+
+1.c4 e6 2.Nf3 d5 3.d4 c5 4.cxd5 exd5 5.g3 Nc6 6.Bg2 Nf6 7.O-O Be7 8.Nc3 O-O
+9.b3 b6 10.Ne5 Nxd4 11.e3 Ne6 12.Nxd5 Bb7 13.Nxf6+ Bxf6 14.Bxb7 Bxe5 15.Rb1 Rb8
+16.Bg2 Qc7 17.Qe2 Rfd8 18.Bd2 Rd7 19.Rfc1 Rbd8 20.Be1 Qd6 21.Kf1 g6 22.Rc2 Qe7
+23.Rd2 Rxd2 24.Bxd2 Nc7 25.Be1 Qd7 26.Rc1 a5 27.Bf3 a4 28.Rd1 Qxd1 29.Qxd1 Rxd1
+30.Bxd1 axb3 31.axb3 Nd5 32.Bd2 Kf8 33.Ke2 Nc3+ 34.Bxc3  1/2-1/2

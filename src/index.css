@@ -87,6 +87,106 @@
   --board-best-move: rgba(37, 99, 235, 0.5);
 }
 
+/* CORAL THEME (Warm Coral & Crimson Rose Aesthetic) */
+[data-theme="coral"] {
+  --bg-canvas: #12080a;
+  --bg-surface: #1d0e12;
+  --bg-surface-elevated: #29141a;
+  --bg-subtle: #381a24;
+  --border-subtle: #4c2230;
+  --border-focus: #7a354c;
+  
+  --text-main: #fff1f2;
+  --text-secondary: #fecdd3;
+  --text-muted: #fb7185;
+  
+  --accent-primary: #f43f5e;
+  --accent-primary-hover: #e11d48;
+  --accent-success: #10b981;
+  --accent-warning: #fbbf24;
+  --accent-danger: #f87171;
+
+  --board-light: #fff1f2;
+  --board-dark: #9f1239;
+  --board-highlight: rgba(251, 191, 36, 0.45);
+  --board-best-move: rgba(244, 63, 94, 0.6);
+}
+
+/* VOID THEME (Cosmic Deep AMOLED & Neon Purple Aesthetic) */
+[data-theme="void"] {
+  --bg-canvas: #040209;
+  --bg-surface: #0b0716;
+  --bg-surface-elevated: #140d28;
+  --bg-subtle: #1e133c;
+  --border-subtle: #2d1c59;
+  --border-focus: #5334a1;
+  
+  --text-main: #f5f3ff;
+  --text-secondary: #ddd6fe;
+  --text-muted: #a78bfa;
+  
+  --accent-primary: #a855f7;
+  --accent-primary-hover: #9333ea;
+  --accent-success: #34d399;
+  --accent-warning: #fbbf24;
+  --accent-danger: #f43f5e;
+
+  --board-light: #f5f3ff;
+  --board-dark: #4c1d95;
+  --board-highlight: rgba(250, 204, 21, 0.45);
+  --board-best-move: rgba(168, 85, 247, 0.6);
+}
+
+/* AMBER THEME (Vintage Bourbon & Warm Gold Aesthetic) */
+[data-theme="amber"] {
+  --bg-canvas: #0e0a05;
+  --bg-surface: #181209;
+  --bg-surface-elevated: #241a0d;
+  --bg-subtle: #332412;
+  --border-subtle: #483318;
+  --border-focus: #735124;
+  
+  --text-main: #fefce8;
+  --text-secondary: #fef08a;
+  --text-muted: #f59e0b;
+  
+  --accent-primary: #f59e0b;
+  --accent-primary-hover: #d97706;
+  --accent-success: #10b981;
+  --accent-warning: #fbbf24;
+  --accent-danger: #ef4444;
+
+  --board-light: #fef9c3;
+  --board-dark: #78350f;
+  --board-highlight: rgba(245, 158, 11, 0.45);
+  --board-best-move: rgba(217, 119, 6, 0.6);
+}
+
+/* OCEAN THEME (Abyssal Navy & Electric Cyan) */
+[data-theme="ocean"] {
+  --bg-canvas: #030a12;
+  --bg-surface: #071524;
+  --bg-surface-elevated: #0c2036;
+  --bg-subtle: #122d4a;
+  --border-subtle: #1c426b;
+  --border-focus: #28639e;
+  
+  --text-main: #ecfeff;
+  --text-secondary: #a5f3fc;
+  --text-muted: #38bdf8;
+  
+  --accent-primary: #06b6d4;
+  --accent-primary-hover: #0891b2;
+  --accent-success: #10b981;
+  --accent-warning: #fbbf24;
+  --accent-danger: #f43f5e;
+
+  --board-light: #e0f2fe;
+  --board-dark: #0369a1;
+  --board-highlight: rgba(250, 204, 21, 0.45);
+  --board-best-move: rgba(6, 182, 212, 0.6);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

@@ -1,0 +1,20 @@
+[Event "FIDE WCh KO"]
+[Site "Moscow RUS"]
+[Date "2001.11.27"]
+[Round "1.1"]
+[White "Baginskaite,C"]
+[Black "Prudnikova,S"]
+[Result "1-0"]
+[MoveCount "37"]
+[PlyCount "74"]
+[GameLength "37 moves (74 ply)"]
+[WhiteElo "2336"]
+[BlackElo "2411"]
+[ECO "D24"]
+
+1.d4 Nf6 2.c4 e6 3.Nf3 d5 4.Nc3 dxc4 5.e4 c5 6.Bxc4 cxd4 7.Nxd4 Be7 8.O-O O-O
+9.Bg5 h6 10.Bh4 e5 11.Ndb5 Nc6 12.Bxf6 Bxf6 13.Qh5 a6 14.Rad1 Nd4 15.Nxd4 exd4
+16.e5 Bg5 17.f4 Be7 18.Ne2 b5 19.Bb3 d3 20.Nc3 Bb7 21.Qg6 Qd4+ 22.Kh1 Rad8
+23.Qg3 b4 24.Nb1 h5 25.Nd2 h4 26.Qg4 Bc8 27.e6 f5 28.Qf3 Rf6 29.Rfe1 Qa7
+30.Qe3 Qa8 31.Nf3 h3 32.Rxd3 hxg2+ 33.Kxg2 Bb7 34.Rxd8+ Qxd8 35.Rd1 Rg6+
+36.Kf2 Qc7 37.Rd7 Qc6  1-0
