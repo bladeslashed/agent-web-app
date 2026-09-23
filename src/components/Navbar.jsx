@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
-import { useTheme } from '../context/ThemeContext';
 import { 
   BookOpen, 
   Heart, 
@@ -10,37 +9,17 @@ import {
   LogOut, 
   LogIn, 
   Shield, 
-  Moon, 
-  Sun, 
-  Leaf,
-  Database
+  Settings as SettingsIcon,
+  Sparkles,
+  Shuffle
 } from 'lucide-react';
 
-export default function Navbar({ currentView, onNavigate }) {
-  const { user, logout, isFirebase } = useAuth();
+export default function Navbar({ currentView, onNavigate, onRandomGame }) {
+  const { user, logout } = useAuth();
   const { favorites } = useFavorites();
-  const { theme, setTheme } = useTheme();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const isAdmin = user && (user.role === 'admin' || user.uid === '1');
-
-  const cycleTheme = () => {
-    if (theme === 'dark') setTheme('verdant');
-    else if (theme === 'verdant') setTheme('light');
-    else setTheme('dark');
-  };
-
-  const getThemeIcon = () => {
-    if (theme === 'verdant') return <Leaf size={16} style={{ color: '#22c55e' }} />;
-    if (theme === 'light') return <Sun size={16} style={{ color: '#f59e0b' }} />;
-    return <Moon size={16} />;
-  };
-
-  const getThemeLabel = () => {
-    if (theme === 'verdant') return 'Verdant';
-    if (theme === 'light') return 'Light';
-    return 'Dark';
-  };
 
   return (
     <header className="navbar">
@@ -62,6 +41,24 @@ export default function Navbar({ currentView, onNavigate }) {
         >
           <BookOpen size={16} />
           <span>Games</span>
+        </button>
+
+        <button 
+          className={`nav-item ${currentView === 'highlights' ? 'active' : ''}`}
+          onClick={() => onNavigate('highlights')}
+        >
+          <Sparkles size={16} style={{ color: 'var(--accent-primary)' }} />
+          <span>Highlights</span>
+        </button>
+
+        <button 
+          className="nav-item btn-random-game"
+          onClick={onRandomGame}
+          title="Play a random historical World Championship game"
+          style={{ cursor: 'pointer' }}
+        >
+          <Shuffle size={16} style={{ color: '#10b981' }} />
+          <span>Random Game</span>
         </button>
 
         <button 
@@ -88,6 +85,14 @@ export default function Navbar({ currentView, onNavigate }) {
           <span>Community</span>
         </button>
 
+        <button 
+          className={`nav-item ${currentView === 'settings' ? 'active' : ''}`}
+          onClick={() => onNavigate('settings')}
+        >
+          <SettingsIcon size={16} />
+          <span>Settings</span>
+        </button>
+
         {/* Admin Link if Admin */}
         {isAdmin && (
           <button 
@@ -101,17 +106,8 @@ export default function Navbar({ currentView, onNavigate }) {
         )}
       </nav>
 
-      {/* Right Controls: Theme Switcher & User Profile */}
+      {/* Right Controls: Settings Shortcut & User Profile */}
       <div className="nav-auth">
-        {/* Theme Switcher Button */}
-        <button 
-          className="btn-icon" 
-          onClick={cycleTheme}
-          title={`Current theme: ${getThemeLabel()}. Click to switch theme (Dark -> Verdant -> Light).`}
-        >
-          {getThemeIcon()}
-        </button>
-
         {user ? (
           <div style={{ position: 'relative' }}>
             <button 
@@ -193,31 +189,17 @@ export default function Navbar({ currentView, onNavigate }) {
                   <span>My Favorites ({favorites.length})</span>
                 </button>
 
-                {/* Theme Selector inside menu as well */}
-                <div style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  <span>Theme</span>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <button 
-                      className={`badge ${theme === 'dark' ? 'badge-white-win' : 'badge-eco'}`}
-                      onClick={() => setTheme('dark')}
-                    >
-                      Dark
-                    </button>
-                    <button 
-                      className={`badge ${theme === 'verdant' ? 'badge-white-win' : 'badge-eco'}`}
-                      onClick={() => setTheme('verdant')}
-                      style={{ color: '#22c55e' }}
-                    >
-                      Verdant
-                    </button>
-                    <button 
-                      className={`badge ${theme === 'light' ? 'badge-white-win' : 'badge-eco'}`}
-                      onClick={() => setTheme('light')}
-                    >
-                      Light
-                    </button>
-                  </div>
-                </div>
+                <button 
+                  className="nav-item" 
+                  style={{ width: '100%', justifyContent: 'flex-start', padding: '8px 12px' }}
+                  onClick={() => {
+                    setShowDropdown(false);
+                    onNavigate('settings');
+                  }}
+                >
+                  <SettingsIcon size={15} />
+                  <span>Settings &amp; Themes</span>
+                </button>
 
                 <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />
 
@@ -236,13 +218,15 @@ export default function Navbar({ currentView, onNavigate }) {
             )}
           </div>
         ) : (
-          <button 
-            className="btn btn-primary"
-            onClick={() => onNavigate('auth')}
-          >
-            <LogIn size={15} />
-            <span>Sign In</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button 
+              className="btn btn-primary"
+              onClick={() => onNavigate('auth')}
+            >
+              <LogIn size={15} />
+              <span>Sign In</span>
+            </button>
+          </div>
         )}
       </div>
     </header>

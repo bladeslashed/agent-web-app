@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { DEFAULT_AVATARS } from '../services/firebase';
-import { User, Check, Camera, Image, ArrowLeft } from 'lucide-react';
+import { User, Check, Camera, Image, ArrowLeft, Lock, ArrowRight } from 'lucide-react';
 
-export default function Profile({ onBack }) {
+export default function Profile({ onBack, onNavigateSettings }) {
   const { user, updateProfile } = useAuth();
 
-  const [displayName, setDisplayName] = useState(user ? user.displayName : '');
   const [photoURL, setPhotoURL] = useState(user ? user.photoURL : DEFAULT_AVATARS[0].url);
   const [bio, setBio] = useState(user ? (user.bio || '') : '');
   const [customUrl, setCustomUrl] = useState('');
@@ -23,7 +22,6 @@ export default function Profile({ onBack }) {
   const handleSave = async (e) => {
     e.preventDefault();
     await updateProfile({
-      displayName: displayName.trim(),
       photoURL: customUrl.trim() || photoURL,
       bio: bio.trim()
     });
@@ -44,7 +42,7 @@ export default function Profile({ onBack }) {
           <ArrowLeft size={16} />
           <span>Back</span>
         </button>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700 }}>Profile Settings</h1>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700 }}>Profile Customization</h1>
         <div style={{ width: '80px' }} />
       </div>
 
@@ -142,14 +140,21 @@ export default function Profile({ onBack }) {
 
         {/* Profile Details Form */}
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Immutable Username Notice */}
           <div className="input-group">
-            <label className="input-label">Display Name</label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <label className="input-label">Username (Immutable)</label>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Lock size={11} />
+                <span>Usernames cannot be changed</span>
+              </span>
+            </div>
             <input 
               type="text" 
               className="input-field" 
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
+              value={user.displayName}
+              disabled
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
             />
           </div>
 
@@ -174,10 +179,27 @@ export default function Profile({ onBack }) {
             ) : <span />}
 
             <button type="submit" className="btn btn-primary">
-              Save Changes
+              Save Profile
             </button>
           </div>
         </form>
+
+        {/* Link to Change Password in Settings */}
+        <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>Need to change your password?</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Manage security settings in the Settings tab</div>
+          </div>
+          <button 
+            type="button" 
+            className="btn btn-secondary" 
+            style={{ fontSize: '0.82rem' }}
+            onClick={onNavigateSettings}
+          >
+            <span>Settings</span>
+            <ArrowRight size={13} />
+          </button>
+        </div>
       </div>
     </div>
   );

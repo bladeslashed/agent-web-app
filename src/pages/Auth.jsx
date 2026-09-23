@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ADMIN_USER } from '../services/firebase';
-import { LogIn, UserPlus, Database, Shield, AlertCircle } from 'lucide-react';
+import { sendPasswordResetLink } from '../services/firebase';
+import { LogIn, UserPlus, Database, AlertCircle, KeyRound, CheckCircle, Mail, ArrowLeft } from 'lucide-react';
 
 export default function Auth({ onComplete }) {
   const { login, signup, isFirebase } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resetSuccessMessage, setResetSuccessMessage] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,15 +39,17 @@ export default function Auth({ onComplete }) {
     }
   };
 
-  // Quick 1-click admin login
-  const handleAdminLogin = async () => {
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
     setError('');
+    setResetSuccessMessage(null);
     setLoading(true);
+
     try {
-      await login(ADMIN_USER.email, ADMIN_USER.password);
-      onComplete();
+      const res = await sendPasswordResetLink(email);
+      setResetSuccessMessage(res);
     } catch (err) {
-      setError(err.message || 'Failed to sign in as admin.');
+      setError(err.message || 'Could not send reset link.');
     } finally {
       setLoading(false);
     }
@@ -59,14 +63,28 @@ export default function Auth({ onComplete }) {
           <div className="brand-icon" style={{ margin: '0 auto 14px', width: '44px', height: '44px', fontSize: '1.6rem' }}>
             ♞
           </div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '6px' }}>
-            {isSignUp ? 'Create your Account' : 'Sign in to The Chess Archive'}
-          </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            {isSignUp 
-              ? 'Join to save favorite World Championship games and customize your profile.' 
-              : 'Enter your email credentials to access your saved games and profile.'}
-          </p>
+
+          {isForgotPassword ? (
+            <>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '6px' }}>
+                Reset your Password
+              </h2>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                Enter your account email address and we will dispatch a verification password reset link.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '6px' }}>
+                {isSignUp ? 'Create your Account' : 'Sign in to The Chess Archive'}
+              </h2>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                {isSignUp 
+                  ? 'Join to save favorite World Championship games and customize your profile.' 
+                  : 'Enter your email credentials to access your saved games and profile.'}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Error Alert */}
@@ -90,87 +108,149 @@ export default function Auth({ onComplete }) {
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {isSignUp && (
-            <div className="input-group">
-              <label className="input-label">Display Name / Handle</label>
-              <input 
-                type="text" 
-                className="input-field" 
-                placeholder="e.g. Mikhail T."
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-              />
-            </div>
-          )}
-
-          <div className="input-group">
-            <label className="input-label">Email Address</label>
-            <input 
-              type="email" 
-              className="input-field" 
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="input-group">
-            <label className="input-label">Password</label>
-            <input 
-              type="password" 
-              className="input-field" 
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
-            style={{ width: '100%', height: '42px', marginTop: '8px' }}
-            disabled={loading}
-          >
-            {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
-          </button>
-        </form>
-
-        {/* Switch Login / Sign Up */}
-        <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          {isSignUp ? 'Already have an account?' : "Don't have an account yet?"}{' '}
-          <button 
-            style={{ color: 'var(--text-main)', fontWeight: 600, textDecoration: 'underline' }}
-            onClick={() => {
-              setIsSignUp(!isSignUp);
-              setError('');
+        {/* Reset Password Success Message */}
+        {resetSuccessMessage && (
+          <div 
+            style={{ 
+              padding: '14px', 
+              backgroundColor: 'rgba(16, 185, 129, 0.15)', 
+              border: '1px solid var(--accent-success)', 
+              borderRadius: 'var(--radius-sm)', 
+              fontSize: '0.85rem', 
+              marginBottom: '20px' 
             }}
           >
-            {isSignUp ? 'Sign In' : 'Create Account'}
-          </button>
-        </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-success)', fontWeight: 600, marginBottom: '6px' }}>
+              <CheckCircle size={16} />
+              <span>Password Reset Link Dispatched</span>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', lineHeight: 1.4 }}>
+              {resetSuccessMessage.message}
+            </p>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', wordBreak: 'break-all', padding: '6px 8px', background: 'var(--bg-subtle)', borderRadius: '4px' }}>
+              Verification Link: <a href={resetSuccessMessage.resetLink} style={{ color: 'var(--accent-primary)', textDecoration: 'underline' }}>{resetSuccessMessage.resetLink}</a>
+            </div>
+          </div>
+        )}
 
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', gap: '12px' }}>
-          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            Administrator Access
-          </span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
-        </div>
+        {isForgotPassword ? (
+          /* Forgot Password Form */
+          <form onSubmit={handleForgotPasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="input-group">
+              <label className="input-label">Account Email Address</label>
+              <input 
+                type="email" 
+                className="input-field" 
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* 1-Click Admin Login */}
-        <button 
-          className="btn btn-secondary" 
-          style={{ width: '100%', justifyContent: 'center', fontSize: '0.82rem', borderColor: 'var(--accent-primary)', color: 'var(--accent-primary)' }}
-          onClick={handleAdminLogin}
-        >
-          <Shield size={14} />
-          <span>Sign In as Admin ({ADMIN_USER.email})</span>
-        </button>
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              style={{ width: '100%', height: '42px', marginTop: '6px' }}
+              disabled={loading}
+            >
+              {loading ? 'Sending link...' : 'Send Reset Link to Email'}
+            </button>
+
+            <button 
+              type="button"
+              className="btn btn-ghost" 
+              style={{ width: '100%', justifyContent: 'center', fontSize: '0.85rem' }}
+              onClick={() => {
+                setIsForgotPassword(false);
+                setError('');
+                setResetSuccessMessage(null);
+              }}
+            >
+              <ArrowLeft size={14} />
+              <span>Back to Sign In</span>
+            </button>
+          </form>
+        ) : (
+          /* Normal Sign In / Sign Up Form */
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {isSignUp && (
+              <div className="input-group">
+                <label className="input-label">Username / Handle</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  placeholder="e.g. Mikhail T."
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                />
+              </div>
+            )}
+
+            <div className="input-group">
+              <label className="input-label">Email Address</label>
+              <input 
+                type="email" 
+                className="input-field" 
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <label className="input-label">Password</label>
+                {!isSignUp && (
+                  <button 
+                    type="button"
+                    style={{ fontSize: '0.78rem', color: 'var(--accent-primary)', textDecoration: 'underline' }}
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                      setError('');
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
+              <input 
+                type="password" 
+                className="input-field" 
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              style={{ width: '100%', height: '42px', marginTop: '8px' }}
+              disabled={loading}
+            >
+              {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
+            </button>
+          </form>
+        )}
+
+        {/* Switch Login / Sign Up */}
+        {!isForgotPassword && (
+          <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            {isSignUp ? 'Already have an account?' : "Don't have an account yet?"}{' '}
+            <button 
+              style={{ color: 'var(--text-main)', fontWeight: 600, textDecoration: 'underline' }}
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError('');
+              }}
+            >
+              {isSignUp ? 'Sign In' : 'Create Account'}
+            </button>
+          </div>
+        )}
 
         {/* Database Status Note */}
         <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>

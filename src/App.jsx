@@ -7,13 +7,15 @@ import Community from './pages/Community';
 import Profile from './pages/Profile';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
+import DailyHighlights from './pages/DailyHighlights';
+import Settings from './pages/Settings';
 import { useAuth } from './context/AuthContext';
 
 export default function App() {
   const { user } = useAuth();
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('catalog'); // 'catalog' | 'replay' | 'favorites' | 'community' | 'profile' | 'auth' | 'admin'
+  const [currentView, setCurrentView] = useState('catalog'); // 'catalog' | 'replay' | 'favorites' | 'community' | 'profile' | 'auth' | 'admin' | 'highlights' | 'settings'
   const [selectedGame, setSelectedGame] = useState(null);
 
   // Load all 1,756 compiled games
@@ -47,12 +49,22 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleRandomGame = () => {
+    if (!games || games.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * games.length);
+    const randomGame = games[randomIndex];
+    setSelectedGame(randomGame);
+    setCurrentView('replay');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="app-container">
       {/* Top Navbar */}
       <Navbar 
         currentView={currentView}
         onNavigate={handleNavigate}
+        onRandomGame={handleRandomGame}
       />
 
       {/* Main Content Area */}
@@ -85,6 +97,13 @@ export default function App() {
               />
             )}
 
+            {currentView === 'highlights' && (
+              <DailyHighlights 
+                allGames={games}
+                onSelectGame={handleSelectGame}
+              />
+            )}
+
             {currentView === 'favorites' && (
               <Favorites 
                 allGames={games}
@@ -100,9 +119,14 @@ export default function App() {
               />
             )}
 
+            {currentView === 'settings' && (
+              <Settings />
+            )}
+
             {currentView === 'profile' && (
               <Profile 
                 onBack={() => setCurrentView('catalog')}
+                onNavigateSettings={() => handleNavigate('settings')}
               />
             )}
 
