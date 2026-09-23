@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, UserPlus, Database, Sparkles, AlertCircle } from 'lucide-react';
+import { ADMIN_USER } from '../services/firebase';
+import { LogIn, UserPlus, Database, Shield, AlertCircle } from 'lucide-react';
 
 export default function Auth({ onComplete }) {
   const { login, signup, isFirebase } = useAuth();
@@ -36,20 +37,15 @@ export default function Auth({ onComplete }) {
     }
   };
 
-  // Quick 1-click test login
-  const handleQuickDemo = async (demoEmail, demoPassword, name) => {
+  // Quick 1-click admin login
+  const handleAdminLogin = async () => {
     setError('');
     setLoading(true);
     try {
-      try {
-        await login(demoEmail, demoPassword);
-      } catch (err) {
-        // If account doesn't exist, create it on the fly
-        await signup(demoEmail, demoPassword, name);
-      }
+      await login(ADMIN_USER.email, ADMIN_USER.password);
       onComplete();
     } catch (err) {
-      setError(err.message || 'Failed to sign in with demo account.');
+      setError(err.message || 'Failed to sign in as admin.');
     } finally {
       setLoading(false);
     }
@@ -161,22 +157,20 @@ export default function Auth({ onComplete }) {
         <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', gap: '12px' }}>
           <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-            Instant Testing
+            Administrator Access
           </span>
           <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--border-subtle)' }} />
         </div>
 
-        {/* 1-Click Demo Accounts */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button 
-            className="btn btn-secondary" 
-            style={{ width: '100%', justifyContent: 'center', fontSize: '0.82rem' }}
-            onClick={() => handleQuickDemo('grandmaster@example.com', 'password123', 'Grandmaster Guest')}
-          >
-            <Sparkles size={14} style={{ color: 'var(--accent-warning)' }} />
-            <span>1-Click Grandmaster Guest</span>
-          </button>
-        </div>
+        {/* 1-Click Admin Login */}
+        <button 
+          className="btn btn-secondary" 
+          style={{ width: '100%', justifyContent: 'center', fontSize: '0.82rem', borderColor: 'var(--accent-primary)', color: 'var(--accent-primary)' }}
+          onClick={handleAdminLogin}
+        >
+          <Shield size={14} />
+          <span>Sign In as Admin ({ADMIN_USER.email})</span>
+        </button>
 
         {/* Database Status Note */}
         <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>

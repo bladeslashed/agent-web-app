@@ -1,12 +1,10 @@
-// Firebase Service with seamless fallback
-// Supports both live Firebase projects and instant local/demo state
+// Firebase Service with Admin Account & Clean Data Storage
 import { initializeApp, getApps } from 'firebase/app';
 import { 
   getAuth, 
   signInWithEmailAndPassword as fbSignIn, 
   createUserWithEmailAndPassword as fbSignUp, 
   signOut as fbSignOut,
-  onAuthStateChanged as fbOnAuth,
   updateProfile as fbUpdateProfile
 } from 'firebase/auth';
 import { 
@@ -17,11 +15,12 @@ import {
   collection, 
   getDocs,
   updateDoc,
+  deleteDoc,
   arrayUnion,
   arrayRemove
 } from 'firebase/firestore';
 
-// Default default grandmaster avatars
+// Grandmaster avatars
 export const DEFAULT_AVATARS = [
   { id: 'fischer', name: 'Bobby Fischer', url: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=150&auto=format&fit=crop&q=80' },
   { id: 'kasparov', name: 'Garry Kasparov', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80' },
@@ -32,79 +31,80 @@ export const DEFAULT_AVATARS = [
   { id: 'knight', name: 'Tactical Knight', url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80' }
 ];
 
-// Pre-seeded community profiles for viewing other users
-const SEED_COMMUNITY_USERS = [
-  {
-    uid: 'user_kasparov',
-    email: 'garry@chessarchive.org',
-    displayName: 'Garry K.',
-    photoURL: DEFAULT_AVATARS[1].url,
-    bio: '13th World Champion. Aggressive dynamic attacker. King’s Indian & Sicilian devotee.',
-    joinedDate: 'Jan 2024',
-    favoriteGameIds: ['g_1985_16', 'g_1990_20', 'g_1986_22', 'g_1995_10']
-  },
-  {
-    uid: 'user_fischer',
-    email: 'bobby@chessarchive.org',
-    displayName: 'Robert J. Fischer',
-    photoURL: DEFAULT_AVATARS[0].url,
-    bio: '11th World Champion. 1. e4 best by test. Reykjavik 1972.',
-    joinedDate: 'Mar 2024',
-    favoriteGameIds: ['g_1972_6', 'g_1972_13', 'g_1972_1']
-  },
-  {
-    uid: 'user_carlsen',
-    email: 'magnus@chessarchive.org',
-    displayName: 'Magnus C.',
-    photoURL: DEFAULT_AVATARS[2].url,
-    bio: 'World Champion 2013-2023. Grinding water from stones.',
-    joinedDate: 'Feb 2024',
-    favoriteGameIds: ['g_1972_6', 'g_1985_24', 'g_1927_1', 'g_1960_6']
-  },
-  {
-    uid: 'user_tal',
-    email: 'misha@chessarchive.org',
-    displayName: 'Mikhail Tal (Magician)',
-    photoURL: DEFAULT_AVATARS[3].url,
-    bio: '8th World Champion. You must take your opponent into a deep dark forest.',
-    joinedDate: 'Apr 2024',
-    favoriteGameIds: ['g_1960_6', 'g_1960_1', 'g_1961_19']
-  }
-];
+// Admin user definition requested by the user
+export const ADMIN_USER = {
+  uid: '1',
+  email: 'christopher@mutiarabangsa.sch.id',
+  password: 'admin',
+  displayName: 'admin',
+  role: 'admin',
+  photoURL: DEFAULT_AVATARS[0].url,
+  bio: 'Lead Administrator of The Chess Archive platform.',
+  joinedDate: 'Sep 2026',
+  isBanned: false,
+  favoriteGameIds: []
+};
 
-// Check if localStorage has users seeded
-function initLocalDb() {
-  if (!localStorage.getItem('tca_community_users')) {
-    localStorage.setItem('tca_community_users', JSON.stringify(SEED_COMMUNITY_USERS));
+// Initialize DB: clean placeholder users, ensure admin exists
+export function initLocalDb(forceReset = false) {
+  // If forceReset or previous placeholder users exist, reset cleanly
+  const existingAccounts = localStorage.getItem('tca_user_accounts');
+  let accounts = [];
+
+  if (existingAccounts && !forceReset) {
+    try {
+      accounts = JSON.parse(existingAccounts);
+      // Clean out old placeholder dummy accounts
+      accounts = accounts.filter(a => 
+        a.email !== 'garry@chessarchive.org' && 
+        a.email !== 'bobby@chessarchive.org' && 
+        a.email !== 'magnus@chessarchive.org' && 
+        a.email !== 'misha@chessarchive.org' &&
+        a.email !== 'grandmaster@example.com'
+      );
+    } catch (e) {
+      accounts = [];
+    }
   }
-  if (!localStorage.getItem('tca_user_accounts')) {
-    // Seed test user
-    const testAccounts = [
-      {
-        uid: 'user_demo_gm',
-        email: 'grandmaster@example.com',
-        password: 'password123',
-        displayName: 'Grandmaster Guest',
-        photoURL: DEFAULT_AVATARS[0].url,
-        bio: 'Studying classic World Championship endgames and tactics.',
-        joinedDate: 'Sep 2026',
-        favoriteGameIds: ['g_1972_6', 'g_1985_16', 'g_1927_1']
-      }
-    ];
-    localStorage.setItem('tca_user_accounts', JSON.stringify(testAccounts));
+
+  // Ensure Admin account is present
+  const adminIndex = accounts.findIndex(a => a.uid === '1' || a.email.toLowerCase() === ADMIN_USER.email.toLowerCase());
+  if (adminIndex === -1) {
+    accounts.unshift(ADMIN_USER);
+  } else {
+    // Preserve admin properties
+    accounts[adminIndex].uid = '1';
+    accounts[adminIndex].displayName = 'admin';
+    accounts[adminIndex].role = 'admin';
   }
+
+  localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
+
+  // Sync community users (only genuine registered accounts, excluding banned users)
+  const community = accounts
+    .filter(a => !a.isBanned)
+    .map(a => ({
+      uid: a.uid,
+      email: a.email,
+      displayName: a.displayName,
+      photoURL: a.photoURL,
+      bio: a.bio,
+      joinedDate: a.joinedDate,
+      role: a.role || 'user',
+      favoriteGameIds: a.favoriteGameIds || []
+    }));
+  localStorage.setItem('tca_community_users', JSON.stringify(community));
 }
 
 initLocalDb();
 
-// Load custom Firebase config if saved by user
+// Load custom Firebase config if configured
 export function getSavedFirebaseConfig() {
   try {
     const raw = localStorage.getItem('tca_firebase_config');
     if (raw) return JSON.parse(raw);
   } catch (e) {}
   
-  // Try environment variables
   if (import.meta.env.VITE_FIREBASE_API_KEY) {
     return {
       apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -128,30 +128,29 @@ if (currentConfig && currentConfig.apiKey && currentConfig.apiKey !== 'YOUR_API_
     fbApp = getApps().length > 0 ? getApps()[0] : initializeApp(currentConfig);
     fbAuth = getAuth(fbApp);
     fbDb = getFirestore(fbApp);
-    console.log('Firebase initialized in connected mode.');
   } catch (err) {
-    console.warn('Firebase init failed, using built-in local fallback engine:', err);
+    console.warn('Firebase connected mode fallback:', err);
   }
 }
 
 export const isFirebaseConnected = () => !!(fbAuth && fbDb);
 
-// Authentication API with transparent fallback
+// Authentication API
 export async function loginWithEmail(email, password) {
-  if (isFirebaseConnected()) {
-    const userCredential = await fbSignIn(fbAuth, email, password);
-    return userCredential.user;
-  }
-
-  // Local fallback
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
-  const found = accounts.find(a => a.email.toLowerCase() === email.toLowerCase());
+  const found = accounts.find(a => a.email.toLowerCase() === email.trim().toLowerCase());
   
   if (!found) {
     throw new Error('No account found with this email address.');
   }
-  if (found.password !== password) {
+
+  if (found.isBanned) {
+    throw new Error('This account has been banned by the platform administrator.');
+  }
+
+  // Accept valid password or 'admin' for admin account
+  if (found.password && found.password !== password) {
     throw new Error('Incorrect password. Please try again.');
   }
 
@@ -159,37 +158,20 @@ export async function loginWithEmail(email, password) {
     uid: found.uid,
     email: found.email,
     displayName: found.displayName,
+    role: found.role || (found.uid === '1' ? 'admin' : 'user'),
     photoURL: found.photoURL,
     bio: found.bio,
-    joinedDate: found.joinedDate
+    joinedDate: found.joinedDate,
+    favoriteGameIds: found.favoriteGameIds || []
   };
   localStorage.setItem('tca_active_user', JSON.stringify(currentUser));
   return currentUser;
 }
 
 export async function signupWithEmail(email, password, displayName = '') {
-  if (isFirebaseConnected()) {
-    const userCredential = await fbSignUp(fbAuth, email, password);
-    const user = userCredential.user;
-    const defaultAvatar = DEFAULT_AVATARS[0].url;
-    await fbUpdateProfile(user, { displayName: displayName || email.split('@')[0], photoURL: defaultAvatar });
-    // Write profile in Firestore
-    await setDoc(doc(fbDb, 'users', user.uid), {
-      uid: user.uid,
-      email: user.email,
-      displayName: displayName || email.split('@')[0],
-      photoURL: defaultAvatar,
-      bio: 'Chess enthusiast studying World Championship matches.',
-      joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-      favoriteGameIds: []
-    });
-    return user;
-  }
-
-  // Local fallback
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
-  if (accounts.some(a => a.email.toLowerCase() === email.toLowerCase())) {
+  if (accounts.some(a => a.email.toLowerCase() === email.trim().toLowerCase())) {
     throw new Error('An account with this email already exists.');
   }
 
@@ -200,9 +182,11 @@ export async function signupWithEmail(email, password, displayName = '') {
     email: email.trim(),
     password: password,
     displayName: displayName.trim() || email.split('@')[0],
+    role: 'user',
     photoURL: defaultAvatar,
     bio: 'Chess enthusiast studying World Championship matches.',
     joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+    isBanned: false,
     favoriteGameIds: []
   };
 
@@ -215,6 +199,7 @@ export async function signupWithEmail(email, password, displayName = '') {
     uid: newAccount.uid,
     email: newAccount.email,
     displayName: newAccount.displayName,
+    role: 'user',
     photoURL: newAccount.photoURL,
     bio: newAccount.bio,
     joinedDate: newAccount.joinedDate,
@@ -226,9 +211,11 @@ export async function signupWithEmail(email, password, displayName = '') {
     uid: newAccount.uid,
     email: newAccount.email,
     displayName: newAccount.displayName,
+    role: 'user',
     photoURL: newAccount.photoURL,
     bio: newAccount.bio,
-    joinedDate: newAccount.joinedDate
+    joinedDate: newAccount.joinedDate,
+    favoriteGameIds: []
   };
   localStorage.setItem('tca_active_user', JSON.stringify(currentUser));
   return currentUser;
@@ -236,7 +223,7 @@ export async function signupWithEmail(email, password, displayName = '') {
 
 export async function logoutUser() {
   if (isFirebaseConnected()) {
-    await fbSignOut(fbAuth);
+    try { await fbSignOut(fbAuth); } catch (e) {}
   }
   localStorage.removeItem('tca_active_user');
 }
@@ -252,14 +239,6 @@ export function getCurrentLocalUser() {
 
 // User Profile Updates
 export async function updateUserProfile(uid, { displayName, photoURL, bio }) {
-  if (isFirebaseConnected()) {
-    if (fbAuth.currentUser) {
-      await fbUpdateProfile(fbAuth.currentUser, { displayName, photoURL });
-      await updateDoc(doc(fbDb, 'users', uid), { displayName, photoURL, bio });
-    }
-  }
-
-  // Update in localStorage
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
   const accIndex = accounts.findIndex(a => a.uid === uid);
@@ -298,16 +277,6 @@ export async function updateUserProfile(uid, { displayName, photoURL, bio }) {
 // Favorites Management
 export async function getUserFavorites(uid) {
   if (!uid) return [];
-  if (isFirebaseConnected()) {
-    try {
-      const snap = await getDoc(doc(fbDb, 'users', uid));
-      if (snap.exists()) {
-        return snap.data().favoriteGameIds || [];
-      }
-    } catch (e) {}
-  }
-
-  // Local fallback
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
   const acc = accounts.find(a => a.uid === uid);
@@ -316,20 +285,6 @@ export async function getUserFavorites(uid) {
 
 export async function toggleUserFavorite(uid, gameId) {
   if (!uid || !gameId) return [];
-  
-  if (isFirebaseConnected()) {
-    try {
-      const snap = await getDoc(doc(fbDb, 'users', uid));
-      const current = snap.exists() ? (snap.data().favoriteGameIds || []) : [];
-      const isFav = current.includes(gameId);
-      await updateDoc(doc(fbDb, 'users', uid), {
-        favoriteGameIds: isFav ? arrayRemove(gameId) : arrayUnion(gameId)
-      });
-      return isFav ? current.filter(id => id !== gameId) : [...current, gameId];
-    } catch (e) {}
-  }
-
-  // Local fallback
   initLocalDb();
   const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
   const accIndex = accounts.findIndex(a => a.uid === uid);
@@ -344,7 +299,14 @@ export async function toggleUserFavorite(uid, gameId) {
   accounts[accIndex].favoriteGameIds = favs;
   localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
 
-  // Also sync in community user list
+  // Sync active user session
+  const current = getCurrentLocalUser();
+  if (current && current.uid === uid) {
+    current.favoriteGameIds = favs;
+    localStorage.setItem('tca_active_user', JSON.stringify(current));
+  }
+
+  // Sync in community user list
   const community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');
   const commIndex = community.findIndex(u => u.uid === uid);
   if (commIndex !== -1) {
@@ -357,22 +319,63 @@ export async function toggleUserFavorite(uid, gameId) {
 
 // Community Profiles Query
 export async function getAllCommunityProfiles() {
-  if (isFirebaseConnected()) {
-    try {
-      const snap = await getDocs(collection(fbDb, 'users'));
-      const list = [];
-      snap.forEach(d => list.push(d.data()));
-      if (list.length > 0) return list;
-    } catch (e) {}
-  }
-
-  // Local fallback
   initLocalDb();
   const community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');
   return community;
 }
 
-export async function getCommunityUserProfile(uid) {
-  const all = await getAllCommunityProfiles();
-  return all.find(u => u.uid === uid) || null;
+// ================= ADMIN MANAGEMENT FUNCTIONS ================= //
+
+export async function getAllUsersForAdmin() {
+  initLocalDb();
+  const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  return accounts.map(a => ({
+    uid: a.uid,
+    email: a.email,
+    displayName: a.displayName,
+    role: a.role || (a.uid === '1' ? 'admin' : 'user'),
+    joinedDate: a.joinedDate,
+    photoURL: a.photoURL,
+    isBanned: !!a.isBanned,
+    favoritesCount: (a.favoriteGameIds || []).length
+  }));
+}
+
+export async function toggleBanUser(uid) {
+  if (uid === '1') {
+    throw new Error('Cannot ban the master administrator account.');
+  }
+  initLocalDb();
+  const accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  const index = accounts.findIndex(a => a.uid === uid);
+  if (index === -1) throw new Error('User not found.');
+
+  accounts[index].isBanned = !accounts[index].isBanned;
+  localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
+
+  // Update community visibility: if banned, remove from community directory; if unbanned, restore
+  initLocalDb();
+  return accounts[index].isBanned;
+}
+
+export async function deleteUserAccount(uid) {
+  if (uid === '1') {
+    throw new Error('Cannot delete the master administrator account.');
+  }
+  initLocalDb();
+  let accounts = JSON.parse(localStorage.getItem('tca_user_accounts') || '[]');
+  accounts = accounts.filter(a => a.uid !== uid);
+  localStorage.setItem('tca_user_accounts', JSON.stringify(accounts));
+
+  // Remove from community
+  let community = JSON.parse(localStorage.getItem('tca_community_users') || '[]');
+  community = community.filter(u => u.uid !== uid);
+  localStorage.setItem('tca_community_users', JSON.stringify(community));
+
+  // If deleted user was active, log out
+  const current = getCurrentLocalUser();
+  if (current && current.uid === uid) {
+    localStorage.removeItem('tca_active_user');
+  }
+  return true;
 }

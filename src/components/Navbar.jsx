@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
+import { useTheme } from '../context/ThemeContext';
 import { 
   BookOpen, 
   Heart, 
@@ -8,15 +9,38 @@ import {
   User, 
   LogOut, 
   LogIn, 
-  Database,
-  CheckCircle,
-  Settings
+  Shield, 
+  Moon, 
+  Sun, 
+  Leaf,
+  Database
 } from 'lucide-react';
 
 export default function Navbar({ currentView, onNavigate }) {
   const { user, logout, isFirebase } = useAuth();
   const { favorites } = useFavorites();
+  const { theme, setTheme } = useTheme();
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const isAdmin = user && (user.role === 'admin' || user.uid === '1');
+
+  const cycleTheme = () => {
+    if (theme === 'dark') setTheme('verdant');
+    else if (theme === 'verdant') setTheme('light');
+    else setTheme('dark');
+  };
+
+  const getThemeIcon = () => {
+    if (theme === 'verdant') return <Leaf size={16} style={{ color: '#22c55e' }} />;
+    if (theme === 'light') return <Sun size={16} style={{ color: '#f59e0b' }} />;
+    return <Moon size={16} />;
+  };
+
+  const getThemeLabel = () => {
+    if (theme === 'verdant') return 'Verdant';
+    if (theme === 'light') return 'Light';
+    return 'Dark';
+  };
 
   return (
     <header className="navbar">
@@ -63,10 +87,31 @@ export default function Navbar({ currentView, onNavigate }) {
           <Users size={16} />
           <span>Community</span>
         </button>
+
+        {/* Admin Link if Admin */}
+        {isAdmin && (
+          <button 
+            className={`nav-item ${currentView === 'admin' ? 'active' : ''}`}
+            onClick={() => onNavigate('admin')}
+            style={{ color: 'var(--accent-primary)', fontWeight: 600 }}
+          >
+            <Shield size={16} />
+            <span>Admin</span>
+          </button>
+        )}
       </nav>
 
-      {/* Auth / Profile Area */}
+      {/* Right Controls: Theme Switcher & User Profile */}
       <div className="nav-auth">
+        {/* Theme Switcher Button */}
+        <button 
+          className="btn-icon" 
+          onClick={cycleTheme}
+          title={`Current theme: ${getThemeLabel()}. Click to switch theme (Dark -> Verdant -> Light).`}
+        >
+          {getThemeIcon()}
+        </button>
+
         {user ? (
           <div style={{ position: 'relative' }}>
             <button 
@@ -79,6 +124,9 @@ export default function Navbar({ currentView, onNavigate }) {
                 className="avatar-img"
               />
               <span className="avatar-label">{user.displayName || user.email.split('@')[0]}</span>
+              {isAdmin && (
+                <span className="badge badge-eco" style={{ fontSize: '0.65rem', padding: '1px 4px' }}>Admin</span>
+              )}
             </button>
 
             {/* Profile Dropdown */}
@@ -88,7 +136,7 @@ export default function Navbar({ currentView, onNavigate }) {
                   position: 'absolute',
                   right: 0,
                   top: '46px',
-                  width: '210px',
+                  width: '220px',
                   backgroundColor: 'var(--bg-surface-elevated)',
                   border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-md)',
@@ -98,11 +146,28 @@ export default function Navbar({ currentView, onNavigate }) {
                 }}
               >
                 <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '4px' }}>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{user.displayName}</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>{user.displayName}</span>
+                    {isAdmin && <Shield size={13} style={{ color: 'var(--accent-primary)' }} />}
+                  </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {user.email}
                   </div>
                 </div>
+
+                {isAdmin && (
+                  <button 
+                    className="nav-item" 
+                    style={{ width: '100%', justifyContent: 'flex-start', padding: '8px 12px', color: 'var(--accent-primary)' }}
+                    onClick={() => {
+                      setShowDropdown(false);
+                      onNavigate('admin');
+                    }}
+                  >
+                    <Shield size={15} />
+                    <span>Admin Panel</span>
+                  </button>
+                )}
 
                 <button 
                   className="nav-item" 
@@ -128,12 +193,30 @@ export default function Navbar({ currentView, onNavigate }) {
                   <span>My Favorites ({favorites.length})</span>
                 </button>
 
-                <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />
-
-                {/* Firebase Status Badge */}
-                <div style={{ padding: '6px 12px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)' }}>
-                  <Database size={13} style={{ color: isFirebase ? 'var(--accent-success)' : 'var(--accent-warning)' }} />
-                  <span>{isFirebase ? 'Firebase Live' : 'Firebase Offline Sync'}</span>
+                {/* Theme Selector inside menu as well */}
+                <div style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  <span>Theme</span>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button 
+                      className={`badge ${theme === 'dark' ? 'badge-white-win' : 'badge-eco'}`}
+                      onClick={() => setTheme('dark')}
+                    >
+                      Dark
+                    </button>
+                    <button 
+                      className={`badge ${theme === 'verdant' ? 'badge-white-win' : 'badge-eco'}`}
+                      onClick={() => setTheme('verdant')}
+                      style={{ color: '#22c55e' }}
+                    >
+                      Verdant
+                    </button>
+                    <button 
+                      className={`badge ${theme === 'light' ? 'badge-white-win' : 'badge-eco'}`}
+                      onClick={() => setTheme('light')}
+                    >
+                      Light
+                    </button>
+                  </div>
                 </div>
 
                 <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />

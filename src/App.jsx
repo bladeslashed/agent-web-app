@@ -6,11 +6,14 @@ import Favorites from './pages/Favorites';
 import Community from './pages/Community';
 import Profile from './pages/Profile';
 import Auth from './pages/Auth';
+import AdminDashboard from './pages/AdminDashboard';
+import { useAuth } from './context/AuthContext';
 
 export default function App() {
+  const { user } = useAuth();
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentView, setCurrentView] = useState('catalog'); // 'catalog' | 'replay' | 'favorites' | 'community' | 'profile' | 'auth'
+  const [currentView, setCurrentView] = useState('catalog'); // 'catalog' | 'replay' | 'favorites' | 'community' | 'profile' | 'auth' | 'admin'
   const [selectedGame, setSelectedGame] = useState(null);
 
   // Load all 1,756 compiled games
@@ -106,6 +109,12 @@ export default function App() {
             {currentView === 'auth' && (
               <Auth 
                 onComplete={() => setCurrentView('catalog')}
+              />
+            )}
+
+            {currentView === 'admin' && (
+              <AdminDashboard 
+                onBack={() => setCurrentView('catalog')}
               />
             )}
           </>
