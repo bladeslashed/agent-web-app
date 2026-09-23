@@ -1,1 +1,26 @@
 node_modules
+.firebaserc
+firebase-debug.log
+.firebase/
+
+# Skills and agent configuration
+.agents/
+.agents/skills/
+.claude/
+.claude/skills/
+skills-lock.json
+
+# Individual skills
+.agents/skills/extension-to-functions-codebase/
+.agents/skills/firebase-ai-logic-basics/
+.agents/skills/firebase-app-hosting-basics/
+.agents/skills/firebase-auth-basics/
+.agents/skills/firebase-basics/
+.agents/skills/firebase-crashlytics/
+.agents/skills/firebase-data-connect/
+.agents/skills/firebase-firestore/
+.agents/skills/firebase-hosting-basics/
+.agents/skills/firebase-remote-config-basics/
+.agents/skills/firebase-security-rules-auditor/
+.agents/skills/firestore-rules-creation/
+.agents/skills/xcode-project-setup/
