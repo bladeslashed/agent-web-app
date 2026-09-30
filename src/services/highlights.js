@@ -1,4 +1,13 @@
 import { Chess } from 'chess.js';
+import { getFirestoreDb } from './firebase';
+import { 
+  collection, 
+  doc, 
+  getDocs, 
+  setDoc, 
+  updateDoc, 
+  deleteDoc 
+} from 'firebase/firestore';
 
 const STORAGE_KEY = 'tca_community_highlights';
 
@@ -23,7 +32,6 @@ export function initCommunityHighlights() {
     if (!Array.isArray(list)) {
       list = [];
     }
-    // Purge any legacy default seed highlights so they never reappear
     const filtered = list.filter(h => !OLD_DEFAULT_IDS.has(h.id));
     if (filtered.length !== list.length) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
@@ -35,8 +43,31 @@ export function initCommunityHighlights() {
   }
 }
 
-// Fetch all community highlights
+// Fetch all community highlights (Synchronized with Firestore)
 export async function fetchCommunityHighlights() {
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      const snap = await getDocs(collection(db, 'community_highlights'));
+      const list = [];
+      snap.forEach(d => {
+        const item = d.data();
+        if (!OLD_DEFAULT_IDS.has(item.id)) {
+          list.push(item);
+        }
+      });
+      // Sort: pinned first, then newest first
+      list.sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      return list;
+    } catch (e) {
+      console.warn('Firestore fetchCommunityHighlights fallback:', e);
+    }
+  }
   return initCommunityHighlights();
 }
 
@@ -124,14 +155,23 @@ export async function createCommunityHighlight({
     moveSan: posData.moveSan,
     fenBefore: posData.fenBefore,
     fenAfter: posData.fenAfter,
-    authorUid: user.uid,
+    authorUid: String(user.uid),
     authorName: user.displayName || 'Player',
     authorUsername: user.username || 'user',
     authorPhoto: user.photoURL || '',
     createdAt: new Date().toISOString(),
-    likes: [user.uid], // Submitter automatically likes their own submission
+    likes: [String(user.uid)], // Submitter automatically likes their own submission
     isPinned: false
   };
+
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      await setDoc(doc(db, 'community_highlights', newHighlight.id), newHighlight);
+    } catch (e) {
+      console.warn('Firestore createCommunityHighlight error:', e);
+    }
+  }
 
   list.unshift(newHighlight);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
@@ -146,15 +186,27 @@ export async function toggleHighlightLike(highlightId, userUid) {
   if (index === -1) throw new Error('Highlight not found.');
 
   const item = list[index];
-  const likes = Array.isArray(item.likes) ? item.likes : [];
+  const uidStr = String(userUid);
+  const likes = Array.isArray(item.likes) ? item.likes.map(String) : [];
   let isLiked = false;
 
-  if (likes.includes(userUid)) {
-    item.likes = likes.filter(uid => uid !== userUid);
+  if (likes.includes(uidStr)) {
+    item.likes = likes.filter(uid => uid !== uidStr);
     isLiked = false;
   } else {
-    item.likes = [...likes, userUid];
+    item.likes = [...likes, uidStr];
     isLiked = true;
+  }
+
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      await updateDoc(doc(db, 'community_highlights', highlightId), {
+        likes: item.likes
+      });
+    } catch (e) {
+      console.warn('Firestore toggleHighlightLike error:', e);
+    }
   }
 
   list[index] = item;
@@ -170,9 +222,18 @@ export async function deleteCommunityHighlight(highlightId, user) {
   if (index === -1) throw new Error('Highlight not found.');
 
   const item = list[index];
-  const isAdmin = user.role === 'admin' || user.uid === '1';
-  if (!isAdmin && item.authorUid !== user.uid) {
+  const isAdmin = user.role === 'admin' || String(user.uid) === '1';
+  if (!isAdmin && String(item.authorUid) !== String(user.uid)) {
     throw new Error('You do not have permission to delete this highlight.');
+  }
+
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      await deleteDoc(doc(db, 'community_highlights', highlightId));
+    } catch (e) {
+      console.warn('Firestore deleteCommunityHighlight error:', e);
+    }
   }
 
   list.splice(index, 1);
@@ -188,8 +249,8 @@ export async function editCommunityHighlight(highlightId, updates, user) {
   if (index === -1) throw new Error('Highlight not found.');
 
   const item = list[index];
-  const isAdmin = user.role === 'admin' || user.uid === '1';
-  if (!isAdmin && item.authorUid !== user.uid) {
+  const isAdmin = user.role === 'admin' || String(user.uid) === '1';
+  if (!isAdmin && String(item.authorUid) !== String(user.uid)) {
     throw new Error('You do not have permission to edit this highlight.');
   }
 
@@ -200,6 +261,19 @@ export async function editCommunityHighlight(highlightId, updates, user) {
     isPinned: isAdmin && updates.isPinned !== undefined ? updates.isPinned : item.isPinned
   };
 
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      await updateDoc(doc(db, 'community_highlights', highlightId), {
+        title: updated.title,
+        description: updated.description,
+        isPinned: updated.isPinned
+      });
+    } catch (e) {
+      console.warn('Firestore editCommunityHighlight error:', e);
+    }
+  }
+
   list[index] = updated;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   return updated;
@@ -207,7 +281,7 @@ export async function editCommunityHighlight(highlightId, updates, user) {
 
 // Toggle Pin Status (Admin only)
 export async function togglePinHighlight(highlightId, user) {
-  if (!user || (user.role !== 'admin' && user.uid !== '1')) {
+  if (!user || (user.role !== 'admin' && String(user.uid) !== '1')) {
     throw new Error('Only administrators can pin highlights.');
   }
   const list = initCommunityHighlights();
@@ -215,6 +289,18 @@ export async function togglePinHighlight(highlightId, user) {
   if (index === -1) throw new Error('Highlight not found.');
 
   list[index].isPinned = !list[index].isPinned;
+
+  const db = getFirestoreDb();
+  if (db) {
+    try {
+      await updateDoc(doc(db, 'community_highlights', highlightId), {
+        isPinned: list[index].isPinned
+      });
+    } catch (e) {
+      console.warn('Firestore togglePinHighlight error:', e);
+    }
+  }
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   return list[index].isPinned;
 }
