@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { changeUserPassword, getSavedFirebaseConfig } from '../services/firebase';
+import { changeUserPassword } from '../services/firebase';
 import { 
   Settings as SettingsIcon, 
   Palette, 
   Volume2, 
   Lock, 
-  Database, 
   Check, 
   AlertCircle, 
   CheckCircle, 
   Moon, 
   Sun, 
-  Leaf,
-  Flame,
-  Sparkles,
-  Zap,
-  Droplets,
-  KeyRound,
-  ShieldCheck,
-  RefreshCw
+  Leaf, 
+  Flame, 
+  Sparkles, 
+  Zap, 
+  Droplets, 
+  KeyRound, 
+  ShieldCheck, 
+  RefreshCw 
 } from 'lucide-react';
 
 export default function Settings() {
@@ -39,12 +38,7 @@ export default function Settings() {
     return localStorage.getItem('tca_sound_enabled') !== 'false';
   });
 
-  // Custom Firebase config state
-  const [customFbConfig, setCustomFbConfig] = useState(() => {
-    const saved = getSavedFirebaseConfig();
-    return saved ? JSON.stringify(saved, null, 2) : '';
-  });
-  const [configSaved, setConfigSaved] = useState(false);
+
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
@@ -79,21 +73,7 @@ export default function Settings() {
     localStorage.setItem('tca_sound_enabled', String(next));
   };
 
-  const handleSaveFirebaseConfig = (e) => {
-    e.preventDefault();
-    try {
-      if (!customFbConfig.trim()) {
-        localStorage.removeItem('tca_firebase_config');
-      } else {
-        const parsed = JSON.parse(customFbConfig);
-        localStorage.setItem('tca_firebase_config', JSON.stringify(parsed));
-      }
-      setConfigSaved(true);
-      setTimeout(() => setConfigSaved(false), 3000);
-    } catch (e) {
-      alert('Invalid JSON format. Please paste valid Firebase configuration JSON.');
-    }
-  };
+
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -475,44 +455,7 @@ export default function Settings() {
           </div>
         )}
 
-        {/* 4. FIREBASE DATABASE STATUS & CONFIG */}
-        <div className="card" style={{ padding: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <Database size={18} style={{ color: 'var(--accent-primary)' }} />
-            <h2 style={{ fontSize: '1.15rem', fontWeight: 600 }}>Firebase &amp; Database Config</h2>
-          </div>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '16px' }}>
-            The Chess Archive uses Firebase for cloud authentication and favorites storage, with an automatic resilient local fallback.
-          </p>
-
-          <form onSubmit={handleSaveFirebaseConfig} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div className="input-group">
-              <label className="input-label">Custom Firebase Configuration JSON (Optional)</label>
-              <textarea 
-                className="input-field" 
-                rows={4}
-                placeholder='{ "apiKey": "...", "authDomain": "...", "projectId": "..." }'
-                value={customFbConfig}
-                onChange={(e) => setCustomFbConfig(e.target.value)}
-                style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}
-              />
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              {configSaved && (
-                <span style={{ color: 'var(--accent-success)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Check size={14} />
-                  <span>Config saved! Reload page to apply.</span>
-                </span>
-              )}
-              <span />
-              <button type="submit" className="btn btn-secondary" style={{ fontSize: '0.85rem' }}>
-                Save Firebase Parameters
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
     </div>
   );

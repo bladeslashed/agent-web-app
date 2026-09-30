@@ -160,7 +160,7 @@ export async function createCommunityHighlight({
     authorUsername: user.username || 'user',
     authorPhoto: user.photoURL || '',
     createdAt: new Date().toISOString(),
-    likes: [String(user.uid)], // Submitter automatically likes their own submission
+    likes: [], // Default when posting is unliked
     isPinned: false
   };
 

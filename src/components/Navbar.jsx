@@ -113,13 +113,17 @@ export default function Navbar({ currentView, onNavigate, onRandomGame }) {
             <button 
               className="user-avatar-btn"
               onClick={() => setShowDropdown(!showDropdown)}
+              style={{ color: 'var(--text-main)' }}
+              title={user.username ? `@${user.username}` : (user.displayName || 'Profile')}
             >
               <img 
                 src={user.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
-                alt={user.displayName} 
+                alt={user.displayName || user.username} 
                 className="avatar-img"
               />
-              <span className="avatar-label">{user.displayName || user.email.split('@')[0]}</span>
+              <span className="avatar-label" style={{ color: 'var(--text-main)' }}>
+                {user.username ? `@${user.username}` : (user.displayName || user.email.split('@')[0])}
+              </span>
               {isAdmin && (
                 <span className="badge badge-eco" style={{ fontSize: '0.65rem', padding: '1px 4px' }}>Admin</span>
               )}
@@ -142,7 +146,7 @@ export default function Navbar({ currentView, onNavigate, onRandomGame }) {
                 }}
               >
                 <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-subtle)', marginBottom: '4px' }}>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)' }}>
                     <span>{user.displayName}</span>
                     {isAdmin && <Shield size={13} style={{ color: 'var(--accent-primary)' }} />}
                   </div>

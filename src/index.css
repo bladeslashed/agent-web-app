@@ -332,6 +332,9 @@ a {
   border-radius: var(--radius-full);
   background-color: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 .user-avatar-btn:hover {
   border-color: var(--border-focus);
@@ -347,11 +350,13 @@ a {
 
 .avatar-label {
   font-size: 0.85rem;
-  font-weight: 500;
-  max-width: 120px;
+  font-weight: 600;
+  max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text-main);
+  transition: color var(--transition-fast);
 }
 
 /* Minimalist Button Styles */
