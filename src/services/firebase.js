@@ -169,6 +169,23 @@ if (currentConfig && currentConfig.apiKey && currentConfig.apiKey !== 'YOUR_API_
     fbApp = getApps().length > 0 ? getApps()[0] : initializeApp(currentConfig);
     fbAuth = getAuth(fbApp);
     fbDb = getFirestore(fbApp);
+
+    // Sync admin user profile into Firestore database
+    setDoc(doc(fbDb, 'users', '1'), {
+      uid: '1',
+      email: 'christopher@mutiarabangsa.sch.id',
+      displayName: 'admin',
+      username: 'admin',
+      role: 'admin',
+      photoURL: DEFAULT_AVATARS[0].url,
+      bio: 'Lead Administrator of The Chess Archive platform.',
+      joinedDate: 'Sep 2026',
+      isBanned: false,
+      favoriteGameIds: [],
+      lastUsernameChange: null
+    }, { merge: true }).catch(err => {
+      console.warn('Firestore admin profile sync notice:', err);
+    });
   } catch (err) {
     console.warn('Firebase connected mode fallback:', err);
   }
