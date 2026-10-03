@@ -246,7 +246,8 @@
       else if (type === 1) geo = new THREE.IcosahedronGeometry(0.6, 0);
       else geo = new THREE.TetrahedronGeometry(0.7, 0);
 
-      const mesh = new THREE.Mesh(geo, polyMat);
+      // Clone material so each shape can be individually highlighted when hovered or dragged
+      const mesh = new THREE.Mesh(geo, polyMat.clone());
       mesh.position.set(
         (Math.random() - 0.5) * 40,
         (Math.random() - 0.5) * 30,
@@ -623,22 +624,33 @@
     let orbZoomCurrent = 1.0;
     let orbZoomTarget = 1.0;
 
+    // Drag and Drop state for background holographic wireframe shapes
+    let draggedPolyhedron = null;
+    let hoveredPolyhedron = null;
+    const dragPlane = new THREE.Plane();
+    const dragIntersect = new THREE.Vector3();
+    const dragOffset = new THREE.Vector3();
+    const lastDragPointer = new THREE.Vector2();
+
     /**
-     * Checks if the mouse cursor at (clientX, clientY) is obstructed by any UI element
-     * (cards, modals, navigation bar, buttons, dialogs, etc.).
+     * Checks if the mouse cursor at (clientX, clientY) is obstructed by an actual
+     * interactive/opaque UI element (modals, cards, navigation bar, buttons, dialogs, etc.).
+     * Ignores full-width transparent structural containers (app-wrapper, section, hero, etc.).
      */
     function isOrbObscuredByUI(clientX, clientY) {
       const topEl = document.elementFromPoint(clientX, clientY);
       if (!topEl) return false;
-      // If cursor is directly on canvas or ambient background elements
-      if (topEl === canvas || topEl.id === 'synapse-canvas' || topEl.id === 'orb-page-glow') {
-        return false;
-      }
-      if (topEl === document.body || topEl === document.documentElement || topEl.classList.contains('ambient-bg')) {
-        return false;
-      }
-      // Any card, modal, navbar, playground controls, etc. is covering the orb
-      return true;
+
+      // Only block interaction if cursor is on an actual opaque UI card, button, modal, or input:
+      const blockingElement = topEl.closest(
+        '.modal-dialog, .modal-header, .modal-tabs-bar, .modal-body, ' +
+        '.project-card, .wizard-box, .sandbox-card, .cmd-palette-box, ' +
+        '.navbar, .term-window, .code-container, .playground-panel, ' +
+        '.view-btn, .track-filter-btn, .stat-item, ' +
+        'button, input, select, textarea, a, label'
+      );
+
+      return blockingElement !== null;
     }
 
     function triggerOrbClickGlow() {
@@ -649,25 +661,74 @@
       const pageGlow = document.getElementById('orb-page-glow');
       if (pageGlow) {
         pageGlow.classList.add('active');
-        setTimeout(() => pageGlow.classList.remove('active'), 220);
+        setTimeout(() => pageGlow.classList.remove('active'), 250);
       }
     }
 
+    // --- MOUSE MOVE (Hover detection & Dragging wireframes) ---
     window.addEventListener('mousemove', (e) => {
       mouseNorm.x = (e.clientX / width) * 2 - 1;
       mouseNorm.y = -(e.clientY / height) * 2 + 1;
 
-      // Check UI occlusion before testing orb hover
+      // 1. If currently dragging a wireframe shape:
+      if (draggedPolyhedron) {
+        raycaster.setFromCamera(mouseNorm, camera);
+        if (raycaster.ray.intersectPlane(dragPlane, dragIntersect)) {
+          const newPos = dragIntersect.add(dragOffset);
+          draggedPolyhedron.mesh.position.x = newPos.x;
+          draggedPolyhedron.mesh.position.y = newPos.y;
+          draggedPolyhedron.initY = newPos.y; // Update baseline resting Y to new position
+
+          // Impart rotational tumble while dragging
+          draggedPolyhedron.mesh.rotation.x += (mouseNorm.y - lastDragPointer.y) * 8.0;
+          draggedPolyhedron.mesh.rotation.y += (mouseNorm.x - lastDragPointer.x) * 8.0;
+        }
+        lastDragPointer.set(mouseNorm.x, mouseNorm.y);
+        canvas.style.cursor = 'grabbing';
+        return;
+      }
+
+      // 2. Check UI occlusion before testing 3D scene hover:
       if (isOrbObscuredByUI(e.clientX, e.clientY)) {
         isHoveringOrb = false;
+        if (hoveredPolyhedron) {
+          hoveredPolyhedron.mesh.material.opacity = 0.38;
+          hoveredPolyhedron.mesh.material.color.setHex(0xffaa00);
+          hoveredPolyhedron = null;
+        }
         canvas.style.cursor = 'default';
         return;
       }
 
-      // Check if mouse is directly hovering over the orb
       raycaster.setFromCamera(mouseNorm, camera);
-      const hits = raycaster.intersectObject(outerSphereMesh);
-      isHoveringOrb = hits.length > 0;
+
+      // 3. Test hover over floating wireframe shapes (draggable):
+      const polyMeshes = polyhedraList.map(p => p.mesh);
+      const polyHits = raycaster.intersectObjects(polyMeshes);
+
+      if (polyHits.length > 0) {
+        const hitMesh = polyHits[0].object;
+        if (hoveredPolyhedron && hoveredPolyhedron.mesh !== hitMesh) {
+          hoveredPolyhedron.mesh.material.opacity = 0.38;
+          hoveredPolyhedron.mesh.material.color.setHex(0xffaa00);
+        }
+        hoveredPolyhedron = polyhedraList.find(p => p.mesh === hitMesh);
+        if (hoveredPolyhedron) {
+          hoveredPolyhedron.mesh.material.opacity = 0.90;
+          hoveredPolyhedron.mesh.material.color.setHex(0xfff5dd);
+        }
+        canvas.style.cursor = 'grab';
+        isHoveringOrb = false;
+        return;
+      } else if (hoveredPolyhedron) {
+        hoveredPolyhedron.mesh.material.opacity = 0.38;
+        hoveredPolyhedron.mesh.material.color.setHex(0xffaa00);
+        hoveredPolyhedron = null;
+      }
+
+      // 4. Test hover over 3D orb:
+      const orbHits = raycaster.intersectObject(outerSphereMesh);
+      isHoveringOrb = orbHits.length > 0;
 
       if (isHoveringOrb) {
         canvas.style.cursor = orbZoomCurrent > 1.2 ? 'zoom-out' : 'zoom-in';
@@ -676,9 +737,51 @@
       }
     });
 
-    window.addEventListener('click', (e) => {
-      // Prevent click bloom if clicking on an overlapping UI element
+    // --- MOUSE DOWN (Pick up wireframe shape for drag) ---
+    window.addEventListener('mousedown', (e) => {
       if (isOrbObscuredByUI(e.clientX, e.clientY)) return;
+
+      raycaster.setFromCamera(mouseNorm, camera);
+      const polyMeshes = polyhedraList.map(p => p.mesh);
+      const polyHits = raycaster.intersectObjects(polyMeshes);
+
+      if (polyHits.length > 0) {
+        const hitMesh = polyHits[0].object;
+        draggedPolyhedron = polyhedraList.find(p => p.mesh === hitMesh);
+        if (draggedPolyhedron) {
+          // Construct plane perpendicular to camera passing through shape's position
+          const camDir = new THREE.Vector3();
+          camera.getWorldDirection(camDir);
+          dragPlane.setFromNormalAndCoplanarPoint(camDir.negate(), draggedPolyhedron.mesh.position);
+
+          raycaster.ray.intersectPlane(dragPlane, dragIntersect);
+          dragOffset.copy(draggedPolyhedron.mesh.position).sub(dragIntersect);
+          lastDragPointer.set(mouseNorm.x, mouseNorm.y);
+
+          // Highlight actively dragged shape
+          draggedPolyhedron.mesh.material.opacity = 1.0;
+          draggedPolyhedron.mesh.material.color.setHex(0xffffff);
+          canvas.style.cursor = 'grabbing';
+          sfx.playClick();
+        }
+      }
+    });
+
+    // --- MOUSE UP (Drop wireframe shape at new coordinates) ---
+    window.addEventListener('mouseup', () => {
+      if (draggedPolyhedron) {
+        draggedPolyhedron.mesh.material.opacity = 0.38;
+        draggedPolyhedron.mesh.material.color.setHex(0xffaa00);
+        draggedPolyhedron.initY = draggedPolyhedron.mesh.position.y;
+        draggedPolyhedron = null;
+        canvas.style.cursor = 'default';
+      }
+    });
+
+    // --- CLICK (Orb Bloom Trigger) ---
+    window.addEventListener('click', (e) => {
+      // Prevent click bloom if clicking on an overlapping UI element or dragging
+      if (isOrbObscuredByUI(e.clientX, e.clientY) || draggedPolyhedron) return;
 
       raycaster.setFromCamera(mouseNorm, camera);
       const hits = raycaster.intersectObject(outerSphereMesh);
@@ -687,8 +790,8 @@
       }
     });
 
+    // --- SCROLL WHEEL (Manual zoom when hovering directly on orb) ---
     window.addEventListener('wheel', (e) => {
-      // Zoom into orb only if hovering over the orb AND not covered by a UI element
       if (isHoveringOrb && !isOrbObscuredByUI(e.clientX, e.clientY)) {
         e.preventDefault();
         orbZoomTarget += e.deltaY * -0.0028;
@@ -697,19 +800,19 @@
     }, { passive: false });
 
     // =========================================================================
-    // SECTION THRESHOLD TWEENING & ANIMATION LOOP
+    // SECTION THRESHOLD TWEENING & AUTOMATIC ZOOM SYSTEM
     // =========================================================================
     let prevScrollY = window.scrollY;
     let scrollVelocity = 0;
     let time = 0;
 
-    // Defined section milestones for butter-smooth tweening
+    // Defined section milestones: positions & AUTOMATIC ZOOM scales
     const SECTION_ANCHORS = [
-      { id: 'hero',       anchor: { x:  4.4, y:  0.8, z:  0.0, scale: 1.00 } },
-      { id: 'sandbox',    anchor: { x: -4.6, y:  0.2, z: -0.6, scale: 1.08 } },
-      { id: 'catalog',    anchor: { x:  4.2, y: -0.2, z: -1.0, scale: 0.92 } },
-      { id: 'wizard',     anchor: { x: -4.0, y: -0.2, z: -0.5, scale: 0.96 } },
-      { id: 'quickstart', anchor: { x:  0.0, y: -0.4, z:  0.4, scale: 1.10 } }
+      { id: 'hero',       anchor: { x:  4.4, y:  0.8, z:  0.0, scale: 1.00 } }, // Hero: baseline scale
+      { id: 'sandbox',    anchor: { x: -4.6, y:  0.2, z: -0.6, scale: 1.45 } }, // Playgrounds: zooms in prominently!
+      { id: 'catalog',    anchor: { x:  4.2, y: -0.2, z: -1.0, scale: 0.88 } }, // Catalog: zooms out for reading cards!
+      { id: 'wizard',     anchor: { x: -4.0, y: -0.2, z: -0.5, scale: 1.38 } }, // Decision Matrix: zooms in as advisor core!
+      { id: 'quickstart', anchor: { x:  0.0, y: -0.4, z:  0.4, scale: 1.65 } }  // Quickstart/CLI: centers and zooms in!
     ];
 
     const currentTweenAnchor = { x: 4.4, y: 0.8, z: 0.0, scale: 1.00 };
@@ -728,10 +831,10 @@
       const tQuick   = sQuick   ? sQuick.offsetTop   : 4500;
 
       if (midY < tSandbox) return SECTION_ANCHORS[0].anchor; // Hero
-      if (midY < tCatalog) return SECTION_ANCHORS[1].anchor; // Sandboxes
-      if (midY < tWizard)  return SECTION_ANCHORS[2].anchor; // Catalog
-      if (midY < tQuick)   return SECTION_ANCHORS[3].anchor; // Wizard
-      return SECTION_ANCHORS[4].anchor;                      // Quickstart & Footer
+      if (midY < tCatalog) return SECTION_ANCHORS[1].anchor; // Sandboxes (Auto Zoom In: 1.45x)
+      if (midY < tWizard)  return SECTION_ANCHORS[2].anchor; // Catalog (Auto Zoom Out: 0.88x)
+      if (midY < tQuick)   return SECTION_ANCHORS[3].anchor; // Wizard (Auto Zoom In: 1.38x)
+      return SECTION_ANCHORS[4].anchor;                      // Quickstart (Auto Zoom In: 1.65x)
     }
 
     function animate() {
@@ -744,7 +847,7 @@
       scrollVelocity += (rawVelocity - scrollVelocity) * 0.15;
       prevScrollY = currentScrollY;
 
-      // Smooth section threshold tweening (no random oscillation!)
+      // Smooth section threshold tweening & automatic zoom interpolation
       const targetAnchor = getTargetSectionAnchor();
       currentTweenAnchor.x += (targetAnchor.x - currentTweenAnchor.x) * 0.045;
       currentTweenAnchor.y += (targetAnchor.y - currentTweenAnchor.y) * 0.045;
@@ -760,7 +863,7 @@
       sphereGroup.position.y += ((currentTweenAnchor.y + mouseSwayY) - sphereGroup.position.y) * 0.06;
       sphereGroup.position.z += (currentTweenAnchor.z - sphereGroup.position.z) * 0.06;
 
-      // Smooth Orb Zoom Interpolation
+      // Smooth Orb Zoom Interpolation (Section scale combined with manual hover zoom)
       orbZoomCurrent += (orbZoomTarget - orbZoomCurrent) * 0.08;
       const finalScale = currentTweenAnchor.scale * orbZoomCurrent;
       sphereGroup.scale.set(finalScale, finalScale, finalScale);
@@ -795,33 +898,27 @@
       outerSphereMat.uniforms.uPulse.value = pulseVal;
       outerSphereMat.uniforms.uVelocity.value += (Math.min(1.5, scrollVelocity * 0.15) - outerSphereMat.uniforms.uVelocity.value) * 0.1;
 
-      // =======================================================================
-      // MULTI-LAYERED AURA SHELLS: GLOW, GROW & PULSE DYNAMICS
-      // =======================================================================
-      // Shell 1: Chromosphere pulses harmonically
+      // Multi-Layered Aura Shell Dynamics (Glow, Grow & Pulse)
       const pulse1 = Math.sin(time * 2.4);
       chromosphereMesh.scale.setScalar(1.0 + pulse1 * 0.05);
       chromosphereMat.uniforms.uTime.value = time;
       chromosphereMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value;
       chromosphereMesh.rotation.y += 0.004;
 
-      // Shell 2: Corona breathes and expands
       const pulse2 = Math.sin(time * 1.9 + 0.8);
       coronaMesh.scale.setScalar(1.0 + pulse2 * 0.08);
       coronaMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value;
       coronaMat.uniforms.uPulse.value = pulse2;
       coronaMesh.rotation.y -= 0.003;
 
-      // Shell 3: Atmospheric Halo radiant expansion
       const pulse3 = Math.cos(time * 1.5 + 1.6);
       haloMesh.scale.setScalar(1.0 + pulse3 * 0.11);
       haloMesh.rotation.z += 0.002;
 
-      // Shell 4: Celestial Exosphere majestic slow breathing
       const pulse4 = Math.sin(time * 1.1 + 2.2);
       exosphereMesh.scale.setScalar(1.0 + pulse4 * 0.15);
 
-      // Light flash intensity decay (smooth bloom surge)
+      // Light flash intensity decay
       if (flashIntensity > 0.001) {
         flashIntensity *= 0.90;
         corePointLight.intensity = 4.5 + flashIntensity * 16.0;
@@ -838,9 +935,12 @@
       starField.rotation.x = Math.sin(time * 0.01) * 0.05;
       starField.scale.setScalar(1.0 + elementsZoomSurge * 0.16);
 
-      // Floating polyhedra rotation & click surge
+      // Floating polyhedra rotation & click surge (skip dragged polyhedron position overwrite)
       polyhedraGroup.scale.setScalar(1.0 + elementsZoomSurge * 0.12);
       polyhedraList.forEach(({ mesh, rotSpeed, floatSpeed, floatOffset, initY }) => {
+        if (draggedPolyhedron && draggedPolyhedron.mesh === mesh) {
+          return; // Allow direct user drag control
+        }
         mesh.rotation.x += rotSpeed.x;
         mesh.rotation.y += rotSpeed.y;
         mesh.rotation.z += rotSpeed.z;
@@ -2189,71 +2289,171 @@
     });
   }
 
-  // --- ALGORITHM DECISION WIZARD ---
+  // --- ALGORITHM DECISION MATRIX & ARCHITECTURAL GUIDANCE ---
   function initAlgorithmWizard() {
     let targetType = 'continuous';
     let constraint = 'interpretability';
 
+    // Comprehensive 15-node architectural decision matrix covering all target/constraint combinations
     const recommendations = {
+      // 1. Continuous (Regression)
       'continuous-interpretability': {
-        title: 'Ordinary Least Squares & Ridge Regression',
-        algo: 'Linear & Ridge Regression',
         id: 1,
-        desc: 'Provides exact analytic coefficients and geometric interpretability. Regularization controls collinearity in continuous estimation.'
+        track: 'Regression',
+        trackColor: '#ff8533',
+        title: 'Ordinary Least Squares & Ridge Regression',
+        estimator: 'sklearn.linear_model.Ridge',
+        desc: 'Provides exact analytic coefficients beta and white-box geometric interpretability. L2 regularization penalizes extreme weight magnitudes to suppress multicollinearity without sacrificing explainability.',
+        metric: 'RMSE & Adjusted R²',
+        tradeoff: 'Closed-Form Analytic Solution'
       },
       'continuous-accuracy': {
-        title: 'Gradient Boosting Regressor',
-        algo: 'Gradient Boosting & ExtraTrees',
         id: 8,
-        desc: 'Ensemble of weak decision trees sequentially correcting residuals, maximizing non-linear capture across tabular metrics.'
+        track: 'Regression',
+        trackColor: '#ff8533',
+        title: 'Medical Insurance Cost Estimator with Gradient Boosting',
+        estimator: 'sklearn.ensemble.GradientBoostingRegressor',
+        desc: 'Non-parametric tree ensemble that sequentially fits weak regressors to residual gradients. Excels at capturing non-linear interactions and tabular non-monotonicities.',
+        metric: 'Mean Absolute Error (MAE) & R²',
+        tradeoff: 'Maximum Non-Linear Feature Capture'
       },
-      'continuous-timeseries': {
-        title: 'Lagged Auto-Regressive Ridge',
-        algo: 'Ridge with Rolling Features',
-        id: 48,
-        desc: 'Captures temporal autocorrelation and rolling seasonal statistical windows.'
+      'continuous-imbalance': {
+        id: 5,
+        track: 'Regression',
+        trackColor: '#ff8533',
+        title: 'Stock Trend & Volatility Regression with Robust Loss',
+        estimator: 'sklearn.linear_model.HuberRegressor',
+        desc: 'Applies piecewise continuous Huber loss that shifts from squared loss for small residuals to absolute loss for extreme tail anomalies, preventing market outliers from warping predictions.',
+        metric: 'Median Absolute Error (MedAE)',
+        tradeoff: 'Heavy-Tail Outlier Invariance'
       },
+
+      // 2. Discrete (Classification)
       'discrete-interpretability': {
-        title: 'Decision Tree Classifier',
-        algo: 'CART Decision Trees',
-        id: 11,
-        desc: 'Provides white-box IF-THEN rule paths ideal for clinical or compliance auditing.'
+        id: 20,
+        track: 'Classification',
+        trackColor: '#ff5500',
+        title: 'Mushroom Edibility Identification with Rule-Based Decision Trees',
+        estimator: 'sklearn.tree.DecisionTreeClassifier',
+        desc: 'Constructs transparent, orthogonal IF-THEN rule paths using Gini impurity or Shannon entropy splits. Crucial for clinical and regulated audits where every inference must be legally explainable.',
+        metric: '0 False-Negative Safety Rate',
+        tradeoff: 'White-Box Human Auditable Rules'
       },
       'discrete-accuracy': {
-        title: 'Balanced Random Forest Classifier',
-        algo: 'Random Forest & SVM',
         id: 14,
-        desc: 'Reduces variance via bootstrap aggregation of decorrelated decision trees.'
+        track: 'Classification',
+        trackColor: '#ff5500',
+        title: 'Heart Disease Clinical Risk Prediction with Random Forests',
+        estimator: 'sklearn.ensemble.RandomForestClassifier',
+        desc: 'Bagging ensemble of decorrelated decision trees with random feature subsampling. Minimizes variance over high-dimensional observations while offering calibrated probability outputs.',
+        metric: 'ROC-AUC & Log-Loss Score',
+        tradeoff: 'Variance Reduction via Bootstrap Bagging'
       },
       'discrete-imbalance': {
-        title: 'Cost-Sensitive Balanced Classifier',
-        algo: 'Balanced Random Forest & PR-AUC',
         id: 18,
-        desc: 'Optimizes Precision-Recall curves and penalizes minority false negatives in fraud streams.'
+        track: 'Classification',
+        trackColor: '#ff5500',
+        title: 'Credit Card Fraud Detection with Cost-Sensitive Loss',
+        estimator: 'sklearn.ensemble.RandomForestClassifier(class_weight="balanced")',
+        desc: 'Applies cost-sensitive class weighting to heavily penalize minority false-negative misses. Optimizes classification thresholds specifically along the Precision-Recall curve.',
+        metric: 'Precision-Recall AUC (PR-AUC)',
+        tradeoff: 'Cost-Weighted Minority Prioritization'
       },
-      'unsupervised-clustering': {
-        title: 'K-Means with Elbow & Silhouette',
-        algo: 'K-Means Clustering',
+
+      // 3. Unsupervised (Clustering & Anomaly)
+      'unsupervised-interpretability': {
         id: 21,
-        desc: 'Partitions observations into spherical Voronoi cells minimizing within-cluster inertia.'
+        track: 'Unsupervised',
+        trackColor: '#ffaa00',
+        title: 'E-Commerce Customer Segmentation with K-Means',
+        estimator: 'sklearn.cluster.KMeans',
+        desc: 'Partitions unlabeled data into k spherical Voronoi cells minimizing within-cluster inertia. Cluster profiles can be interpreted immediately by inspecting centroid feature means.',
+        metric: 'Silhouette Score & Elbow Inertia',
+        tradeoff: 'Interpretable Centroid Coordinates'
       },
-      'unsupervised-anomaly': {
-        title: 'Isolation Forest (iForest)',
-        algo: 'Isolation Forest',
+      'unsupervised-accuracy': {
+        id: 24,
+        track: 'Unsupervised',
+        trackColor: '#ffaa00',
+        title: 'Urban Traffic Density Hotspot Discovery with DBSCAN',
+        estimator: 'sklearn.cluster.DBSCAN',
+        desc: 'Density-connected spatial clustering that groups core density points and identifies arbitrary non-linear shapes without requiring predefined cluster counts k, isolating noise points.',
+        metric: 'Density-Based Silhouette & Noise Ratio',
+        tradeoff: 'Arbitrary Non-Convex Geometry Discovery'
+      },
+      'unsupervised-imbalance': {
         id: 26,
-        desc: 'Isolates rare anomalies via random axis-aligned splits in high-dimensional feature spaces.'
+        track: 'Unsupervised',
+        trackColor: '#ffaa00',
+        title: 'Banking Outlier & Transaction Anomaly Isolation Forest',
+        estimator: 'sklearn.ensemble.IsolationForest',
+        desc: 'Exploits the geometric reality that anomalous observations require significantly fewer random partition splits to isolate than normal inliers in high-dimensional hyperplanes.',
+        metric: 'Average Path Length & Anomaly Score',
+        tradeoff: 'Unsupervised Subspace Isolation'
       },
-      'nlp-classification': {
-        title: 'Multinomial Naive Bayes with TF-IDF',
-        algo: 'MultinomialNB & TF-IDF',
+
+      // 4. NLP & Text
+      'nlp-interpretability': {
         id: 31,
-        desc: 'Fast, probabilistic text classification using subword/word n-gram frequency matrices.'
+        track: 'NLP & Text',
+        trackColor: '#ff7043',
+        title: 'SMS Spam / Ham Text Classification with Naive Bayes',
+        estimator: 'sklearn.naive_bayes.MultinomialNB & TfidfVectorizer',
+        desc: 'Probabilistic conditional classifier applying Bayes Theorem over sparse TF-IDF vocabulary matrices. Token weights can be audited directly through log-probability ratios.',
+        metric: 'Macro F1-Score & Accuracy',
+        tradeoff: 'Explicit Token Log-Likelihood Auditing'
       },
-      'rl-bandit': {
-        title: 'Epsilon-Greedy Multi-Armed Bandit',
-        algo: 'Epsilon-Greedy RL',
+      'nlp-accuracy': {
+        id: 32,
+        track: 'NLP & Text',
+        trackColor: '#ff7043',
+        title: 'Movie Review Sentiment Analysis with Linear Support Vector Classifier',
+        estimator: 'sklearn.svm.LinearSVC with Subword N-Grams',
+        desc: 'Maximizes geometric margin in high-dimensional sparse TF-IDF feature space (25,000+ n-grams). Consistently achieves state-of-the-art tabular accuracy for text categorization.',
+        metric: 'Balanced Accuracy & F1-Score',
+        tradeoff: 'Maximum Margin Hyperplane in High Dims'
+      },
+      'nlp-imbalance': {
+        id: 39,
+        track: 'NLP & Text',
+        trackColor: '#ff7043',
+        title: 'Toxic Comment Flagger with Threshold Calibration',
+        estimator: 'sklearn.linear_model.LogisticRegression(class_weight="balanced")',
+        desc: 'Calibrates decision boundary probabilities with inverse class frequency weights, ensuring toxic edge cases are flagged even when clean messages constitute 98% of the stream.',
+        metric: 'PR-AUC & Custom Cost-Weighted F-Beta',
+        tradeoff: 'Skewed Text Frequency Compensation'
+      },
+
+      // 5. Reinforcement Learning & Sequential Decisions
+      'rl-interpretability': {
         id: 50,
-        desc: 'Balances exploratory discovery against value exploitation in uncertain reward environments.'
+        track: 'Vision, Recs & RL',
+        trackColor: '#e64a19',
+        title: 'Multi-Armed Bandit A/B Testing with Epsilon-Greedy',
+        estimator: 'EpsilonGreedyBandit(epsilon=0.1)',
+        desc: 'Maintains running empirical reward expectations Q(a) per arm with explicit exploration factor epsilon. Decisions are completely transparent and auditable in real-time dashboards.',
+        metric: 'Cumulative Regret & Arm Selection Ratio',
+        tradeoff: 'Transparent Exploration-Exploitation'
+      },
+      'rl-accuracy': {
+        id: 50,
+        track: 'Vision, Recs & RL',
+        trackColor: '#e64a19',
+        title: 'Upper Confidence Bound (UCB1) Multi-Armed Bandit',
+        estimator: 'UCB1BanditPolicy',
+        desc: 'Implements "optimism in the face of uncertainty" by adding a confidence interval sqrt(2 ln t / N(a)) to estimated arm values, guaranteeing asymptotically optimal logarithmic regret.',
+        metric: 'O(ln T) Logarithmic Theoretical Regret Bound',
+        tradeoff: 'Provably Optimal Asymptotic Regret'
+      },
+      'rl-imbalance': {
+        id: 50,
+        track: 'Vision, Recs & RL',
+        trackColor: '#e64a19',
+        title: 'Bayesian Thompson Sampling Multi-Armed Bandit',
+        estimator: 'ThompsonSampling(Beta(alpha, beta))',
+        desc: 'Probability matching algorithm that draws samples from Beta posterior distributions per arm. Dynamically adapts to low-conversion sparse reward domains with minimal regret.',
+        metric: 'Bayesian Regret & Posterior Shrinkage',
+        tradeoff: 'Bayesian Posterior Probability Matching'
       }
     };
 
@@ -2261,15 +2461,39 @@
       const key = `${targetType}-${constraint}`;
       const rec = recommendations[key] || recommendations['continuous-interpretability'];
 
+      const cardEl = document.querySelector('.wizard-result-card');
+      const idEl = document.getElementById('wizard-rec-id');
+      const trackEl = document.getElementById('wizard-rec-track');
       const titleEl = document.getElementById('wizard-rec-title');
+      const estimatorEl = document.getElementById('wizard-rec-estimator');
       const descEl = document.getElementById('wizard-rec-desc');
+      const metricEl = document.getElementById('wizard-rec-metric');
+      const tradeoffEl = document.getElementById('wizard-rec-tradeoff');
       const btnEl = document.getElementById('wizard-rec-btn');
 
+      if (idEl) idEl.textContent = `#${String(rec.id).padStart(2, '0')}`;
+      if (trackEl) {
+        trackEl.textContent = rec.track;
+        trackEl.style.color = rec.trackColor;
+        trackEl.style.borderColor = `${rec.trackColor}55`;
+        trackEl.style.backgroundColor = `${rec.trackColor}18`;
+      }
       if (titleEl) titleEl.textContent = rec.title;
+      if (estimatorEl) estimatorEl.textContent = rec.estimator;
       if (descEl) descEl.textContent = rec.desc;
+      if (metricEl) metricEl.textContent = rec.metric;
+      if (tradeoffEl) tradeoffEl.textContent = rec.tradeoff;
+
       if (btnEl) {
-        btnEl.textContent = `Inspect Project #${String(rec.id).padStart(2, '0')} Blueprint →`;
+        btnEl.innerHTML = `<span>Inspect Project #${String(rec.id).padStart(2, '0')} Blueprint</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
         btnEl.onclick = () => openBlueprintModal(rec.id);
+      }
+
+      // Smooth pulse transition animation
+      if (cardEl) {
+        cardEl.classList.remove('fade-rec');
+        void cardEl.offsetWidth; // trigger reflow
+        cardEl.classList.add('fade-rec');
       }
     }
 
@@ -2295,7 +2519,6 @@
 
     updateRecommendation();
   }
-
   // --- COMMAND PALETTE (CTRL+K / CMD+K) ---
   function initCommandPalette() {
     const overlay = document.getElementById('cmd-palette-overlay');

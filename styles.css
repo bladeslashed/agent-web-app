@@ -1697,21 +1697,47 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .wizard-result-card {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-bright);
-  border-radius: 18px;
-  padding: 24px;
+  background: linear-gradient(170deg, rgba(22, 14, 9, 0.94) 0%, rgba(12, 7, 5, 0.98) 100%);
+  border: 1px solid rgba(255, 140, 50, 0.35);
+  border-top: 1px solid rgba(255, 195, 110, 0.5);
+  border-radius: 20px;
+  padding: 26px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 107, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+
+.wizard-result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 115, 15, 0.2), transparent 70%);
+  pointer-events: none;
 }
 
 .recommended-algo-title {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.55rem;
   font-weight: 800;
-  color: var(--accent-orange);
-  margin: 10px 0;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.wizard-result-card.fade-rec {
+  animation: wizardRecPulse 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wizardRecPulse {
+  0% { opacity: 0.5; transform: scale(0.985); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 /* ==========================================================================

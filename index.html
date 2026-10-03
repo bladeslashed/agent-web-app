@@ -770,16 +770,33 @@
 
           <div class="wizard-result-card">
             <div>
-              <div class="result-header">Recommended Algorithmic Blueprint</div>
-              <h3 id="wizard-rec-title" class="recommended-algo-title">Ordinary Least Squares & Ridge</h3>
-              <p id="wizard-rec-desc" style="color:#cbd5e1; font-size:0.95rem; line-height:1.7; margin-bottom:20px;">
+              <div class="result-header">// ARCHITECTURAL SPECIFICATION</div>
+              <div style="display:flex; align-items:center; gap:8px; margin: 12px 0 10px 0;">
+                <span id="wizard-rec-id" class="card-id-pill" style="font-size:0.85rem; padding:4px 10px;">#01</span>
+                <span id="wizard-rec-track" class="badge-tag" style="font-size:0.75rem;">Regression</span>
+              </div>
+              <h3 id="wizard-rec-title" class="recommended-algo-title" style="font-size:1.45rem; line-height:1.25; margin-bottom:10px;">Ordinary Least Squares & Ridge</h3>
+              <div id="wizard-rec-estimator" style="font-family:var(--font-mono); font-size:0.78rem; color:#ffbe3b; margin-bottom:14px; background:rgba(255,107,0,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,140,50,0.3); display:inline-block;">sklearn.linear_model.Ridge</div>
+              <p id="wizard-rec-desc" style="color:#cbd5e1; font-size:0.92rem; line-height:1.7; margin-bottom:18px;">
                 Provides exact analytic coefficients and geometric interpretability. L2 regularization penalizes extreme weights to mitigate collinearity in continuous estimation.
               </p>
+
+              <div class="wizard-specs-box" style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,140,50,0.18); border-radius:12px; padding:12px 16px; margin-bottom:20px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                  <span style="color:#64748b; text-transform:uppercase; letter-spacing:0.06em; font-size:0.72rem; font-weight:700;">Optimization Metric</span>
+                  <span id="wizard-rec-metric" style="color:#e2e8f0; font-weight:600; font-family:var(--font-mono);">RMSE & Adjusted R²</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+                  <span style="color:#64748b; text-transform:uppercase; letter-spacing:0.06em; font-size:0.72rem; font-weight:700;">Primary Advantage</span>
+                  <span id="wizard-rec-tradeoff" style="color:#ffbe3b; font-weight:600;">Exact Analytic Solution</span>
+                </div>
+              </div>
             </div>
 
             <div>
-              <button id="wizard-rec-btn" class="btn btn-primary" style="width:100%;">
-                Inspect Project #01 Blueprint →
+              <button id="wizard-rec-btn" class="btn btn-primary" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <span>Inspect Project #01 Blueprint</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
           </div>
