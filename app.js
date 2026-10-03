@@ -264,7 +264,15 @@
       const initY = mesh.position.y;
 
       polyhedraGroup.add(mesh);
-      polyhedraList.push({ mesh, rotSpeed, floatSpeed, floatOffset, initY });
+      polyhedraList.push({
+        mesh,
+        rotSpeed,
+        floatSpeed,
+        floatOffset,
+        initY,
+        velocity: new THREE.Vector3((Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03, 0),
+        angularVelocity: new THREE.Vector3(0, 0, 0)
+      });
     }
     scene.add(polyhedraGroup);
 
@@ -620,17 +628,19 @@
     const mouseNorm = new THREE.Vector2(-1000, -1000);
     let flashIntensity = 0;
     let elementsZoomSurge = 0;
+    let orbScaleSurge = 0; // Temporary orb expansion pulse on click
     let isHoveringOrb = false;
     let orbZoomCurrent = 1.0;
     let orbZoomTarget = 1.0;
 
-    // Drag and Drop state for background holographic wireframe shapes
+    // Drag and Drop physics state for background holographic wireframe shapes
     let draggedPolyhedron = null;
     let hoveredPolyhedron = null;
     const dragPlane = new THREE.Plane();
     const dragIntersect = new THREE.Vector3();
     const dragOffset = new THREE.Vector3();
     const lastDragPointer = new THREE.Vector2();
+    let lastDragTime = performance.now();
 
     /**
      * Checks if the mouse cursor at (clientX, clientY) is obstructed by an actual
@@ -656,8 +666,9 @@
     function triggerOrbClickGlow() {
       flashIntensity = 1.0;
       elementsZoomSurge = 1.0; // Temporarily zoom 3D environment in
+      orbScaleSurge = 1.0;     // Temporarily swell the orb itself and its aura
 
-      // Trigger full page edge radiant bloom overlay (NO SOUND)
+      // Trigger full page edge radiant bloom overlay strictly behind UI (z-index: 0, NO SOUND)
       const pageGlow = document.getElementById('orb-page-glow');
       if (pageGlow) {
         pageGlow.classList.add('active');
@@ -674,14 +685,28 @@
       if (draggedPolyhedron) {
         raycaster.setFromCamera(mouseNorm, camera);
         if (raycaster.ray.intersectPlane(dragPlane, dragIntersect)) {
-          const newPos = dragIntersect.add(dragOffset);
-          draggedPolyhedron.mesh.position.x = newPos.x;
-          draggedPolyhedron.mesh.position.y = newPos.y;
-          draggedPolyhedron.initY = newPos.y; // Update baseline resting Y to new position
+          const newPos = dragIntersect.clone().add(dragOffset);
+          const now = performance.now();
+          const dt = Math.max(1, now - lastDragTime);
+
+          // Compute instantaneous release velocity
+          const vx = (newPos.x - draggedPolyhedron.mesh.position.x) / dt * 16;
+          const vy = (newPos.y - draggedPolyhedron.mesh.position.y) / dt * 16;
+          draggedPolyhedron.velocity.set(vx * 0.7, vy * 0.7, 0);
+
+          draggedPolyhedron.mesh.position.copy(newPos);
+          draggedPolyhedron.initY = newPos.y;
 
           // Impart rotational tumble while dragging
           draggedPolyhedron.mesh.rotation.x += (mouseNorm.y - lastDragPointer.y) * 8.0;
           draggedPolyhedron.mesh.rotation.y += (mouseNorm.x - lastDragPointer.x) * 8.0;
+          draggedPolyhedron.angularVelocity.set(
+            (mouseNorm.y - lastDragPointer.y) * 0.3,
+            (mouseNorm.x - lastDragPointer.x) * 0.3,
+            (mouseNorm.x - lastDragPointer.x) * 0.2
+          );
+
+          lastDragTime = now;
         }
         lastDragPointer.set(mouseNorm.x, mouseNorm.y);
         canvas.style.cursor = 'grabbing';
@@ -757,6 +782,7 @@
           raycaster.ray.intersectPlane(dragPlane, dragIntersect);
           dragOffset.copy(draggedPolyhedron.mesh.position).sub(dragIntersect);
           lastDragPointer.set(mouseNorm.x, mouseNorm.y);
+          lastDragTime = performance.now();
 
           // Highlight actively dragged shape
           draggedPolyhedron.mesh.material.opacity = 1.0;
@@ -767,11 +793,27 @@
       }
     });
 
-    // --- MOUSE UP (Drop wireframe shape at new coordinates) ---
+    // --- MOUSE UP (Release wireframe shape: slides & glides with physics!) ---
     window.addEventListener('mouseup', () => {
       if (draggedPolyhedron) {
         draggedPolyhedron.mesh.material.opacity = 0.38;
         draggedPolyhedron.mesh.material.color.setHex(0xffaa00);
+
+        // Impart sliding launch momentum so it glides and drifts instead of stopping dead!
+        if (draggedPolyhedron.velocity.length() < 0.04) {
+          draggedPolyhedron.velocity.set(
+            (Math.random() - 0.5) * 0.08,
+            (Math.random() - 0.5) * 0.08,
+            0
+          );
+        }
+        draggedPolyhedron.velocity.clampLength(0, 0.42);
+        draggedPolyhedron.angularVelocity.set(
+          (Math.random() - 0.5) * 0.05,
+          (Math.random() - 0.5) * 0.05,
+          (Math.random() - 0.5) * 0.04
+        );
+
         draggedPolyhedron.initY = draggedPolyhedron.mesh.position.y;
         draggedPolyhedron = null;
         canvas.style.cursor = 'default';
@@ -863,9 +905,13 @@
       sphereGroup.position.y += ((currentTweenAnchor.y + mouseSwayY) - sphereGroup.position.y) * 0.06;
       sphereGroup.position.z += (currentTweenAnchor.z - sphereGroup.position.z) * 0.06;
 
-      // Smooth Orb Zoom Interpolation (Section scale combined with manual hover zoom)
+      // Orb expansion surge on click bloom
+      orbScaleSurge += (0 - orbScaleSurge) * 0.075;
+      const bloomScaleMult = 1.0 + orbScaleSurge * 0.42; // Swells by up to 42% on click!
+
+      // Smooth Orb Zoom Interpolation (Section threshold zoom combined with manual scroll zoom and click bloom)
       orbZoomCurrent += (orbZoomTarget - orbZoomCurrent) * 0.08;
-      const finalScale = currentTweenAnchor.scale * orbZoomCurrent;
+      const finalScale = currentTweenAnchor.scale * orbZoomCurrent * bloomScaleMult;
       sphereGroup.scale.set(finalScale, finalScale, finalScale);
 
       // Temporary Elements Zoom-in Surge decay (on click page bloom)
@@ -895,35 +941,35 @@
       innerCoreMat.uniforms.uTime.value = time;
       mantleMat.uniforms.uTime.value = time;
       outerSphereMat.uniforms.uTime.value = time;
-      outerSphereMat.uniforms.uPulse.value = pulseVal;
+      outerSphereMat.uniforms.uPulse.value = pulseVal + flashIntensity * 1.4;
       outerSphereMat.uniforms.uVelocity.value += (Math.min(1.5, scrollVelocity * 0.15) - outerSphereMat.uniforms.uVelocity.value) * 0.1;
 
-      // Multi-Layered Aura Shell Dynamics (Glow, Grow & Pulse)
+      // Multi-Layered Aura Shell Dynamics (Glow, Grow & Pulse + Bloom Expansion)
       const pulse1 = Math.sin(time * 2.4);
-      chromosphereMesh.scale.setScalar(1.0 + pulse1 * 0.05);
+      chromosphereMesh.scale.setScalar((1.0 + pulse1 * 0.05) * (1.0 + orbScaleSurge * 0.32));
       chromosphereMat.uniforms.uTime.value = time;
-      chromosphereMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value;
+      chromosphereMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value + flashIntensity * 1.5;
       chromosphereMesh.rotation.y += 0.004;
 
       const pulse2 = Math.sin(time * 1.9 + 0.8);
-      coronaMesh.scale.setScalar(1.0 + pulse2 * 0.08);
-      coronaMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value;
-      coronaMat.uniforms.uPulse.value = pulse2;
+      coronaMesh.scale.setScalar((1.0 + pulse2 * 0.08) * (1.0 + orbScaleSurge * 0.42));
+      coronaMat.uniforms.uVelocity.value = outerSphereMat.uniforms.uVelocity.value + flashIntensity * 1.5;
+      coronaMat.uniforms.uPulse.value = pulse2 + flashIntensity * 1.2;
       coronaMesh.rotation.y -= 0.003;
 
       const pulse3 = Math.cos(time * 1.5 + 1.6);
-      haloMesh.scale.setScalar(1.0 + pulse3 * 0.11);
+      haloMesh.scale.setScalar((1.0 + pulse3 * 0.11) * (1.0 + orbScaleSurge * 0.5));
       haloMesh.rotation.z += 0.002;
 
       const pulse4 = Math.sin(time * 1.1 + 2.2);
-      exosphereMesh.scale.setScalar(1.0 + pulse4 * 0.15);
+      exosphereMesh.scale.setScalar((1.0 + pulse4 * 0.15) * (1.0 + orbScaleSurge * 0.6));
 
-      // Light flash intensity decay
+      // Light flash intensity decay (orb glows with intense light during bloom)
       if (flashIntensity > 0.001) {
-        flashIntensity *= 0.90;
-        corePointLight.intensity = 4.5 + flashIntensity * 16.0;
-        sphereAuraLight.intensity = 4.0 + flashIntensity * 14.0;
-        ambientLight.intensity = 1.9 + flashIntensity * 2.5;
+        flashIntensity *= 0.89;
+        corePointLight.intensity = 4.5 + flashIntensity * 28.0;
+        sphereAuraLight.intensity = 4.0 + flashIntensity * 24.0;
+        ambientLight.intensity = 1.9 + flashIntensity * 3.5;
       } else {
         corePointLight.intensity = 4.5;
         sphereAuraLight.intensity = 4.0;
@@ -935,16 +981,48 @@
       starField.rotation.x = Math.sin(time * 0.01) * 0.05;
       starField.scale.setScalar(1.0 + elementsZoomSurge * 0.16);
 
-      // Floating polyhedra rotation & click surge (skip dragged polyhedron position overwrite)
+      // Floating polyhedra: SLIDE and GLIDE smoothly when released with momentum & drift!
       polyhedraGroup.scale.setScalar(1.0 + elementsZoomSurge * 0.12);
-      polyhedraList.forEach(({ mesh, rotSpeed, floatSpeed, floatOffset, initY }) => {
-        if (draggedPolyhedron && draggedPolyhedron.mesh === mesh) {
-          return; // Allow direct user drag control
+      polyhedraList.forEach(p => {
+        if (draggedPolyhedron && draggedPolyhedron.mesh === p.mesh) {
+          return; // Directly controlled by mouse drag
         }
-        mesh.rotation.x += rotSpeed.x;
-        mesh.rotation.y += rotSpeed.y;
-        mesh.rotation.z += rotSpeed.z;
-        mesh.position.y = initY + Math.sin(time * floatSpeed * 2.0 + floatOffset) * 0.6;
+
+        // 1. Move and slide with velocity
+        p.mesh.position.x += p.velocity.x;
+        p.mesh.position.y += p.velocity.y;
+
+        // 2. Smooth air friction / damping
+        p.velocity.x *= 0.985;
+        p.velocity.y *= 0.985;
+
+        // 3. Continuous ambient floating drift so it never stops sliding
+        p.mesh.position.x += Math.sin(time * p.floatSpeed + p.floatOffset) * 0.012;
+        p.mesh.position.y += Math.cos(time * p.floatSpeed * 1.3 + p.floatOffset) * 0.012;
+
+        // 4. Elastic boundary bounce when sliding towards screen edges
+        const xLimit = 28;
+        const yLimit = 20;
+        if (p.mesh.position.x > xLimit) {
+          p.mesh.position.x = xLimit;
+          p.velocity.x = -Math.abs(p.velocity.x) * 0.8;
+        } else if (p.mesh.position.x < -xLimit) {
+          p.mesh.position.x = -xLimit;
+          p.velocity.x = Math.abs(p.velocity.x) * 0.8;
+        }
+        if (p.mesh.position.y > yLimit) {
+          p.mesh.position.y = yLimit;
+          p.velocity.y = -Math.abs(p.velocity.y) * 0.8;
+        } else if (p.mesh.position.y < -yLimit) {
+          p.mesh.position.y = -yLimit;
+          p.velocity.y = Math.abs(p.velocity.y) * 0.8;
+        }
+
+        // 5. Tumble and spin with angular momentum
+        p.mesh.rotation.x += p.rotSpeed.x + p.angularVelocity.x;
+        p.mesh.rotation.y += p.rotSpeed.y + p.angularVelocity.y;
+        p.mesh.rotation.z += p.rotSpeed.z + p.angularVelocity.z;
+        p.angularVelocity.multiplyScalar(0.98);
       });
 
       // Project coordinates to CSS variables
