@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYNAPSE 50 — 50 Applied Machine Learning Blueprints</title>
+  <meta name="description" content="A curated curriculum of 50 self-contained, hands-on Machine Learning project guides with mathematical intuition, implementation steps, copy-paste runnable Python code, and interactive in-browser sandboxes.">
+  <meta name="keywords" content="machine learning, python, scikit-learn, data science, regression, classification, clustering, nlp, reinforcement learning, algorithms">
+  <meta name="theme-color" content="#070503">
+
+  <!-- OpenGraph Metadata -->
+  <meta property="og:title" content="SYNAPSE 50 — 50 Applied Machine Learning Blueprints">
+  <meta property="og:description" content="Master Machine Learning through 50 hands-on Python blueprints with mathematical intuition, verified scikit-learn code, and interactive browser simulations.">
+  <meta property="og:type" content="website">
+
+  <!-- Modern Fonts: Outfit, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Prism.js Syntax Highlighting CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Dynamic Interactive Neural Background -->
+  <canvas id="synapse-canvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+  <div class="ambient-glow glow-4"></div>
+  <div class="ambient-grid-overlay"></div>
+  <div id="orb-page-glow" class="orb-page-glow"></div>
+
+  <div class="app-wrapper">
+
+    <!-- ==========================================================================
+         TOP NAVIGATION BAR
+         ========================================================================== -->
+    <header class="site-header">
+      <nav class="nav-glass-bar">
+        <div class="nav-scroll-progress-bar" id="nav-scroll-bar"></div>
+        <a href="#hero" class="brand-logo">
+          <div class="logo-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="6" r="3"></circle>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="12" r="3"></circle>
+              <line x1="8.5" y1="7.5" x2="15.5" y2="10.5"></line>
+              <line x1="8.5" y1="16.5" x2="15.5" y2="13.5"></line>
+            </svg>
+          </div>
+          <span>SYNAPSE<span style="color:var(--accent-orange);">50</span></span>
+          <span class="logo-badge">Blueprints</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="#playgrounds" class="nav-link">Interactive Labs</a></li>
+          <li><a href="#catalog" class="nav-link">Curriculum (50)</a></li>
+          <li><a href="#wizard" class="nav-link">Algo Finder</a></li>
+          <li><a href="#mastery" class="nav-link">Mastery</a></li>
+          <li><a href="#quickstart" class="nav-link">Terminal</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button id="cmd-k-btn" class="cmd-k-trigger" title="Command Palette (Ctrl + K)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Search</span>
+            <span class="kbd-shortcut">Ctrl K</span>
+          </button>
+
+          <button id="audio-toggle-btn" class="audio-btn" title="Toggle UI Sound FX">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          </button>
+
+          <div class="nav-progress-chip" title="Curriculum Completion Status">
+            <span class="pulse-dot"></span>
+            <span id="nav-progress-text">0/50 Completed (0%)</span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- ==========================================================================
+         HERO SECTION
+         ========================================================================== -->
+    <section id="hero" class="hero-section">
+      <div class="hero-pill">
+        <span>⚡ 50 Production-Grade Machine Learning Blueprints</span>
+      </div>
+
+      <h1 class="hero-title">
+        Master Applied Machine Learning <br>
+        <span class="gradient-text">From Mathematical Intuition</span> <br>
+        <span class="gradient-text-alt">To Verified Python Code</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        A definitive curriculum spanning 5 core disciplines: Regression, Classification, Unsupervised Mining, NLP, and Reinforcement Learning. Designed for standard CPU environments with zero cloud friction.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="#catalog" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+          Explore All 50 Blueprints
+        </a>
+        <a href="#playgrounds" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+          Launch Interactive Labs
+        </a>
+        <a href="#wizard" class="btn btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Algorithm Finder
+        </a>
+      </div>
+
+      <!-- Live Stats Banner -->
+      <div class="hero-stats-banner">
+        <div class="stat-item">
+          <span class="stat-number">50</span>
+          <span class="stat-label">End-to-End Blueprints</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">5</span>
+          <span class="stat-label">Curriculum Tracks</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">15+</span>
+          <span class="stat-label">Core ML Algorithms</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Cloud Setup Required</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         INTERACTIVE ML PLAYGROUNDS SECTION
+         ========================================================================== -->
+    <section id="playgrounds" class="section reveal-on-scroll">
+      <div class="section-header">
+        <span class="section-tag">// LIVE IN-BROWSER SIMULATION // REAL-TIME MATH</span>
+        <h2 class="section-title">Interact With Machine Learning Models Live</h2>
+        <p class="section-desc">
+          Test real-time implementations of fundamental machine learning paradigms directly in your browser. Experience how parameters impact predictions and boundaries.
+        </p>
+      </div>
+
+      <div class="playground-container">
+        <!-- Tab Navigation -->
+        <div class="playground-tabs">
+          <button class="tab-btn active" data-tab="housing">
+            <span style="color:var(--accent-emerald);">🏡</span>
+            <span>01. Housing Price Regressor</span>
+          </button>
+          <button class="tab-btn" data-tab="spam">
+            <span style="color:var(--accent-orange);">🛡️</span>
+            <span>31. NLP Spam & Threat Shield</span>
+          </button>
+          <button class="tab-btn" data-tab="clustering">
+            <span style="color:var(--accent-amber);">🔮</span>
+            <span>21. 2D Clustering Studio</span>
+          </button>
+          <button class="tab-btn" data-tab="bandit">
+            <span style="color:var(--accent-rose);">🎰</span>
+            <span>50. Multi-Armed Bandit RL</span>
+          </button>
+        </div>
+
+        <!-- 1. Housing Price Estimator (Regression) -->
+        <div id="playground-housing" class="playground-panel active">
+          <div class="sandbox-grid">
+            <div class="sandbox-controls">
+              <h3 style="font-family:var(--font-display); font-size:1.15rem; margin-bottom:18px; color:#fff;">
+                District Demographic Controls
+              </h3>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Median Household Income:</span>
+                  <span id="lbl-house-income" class="control-val">$65,000 / yr</span>
+                </div>
+                <input type="range" id="house-income" min="1.5" max="15.0" step="0.2" value="6.5">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Median House Age:</span>
+                  <span id="lbl-house-age" class="control-val">28 years</span>
+                </div>
+                <input type="range" id="house-age" min="1" max="52" step="1" value="28">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Average Rooms per House:</span>
+                  <span id="lbl-house-rooms" class="control-val">5.4 rooms</span>
+                </div>
+                <input type="range" id="house-rooms" min="2" max="10" step="0.1" value="5.4">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Geographic Proximity:</span>
+                </div>
+                <select id="house-ocean" class="select-input">
+                  <option value="<1H OCEAN">&lt;1 Hour to Ocean</option>
+                  <option value="INLAND">Inland Valley</option>
+                  <option value="NEAR BAY" selected>Near San Francisco Bay</option>
+                  <option value="ISLAND">Coastal Island</option>
+                </select>
+              </div>
+
+              <div style="margin-top:24px;">
+                <button class="btn btn-secondary" style="width:100%; font-size:0.85rem;" onclick="document.querySelector('[data-id=\'1\'].card-btn-inspect').click()">
+                  Inspect Project 01 Full Blueprint →
+                </button>
+              </div>
+            </div>
+
+            <div class="sandbox-display">
+              <div>
+                <div class="result-header">Estimated District Median Valuation</div>
+                <div id="predicted-house-price" class="live-predicted-value">$384,500</div>
+                <span id="house-tier-badge" class="badge-tag badge-cyan">Mid-Market District</span>
+                <span class="badge-tag badge-emerald">Ridge L2 Regulated</span>
+
+                <div class="feature-impact-list">
+                  <div class="impact-row">
+                    <span style="color:#94a3b8; width:110px;">Income Impact:</span>
+                    <div class="impact-bar-bg">
+                      <div id="bar-impact-income" class="impact-bar-fill" style="width:65%; background:var(--accent-emerald);"></div>
+                    </div>
+                    <span style="color:#fff; font-family:var(--font-mono); font-size:0.8rem;">+ Primary</span>
+                  </div>
+
+                  <div class="impact-row">
+                    <span style="color:#94a3b8; width:110px;">Age Impact:</span>
+                    <div class="impact-bar-bg">
+                      <div id="bar-impact-age" class="impact-bar-fill" style="width:50%; background:var(--accent-orange);"></div>
+                    </div>
+                    <span style="color:#fff; font-family:var(--font-mono); font-size:0.8rem;">+ Moderate</span>
+                  </div>
+
+                  <div class="impact-row">
+                    <span style="color:#94a3b8; width:110px;">Rooms Impact:</span>
+                    <div class="impact-bar-bg">
+                      <div id="bar-impact-rooms" class="impact-bar-fill" style="width:54%; background:var(--accent-purple);"></div>
+                    </div>
+                    <span style="color:#fff; font-family:var(--font-mono); font-size:0.8rem;">- Dispersion</span>
+                  </div>
+
+                  <div class="impact-row">
+                    <span style="color:#94a3b8; width:110px;">Coast Proximity:</span>
+                    <div class="impact-bar-bg">
+                      <div id="bar-impact-ocean" class="impact-bar-fill" style="width:75%; background:var(--accent-amber);"></div>
+                    </div>
+                    <span style="color:#fff; font-family:var(--font-mono); font-size:0.8rem;">+ Premium</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:0.75rem; color:#64748b; margin-top:20px; line-height:1.5;">
+                * Mathematical formulation: <code>y = w₀ + w₁·MedInc + w₂·HouseAge + w₃·Rooms + α·Location</code> with Ridge L2 regularization.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. NLP Spam & Sentiment Shield -->
+        <div id="playground-spam" class="playground-panel">
+          <div class="sandbox-grid">
+            <div class="sandbox-controls">
+              <h3 style="font-family:var(--font-display); font-size:1.15rem; margin-bottom:12px; color:#fff;">
+                Test Any Text or Email Snippet
+              </h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px;">
+                Type custom text below or click a benchmark sample to classify via Multinomial Naive Bayes & TF-IDF:
+              </p>
+
+              <div class="preset-chips">
+                <button class="chip nlp-preset-btn" data-text="URGENT! You won a $1,000,000 Walmart prize! Text CLAIM to 7721 immediately for cash transfer.">
+                  🚨 Lottery Scam
+                </button>
+                <button class="chip nlp-preset-btn" data-text="Hey Alex, can you review the pull request for the feature branch before tomorrow's team standup?">
+                  💼 Code Review
+                </button>
+                <button class="chip nlp-preset-btn" data-text="Security Notice: Your bank account is compromised. Verify your password and login credentials now.">
+                  ⚠️ Phishing Alert
+                </button>
+                <button class="chip nlp-preset-btn" data-text="The new gradient boosting model decreased cross-validation loss by 14% on the test split.">
+                  📈 ML Progress
+                </button>
+              </div>
+
+              <textarea id="nlp-input" class="nlp-textarea" rows="4">URGENT! You won a $1,000,000 Walmart prize! Text CLAIM to 7721 immediately for cash transfer.</textarea>
+
+              <button class="btn btn-secondary" style="width:100%; font-size:0.85rem;" onclick="document.querySelector('[data-id=\'31\'].card-btn-inspect').click()">
+                Inspect Project 31 Full Blueprint →
+              </button>
+            </div>
+
+            <div class="sandbox-display">
+              <div>
+                <div class="result-header">Multinomial Naive Bayes Classification</div>
+                <div id="spam-result-badge" class="badge-tag badge-rose" style="font-size:1.2rem; padding:8px 16px; margin-bottom:18px;">
+                  🚨 SPAM DETECTED (98.7%)
+                </div>
+
+                <div class="gauge-container">
+                  <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+                    <span style="color:#10b981;">0% (Legitimate Ham)</span>
+                    <span id="spam-prob-text" style="color:#fff; font-family:var(--font-mono);">Spam Probability: 98.7%</span>
+                    <span style="color:#f43f5e;">100% (High Spam)</span>
+                  </div>
+                  <div class="gauge-track">
+                    <div id="spam-gauge-fill" class="gauge-fill" style="width:98.7%; background-color:var(--accent-rose);"></div>
+                  </div>
+                </div>
+
+                <div style="margin-top:20px;">
+                  <div style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.06em; color:#64748b; margin-bottom:8px;">
+                    Trigger Token Log-Odds Salience:
+                  </div>
+                  <div id="salient-tokens-wrap" style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <!-- Injected dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:0.75rem; color:#64748b; margin-top:20px; line-height:1.5;">
+                * Evaluates log likelihood ratio: <code>log P(Spam|W) - log P(Ham|W) = log(P(S)/P(H)) + ∑ log(P(w|S)/P(w|H))</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 2D Interactive Cluster & Decision Studio -->
+        <div id="playground-clustering" class="playground-panel">
+          <div class="sandbox-grid">
+            <div class="sandbox-controls">
+              <h3 style="font-family:var(--font-display); font-size:1.15rem; margin-bottom:12px; color:#fff;">
+                Cluster Geometry Controls
+              </h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px;">
+                Click directly on the canvas to place custom points, or select a synthetic spatial distribution:
+              </p>
+
+              <div class="preset-chips" style="margin-bottom:14px;">
+                <button class="chip cluster-preset-btn" data-preset="blobs">3 Blobs</button>
+                <button class="chip cluster-preset-btn" data-preset="rings">Concentric Rings</button>
+                <button class="chip cluster-preset-btn" data-preset="random">Uniform Noise</button>
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Number of Centroids (K):</span>
+                </div>
+                <select id="cluster-k-select" class="select-input">
+                  <option value="2">K = 2 Clusters</option>
+                  <option value="3" selected>K = 3 Clusters</option>
+                  <option value="4">K = 4 Clusters</option>
+                  <option value="5">K = 5 Clusters</option>
+                </select>
+              </div>
+
+              <div style="display:flex; gap:10px; margin-bottom:16px;">
+                <button id="btn-cluster-step" class="btn btn-secondary" style="flex:1; font-size:0.85rem;">
+                  Step 1 Iteration
+                </button>
+                <button id="btn-cluster-auto" class="btn btn-primary" style="flex:1; font-size:0.85rem;">
+                  Auto Converge
+                </button>
+              </div>
+
+              <button class="btn btn-ghost" style="width:100%; font-size:0.85rem;" onclick="document.querySelector('[data-id=\'21\'].card-btn-inspect').click()">
+                Inspect Project 21 Full Blueprint →
+              </button>
+            </div>
+
+            <div class="sandbox-display" style="padding:16px;">
+              <div class="cluster-canvas-wrap">
+                <canvas id="cluster-canvas"></canvas>
+                <span class="canvas-hint">Click canvas to add points</span>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-family:var(--font-mono); font-size:0.82rem;">
+                <span id="cluster-iter-count" style="color:var(--accent-orange);">Iteration: 0</span>
+                <span id="cluster-sse-val" style="color:#94a3b8;">Inertia (SSE): Calculating...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Multi-Armed Bandit Casino (Project 50) -->
+        <div id="playground-bandit" class="playground-panel">
+          <div class="sandbox-grid">
+            <div class="sandbox-controls">
+              <h3 style="font-family:var(--font-display); font-size:1.15rem; margin-bottom:12px; color:#fff;">
+                Exploration vs. Exploitation Agent
+              </h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:16px;">
+                Four slot machines with hidden win rates. Pull arms manually to discover payoffs, or launch the automated ε-Greedy agent:
+              </p>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Exploration Rate (ε):</span>
+                </div>
+                <select id="bandit-epsilon-select" class="select-input">
+                  <option value="0.05">ε = 0.05 (Highly Exploitative)</option>
+                  <option value="0.10" selected>ε = 0.10 (Balanced Agent)</option>
+                  <option value="0.30">ε = 0.30 (Aggressive Exploration)</option>
+                </select>
+              </div>
+
+              <div style="display:flex; gap:10px; margin-bottom:14px;">
+                <button id="btn-run-agent-50" class="btn btn-secondary" style="flex:1; font-size:0.85rem;">
+                  Run 50 Steps
+                </button>
+                <button id="btn-run-agent-200" class="btn btn-primary" style="flex:1; font-size:0.85rem;">
+                  Run 200 Steps
+                </button>
+              </div>
+
+              <div style="display:flex; gap:10px;">
+                <button id="btn-reset-bandit" class="btn btn-ghost" style="flex:1; font-size:0.8rem;">
+                  Reset Telemetry
+                </button>
+                <button class="btn btn-ghost" style="flex:1; font-size:0.8rem;" onclick="document.querySelector('[data-id=\'50\'].card-btn-inspect').click()">
+                  View Project 50 →
+                </button>
+              </div>
+            </div>
+
+            <div class="sandbox-display">
+              <div>
+                <div class="result-header">Simulated Slot Machines</div>
+                <div class="bandit-machine-grid">
+                  <div id="bandit-arm-0" class="bandit-arm-card">
+                    <div class="bandit-icon">🍒</div>
+                    <div style="font-size:0.8rem; font-weight:bold; color:#fff; margin-bottom:4px;">Arm 1</div>
+                    <div id="bandit-q-0" class="bandit-q-val">Q: 0.0%</div>
+                    <div id="bandit-n-0" class="bandit-pull-count">0 pulls</div>
+                    <button id="btn-pull-arm-0" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; margin-top:8px; width:100%;">Pull</button>
+                  </div>
+
+                  <div id="bandit-arm-1" class="bandit-arm-card">
+                    <div class="bandit-icon">🔔</div>
+                    <div style="font-size:0.8rem; font-weight:bold; color:#fff; margin-bottom:4px;">Arm 2</div>
+                    <div id="bandit-q-1" class="bandit-q-val">Q: 0.0%</div>
+                    <div id="bandit-n-1" class="bandit-pull-count">0 pulls</div>
+                    <button id="btn-pull-arm-1" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; margin-top:8px; width:100%;">Pull</button>
+                  </div>
+
+                  <div id="bandit-arm-2" class="bandit-arm-card" style="border-color:rgba(0, 240, 255, 0.4);">
+                    <div class="bandit-icon">💎</div>
+                    <div style="font-size:0.8rem; font-weight:bold; color:#fff; margin-bottom:4px;">Arm 3</div>
+                    <div id="bandit-q-2" class="bandit-q-val">Q: 0.0%</div>
+                    <div id="bandit-n-2" class="bandit-pull-count">0 pulls</div>
+                    <button id="btn-pull-arm-2" class="btn btn-primary" style="padding:4px 8px; font-size:0.75rem; margin-top:8px; width:100%;">Pull</button>
+                  </div>
+
+                  <div id="bandit-arm-3" class="bandit-arm-card">
+                    <div class="bandit-icon">7️⃣</div>
+                    <div style="font-size:0.8rem; font-weight:bold; color:#fff; margin-bottom:4px;">Arm 4</div>
+                    <div id="bandit-q-3" class="bandit-q-val">Q: 0.0%</div>
+                    <div id="bandit-n-3" class="bandit-pull-count">0 pulls</div>
+                    <button id="btn-pull-arm-3" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; margin-top:8px; width:100%;">Pull</button>
+                  </div>
+                </div>
+
+                <div class="modal-meta-grid" style="margin-bottom:0;">
+                  <div class="meta-spec-item">
+                    <span class="meta-spec-key">Total Pulls</span>
+                    <span id="bandit-total-steps" class="meta-spec-val" style="color:var(--accent-orange);">0</span>
+                  </div>
+                  <div class="meta-spec-item">
+                    <span class="meta-spec-key">Total Payout</span>
+                    <span id="bandit-total-reward" class="meta-spec-val" style="color:var(--accent-emerald);">0 pts</span>
+                  </div>
+                  <div class="meta-spec-item">
+                    <span class="meta-spec-key">Empirical Win Rate</span>
+                    <span id="bandit-win-rate" class="meta-spec-val" style="color:var(--accent-purple);">0.0%</span>
+                  </div>
+                  <div class="meta-spec-item">
+                    <span class="meta-spec-key">Optimal Policy</span>
+                    <span id="bandit-optimal-ratio" class="meta-spec-val" style="color:var(--accent-amber);">0.0% Arm #3</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:0.75rem; color:#64748b; margin-top:14px; line-height:1.5;">
+                * Update equation: <code>Q(A) ← Q(A) + (1/N)·[R - Q(A)]</code> with exploration probability <code>ε</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         CURRICULUM MASTERY & PROGRESS TRACKER
+         ========================================================================== -->
+    <section id="mastery" class="section reveal-on-scroll">
+      <div class="section-header">
+        <span class="section-tag">// SKILL ROADMAP // PERSISTENT PROGRESS</span>
+        <h2 class="section-title">Track Your Machine Learning Mastery</h2>
+        <p class="section-desc">
+          Check off completed projects as you work through the curriculum. Progress is saved locally in your browser.
+        </p>
+      </div>
+
+      <div class="mastery-dashboard">
+        <div class="mastery-gauge-col">
+          <div style="position:relative; width:160px; height:160px; display:flex; align-items:center; justify-content:center;">
+            <svg class="circular-progress-svg" viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ffaa00" />
+                  <stop offset="50%" stop-color="#ff6b00" />
+                  <stop offset="100%" stop-color="#ff3800" />
+                </linearGradient>
+              </defs>
+              <circle class="circle-bg" cx="80" cy="80" r="70"></circle>
+              <circle id="mastery-circle-fill" class="circle-val" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="gauge-center-text">
+              <span id="mastery-pct-num" class="gauge-pct">0%</span>
+              <span style="font-size:0.7rem; color:#64748b; text-transform:uppercase;">Mastered</span>
+            </div>
+          </div>
+          <span id="mastery-count-num" style="font-family:var(--font-mono); font-size:0.9rem; color:#94a3b8; margin-top:12px;">0 / 50 Mastered</span>
+        </div>
+
+        <div>
+          <div class="track-progress-bars">
+            <div class="track-prog-row">
+              <div class="prog-row-labels">
+                <span style="color:var(--track-regression);">1. Supervised: Regression (01 - 10)</span>
+                <span id="track-lbl-Regression" style="font-family:var(--font-mono);">0/10</span>
+              </div>
+              <div class="prog-track-bg">
+                <div id="track-bar-Regression" class="prog-track-fill" style="width:0%; background:var(--track-regression);"></div>
+              </div>
+            </div>
+
+            <div class="track-prog-row">
+              <div class="prog-row-labels">
+                <span style="color:var(--track-classification);">2. Supervised: Classification (11 - 20)</span>
+                <span id="track-lbl-Classification" style="font-family:var(--font-mono);">0/10</span>
+              </div>
+              <div class="prog-track-bg">
+                <div id="track-bar-Classification" class="prog-track-fill" style="width:0%; background:var(--track-classification);"></div>
+              </div>
+            </div>
+
+            <div class="track-prog-row">
+              <div class="prog-row-labels">
+                <span style="color:var(--track-unsupervised);">3. Unsupervised & Anomaly (21 - 30)</span>
+                <span id="track-lbl-Unsupervised" style="font-family:var(--font-mono);">0/10</span>
+              </div>
+              <div class="prog-track-bg">
+                <div id="track-bar-Unsupervised" class="prog-track-fill" style="width:0%; background:var(--track-unsupervised);"></div>
+              </div>
+            </div>
+
+            <div class="track-prog-row">
+              <div class="prog-row-labels">
+                <span style="color:var(--track-nlp);">4. NLP & Computational Linguistics (31 - 40)</span>
+                <span id="track-lbl-NLPText" style="font-family:var(--font-mono);">0/10</span>
+              </div>
+              <div class="prog-track-bg">
+                <div id="track-bar-NLPText" class="prog-track-fill" style="width:0%; background:var(--track-nlp);"></div>
+              </div>
+            </div>
+
+            <div class="track-prog-row">
+              <div class="prog-row-labels">
+                <span style="color:var(--track-advanced);">5. Vision, Recs, Series & RL (41 - 50)</span>
+                <span id="track-lbl-VisionRecsRL" style="font-family:var(--font-mono);">0/10</span>
+              </div>
+              <div class="prog-track-bg">
+                <div id="track-bar-VisionRecsRL" class="prog-track-fill" style="width:0%; background:var(--track-advanced);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+            <button id="btn-mark-all-done" class="btn btn-secondary" style="font-size:0.8rem; padding:8px 16px;">
+              Mark All 50 as Mastered
+            </button>
+            <button id="btn-reset-progress" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px;">
+              Reset Progress
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         THE 50 PROJECTS CATALOG & DIRECTORY
+         ========================================================================== -->
+    <section id="catalog" class="section reveal-on-scroll">
+      <div class="section-header">
+        <span class="section-tag">// COMPLETE CURRICULUM DIRECTORY // 50 BLUEPRINTS</span>
+        <h2 class="section-title">Explore All 50 Machine Learning Blueprints</h2>
+        <p class="section-desc">
+          Filter by technical domain, search by algorithm or dataset, inspect full source code, and copy runnable scripts directly into your local IDE.
+        </p>
+      </div>
+
+      <!-- Controls & Filter Toolbar -->
+      <div class="catalog-controls-bar">
+        <div class="search-and-view-row">
+          <div class="search-box-wrap">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="catalog-search-input" class="search-input" placeholder="Search by title, algorithm, dataset, or keyword... (Press '/' to focus)">
+            <button id="catalog-search-clear" class="search-clear-btn">✕</button>
+          </div>
+
+          <div class="view-toggle-group">
+            <button class="view-btn active" data-view="grid">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Grid</span>
+            </button>
+            <button class="view-btn" data-view="table">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+              <span>Matrix</span>
+            </button>
+            <button class="view-btn" data-view="roadmap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span>Roadmap</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Track Filter Pills -->
+        <div class="track-filters-row">
+          <button class="track-filter-btn active" data-track="all">All (50)</button>
+          <button class="track-filter-btn" data-track="Regression">
+            <span style="color:var(--track-regression);">●</span> Regression (10)
+          </button>
+          <button class="track-filter-btn" data-track="Classification">
+            <span style="color:var(--track-classification);">●</span> Classification (10)
+          </button>
+          <button class="track-filter-btn" data-track="Unsupervised">
+            <span style="color:var(--track-unsupervised);">●</span> Unsupervised (10)
+          </button>
+          <button class="track-filter-btn" data-track="NLP & Text">
+            <span style="color:var(--track-nlp);">●</span> NLP & Text (10)
+          </button>
+          <button class="track-filter-btn" data-track="Vision, Recs & RL">
+            <span style="color:var(--track-advanced);">●</span> Vision & RL (10)
+          </button>
+        </div>
+
+        <!-- Secondary Filters Row -->
+        <div class="secondary-filters-row">
+          <div class="filter-pills-wrap">
+            <span>Difficulty:</span>
+            <select id="catalog-diff-select" class="difficulty-select">
+              <option value="all">All Levels</option>
+              <option value="Beginner">Beginner Only</option>
+              <option value="Intermediate">Intermediate Only</option>
+            </select>
+          </div>
+
+          <span id="catalog-results-count" style="font-family:var(--font-mono); font-size:0.8rem; color:#94a3b8;">
+            Showing 50 of 50 Projects
+          </span>
+        </div>
+      </div>
+
+      <!-- 1. Grid Container -->
+      <div id="projects-grid-container" class="projects-grid">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- 2. Matrix Table Container -->
+      <div id="projects-table-container" class="table-view-container" style="display:none;">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Project Title</th>
+              <th>Track</th>
+              <th>Key Algorithm</th>
+              <th>Difficulty</th>
+              <th>Recommended Dataset</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="matrix-table-body">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 3. Learning Roadmap Container -->
+      <div id="projects-roadmap-container" class="roadmap-container" style="display:none;">
+        <!-- Injected via JavaScript -->
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         ALGORITHM DECISION ENGINE ("WHICH ALGO SHOULD I USE?")
+         ========================================================================== -->
+    <section id="wizard" class="section reveal-on-scroll">
+      <div class="section-header">
+        <span class="section-tag">// ARCHITECTURAL DECISION MATRIX // GUIDED SELECTION</span>
+        <h2 class="section-title">Which Machine Learning Algorithm Should You Use?</h2>
+        <p class="section-desc">
+          Answer two fundamental architectural questions to identify the ideal algorithmic paradigm and jump straight into its production blueprint.
+        </p>
+      </div>
+
+      <div class="wizard-box">
+        <div class="wizard-steps-grid">
+          <div>
+            <div class="wizard-question">
+              <div class="wizard-q-title">Step 1: What is the nature of your target output?</div>
+              <div class="wizard-choices">
+                <button class="wizard-btn-choice wizard-btn-target active" data-target="continuous">
+                  <strong>Continuous Numeric Value</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Prices, temperatures, revenues, demand counts</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-target" data-target="discrete">
+                  <strong>Discrete Category or Class Label</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Fraud / legitimate, churn, diagnosis, sentiment</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-target" data-target="unsupervised">
+                  <strong>Unlabeled Patterns or Clustering</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Customer segments, network anomalies, outlier discovery</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-target" data-target="nlp">
+                  <strong>Raw Natural Language Text</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Spam filtration, article topics, search intent matching</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-target" data-target="rl">
+                  <strong>Sequential Decisions Under Uncertainty</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">A/B testing bandits, dynamic pricing, gaming agents</div>
+                </button>
+              </div>
+            </div>
+
+            <div class="wizard-question">
+              <div class="wizard-q-title">Step 2: What is your primary design constraint?</div>
+              <div class="wizard-choices">
+                <button class="wizard-btn-choice wizard-btn-constraint active" data-constraint="interpretability">
+                  <strong>Maximum Model Interpretability & White-Box Auditing</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Legal compliance, clinical explaining, linear coefficients</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-constraint" data-constraint="accuracy">
+                  <strong>Maximum Predictive Power & Non-Linear Capture</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Ensemble methods, gradient boosting, random forests</div>
+                </button>
+                <button class="wizard-btn-choice wizard-btn-constraint" data-constraint="imbalance">
+                  <strong>Severe Class Imbalance / Rare Event Spotting</strong>
+                  <div style="font-size:0.8rem; color:#94a3b8;">Cost-sensitive loss weighting, PR-AUC tuning</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-result-card">
+            <div>
+              <div class="result-header">Recommended Algorithmic Blueprint</div>
+              <h3 id="wizard-rec-title" class="recommended-algo-title">Ordinary Least Squares & Ridge</h3>
+              <p id="wizard-rec-desc" style="color:#cbd5e1; font-size:0.95rem; line-height:1.7; margin-bottom:20px;">
+                Provides exact analytic coefficients and geometric interpretability. L2 regularization penalizes extreme weights to mitigate collinearity in continuous estimation.
+              </p>
+            </div>
+
+            <div>
+              <button id="wizard-rec-btn" class="btn btn-primary" style="width:100%;">
+                Inspect Project #01 Blueprint →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         DEVELOPER TERMINAL & QUICKSTART
+         ========================================================================== -->
+    <section id="quickstart" class="section reveal-on-scroll">
+      <div class="section-header">
+        <span class="section-tag">// DEVELOPER SETUP // CLI EXECUTION</span>
+        <h2 class="section-title">Run Any Blueprint Locally in 30 Seconds</h2>
+        <p class="section-desc">
+          Zero cloud accounts, zero GPU drivers. All 50 projects run on standard Python 3.10+ CPU environments.
+        </p>
+      </div>
+
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="term-dot dot-red"></span>
+            <span class="term-dot dot-yellow"></span>
+            <span class="term-dot dot-green"></span>
+          </div>
+          <span class="terminal-title">bash — synapse-50-ml-projects — 80x24</span>
+          <button class="term-copy-btn" onclick="navigator.clipboard.writeText('git clone https://github.com/vibecodedshi/50-ml-projects.git\ncd 50-ml-projects\npip install -r requirements.txt\npython 01-house-price-prediction.py'); alert('Copied commands to clipboard!');">
+            Copy All
+          </button>
+        </div>
+        <div class="terminal-body">
+          <div class="term-comment"># 1. Clone repository to your local workspace</div>
+          <div class="term-line">
+            <span class="term-prompt">$</span>
+            <span>git clone https://github.com/vibecodedshi/50-ml-projects.git</span>
+          </div>
+          <div class="term-line">
+            <span class="term-prompt">$</span>
+            <span>cd 50-ml-projects</span>
+          </div>
+
+          <div class="term-comment" style="margin-top:14px;"># 2. Install lightweight dependencies (scikit-learn, pandas, numpy)</div>
+          <div class="term-line">
+            <span class="term-prompt">$</span>
+            <span>pip install -r requirements.txt</span>
+          </div>
+
+          <div class="term-comment" style="margin-top:14px;"># 3. Execute any blueprint Python script directly</div>
+          <div class="term-line">
+            <span class="term-prompt">$</span>
+            <span>python -c "import urllib; print('Environment verified ready for 50 ML models!')"</span><span class="term-cursor"></span>
+          </div>
+          <div style="color:var(--accent-orange); font-weight:600; margin-bottom:8px;">✓ Environment verified ready for 50 ML models!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SITE FOOTER
+         ========================================================================== -->
+    <footer class="site-footer">
+      <div class="footer-left">
+        <span style="font-family:var(--font-display); font-weight:800; color:#fff;">SYNAPSE<span style="color:var(--accent-orange);">50</span></span>
+        <span>• Applied Machine Learning Curriculum</span>
+        <span style="color:#64748b;">MIT License</span>
+      </div>
+
+      <div class="footer-nav">
+        <a href="#hero">Back to Top ↑</a>
+        <a href="#playgrounds">Interactive Labs</a>
+        <a href="#catalog">Curriculum</a>
+        <a href="README.md" target="_blank">Repository README</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODAL DRAWER: PROJECT BLUEPRINT DETAILS
+       ========================================================================== -->
+  <div id="blueprint-modal" class="modal-overlay">
+    <div class="modal-dialog">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-header-meta">
+          <span id="modal-project-id" class="card-id-pill" style="font-size:0.9rem;">#01</span>
+          <div class="modal-title-row">
+            <h3 id="modal-project-title" class="modal-project-title">House Price Prediction with Linear & Ridge</h3>
+            <div style="display:flex; gap:6px;">
+              <span id="modal-track-badge" class="badge-tag">Regression</span>
+              <span id="modal-diff-badge" class="badge-tag badge-emerald">Beginner</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-close-modal" class="modal-close-btn" title="Close (ESC)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Prev / Next Navigation Bar -->
+      <div class="modal-nav-bar">
+        <button id="btn-modal-prev" class="modal-nav-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Previous Project</span>
+        </button>
+        <div class="modal-nav-center">
+          <span class="modal-shortcut-hint">Navigate with <kbd>←</kbd> and <kbd>→</kbd> keys</span>
+        </div>
+        <button id="btn-modal-next" class="modal-nav-btn">
+          <span>Next Project</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="modal-tabs-bar">
+        <button class="modal-tab active" data-tab="overview">
+          <span class="tab-indicator"></span>
+          <span>Overview & Objective</span>
+        </button>
+        <button class="modal-tab" data-tab="math">
+          <span class="tab-indicator"></span>
+          <span>Math & Foundations</span>
+        </button>
+        <button class="modal-tab" data-tab="code">
+          <span class="tab-indicator"></span>
+          <span>Runnable Python Code</span>
+        </button>
+        <button class="modal-tab" data-tab="steps">
+          <span class="tab-indicator"></span>
+          <span>Implementation Pipeline</span>
+        </button>
+        <button class="modal-tab" data-tab="outputs">
+          <span class="tab-indicator"></span>
+          <span>Outputs & Challenges</span>
+        </button>
+      </div>
+
+      <!-- Modal Body Tab Contents -->
+      <div class="modal-body">
+        <div id="modal-tab-overview" class="tab-content active"></div>
+        <div id="modal-tab-math" class="tab-content"></div>
+
+        <div id="modal-tab-code" class="tab-content">
+          <div class="code-action-bar">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="code-lang-tag">python3</span>
+              <span id="modal-code-lines" style="font-family:var(--font-mono); font-size:0.75rem; color:#64748b;"></span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button id="btn-modal-download-code" class="card-btn-copy" style="font-size:0.75rem;">
+                Download .py
+              </button>
+              <button id="btn-modal-copy-code" class="btn btn-secondary" style="padding:4px 12px; font-size:0.75rem;">
+                Copy Code
+              </button>
+            </div>
+          </div>
+          <div class="code-container">
+            <pre><code id="modal-code-block" class="language-python"></code></pre>
+          </div>
+        </div>
+
+        <div id="modal-tab-steps" class="tab-content"></div>
+        <div id="modal-tab-outputs" class="tab-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       COMMAND PALETTE (CTRL+K) MODAL
+       ========================================================================== -->
+  <div id="cmd-palette-overlay" class="cmd-palette-overlay">
+    <div class="cmd-palette-box">
+      <div class="cmd-palette-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-orange);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="cmd-palette-input" class="cmd-palette-input" placeholder="Type a project name, algorithm, or #id...">
+      </div>
+      <ul id="cmd-results-list" class="cmd-results-list">
+        <!-- Results injected dynamically -->
+      </ul>
+      <div class="cmd-footer">
+        <span>Navigation: <kbd>↑</kbd> <kbd>↓</kbd> to select, <kbd>Enter</kbd> to open</span>
+        <span>Press <kbd>ESC</kbd> to exit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- External CDNs: Prism Syntax Highlighting & Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Three.js 3D WebGL Engine -->
+  <script src="three.min.js"></script>
+  <script>if (typeof THREE === 'undefined') document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
+
+  <!-- Autogenerated Projects Dataset -->
+  <script src="projects-data.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+
+</body>
+</html>
