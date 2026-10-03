@@ -668,7 +668,7 @@
       // Only block interaction if cursor is on an actual opaque UI card, button, modal, or input:
       const blockingElement = topEl.closest(
         '.modal-dialog, .modal-header, .modal-tabs-bar, .modal-body, ' +
-        '.project-card, .wizard-box, .sandbox-card, .cmd-palette-box, ' +
+        '.hero-text-box, .project-card, .wizard-box, .sandbox-card, .cmd-palette-box, ' +
         '.navbar, .term-window, .code-container, .playground-panel, ' +
         '.view-btn, .track-filter-btn, .stat-item, ' +
         'button, input, select, textarea, a, label'
