@@ -15,8 +15,10 @@
       // User-specified high fidelity SFX audio files
       this.masteringAudio = new Audio('sfx/soynoviembre-digital-success-chime-futuristic-ui-notification-sfx-562086 (1).mp3');
       this.resetAudio = new Audio('sfx/miraclei-sample_confirm_accept02_kofi_by_miraclei-364180.mp3');
+      this.boomAudio = new Audio('sfx/dragon-studio-boom-copyright-free-487662.mp3');
       this.masteringAudio.preload = 'auto';
       this.resetAudio.preload = 'auto';
+      this.boomAudio.preload = 'auto';
     }
 
     init() {
@@ -56,6 +58,18 @@
         if (p) p.catch(() => {});
       } catch (e) {
         this.fallbackTone(450, 'triangle', 0.12);
+      }
+    }
+
+    playBoom() {
+      if (!this.enabled) return;
+      try {
+        this.boomAudio.currentTime = 0;
+        this.boomAudio.volume = 0.85;
+        const p = this.boomAudio.play();
+        if (p) p.catch(() => {});
+      } catch (e) {
+        // Fallback or ignore if blocked
       }
     }
 
@@ -664,11 +678,14 @@
     }
 
     function triggerOrbClickGlow() {
+      // Play dragon studio boom SFX on orb click
+      sfx.playBoom();
+
       flashIntensity = 1.0;
       elementsZoomSurge = 1.0; // Temporarily zoom 3D environment in
       orbScaleSurge = 1.0;     // Temporarily swell the orb itself and its aura
 
-      // Trigger full page edge radiant bloom overlay strictly behind UI (z-index: 0, NO SOUND)
+      // Trigger full page edge radiant bloom overlay strictly behind UI (z-index: 0)
       const pageGlow = document.getElementById('orb-page-glow');
       if (pageGlow) {
         pageGlow.classList.add('active');
@@ -889,21 +906,21 @@
       scrollVelocity += (rawVelocity - scrollVelocity) * 0.15;
       prevScrollY = currentScrollY;
 
-      // Smooth section threshold tweening & automatic zoom interpolation
+      // Smooth section threshold tweening & automatic zoom interpolation (snappier, faster transitions)
       const targetAnchor = getTargetSectionAnchor();
-      currentTweenAnchor.x += (targetAnchor.x - currentTweenAnchor.x) * 0.045;
-      currentTweenAnchor.y += (targetAnchor.y - currentTweenAnchor.y) * 0.045;
-      currentTweenAnchor.z += (targetAnchor.z - currentTweenAnchor.z) * 0.045;
-      currentTweenAnchor.scale += (targetAnchor.scale - currentTweenAnchor.scale) * 0.045;
+      currentTweenAnchor.x += (targetAnchor.x - currentTweenAnchor.x) * 0.095;
+      currentTweenAnchor.y += (targetAnchor.y - currentTweenAnchor.y) * 0.095;
+      currentTweenAnchor.z += (targetAnchor.z - currentTweenAnchor.z) * 0.095;
+      currentTweenAnchor.scale += (targetAnchor.scale - currentTweenAnchor.scale) * 0.095;
 
       // Subtle mouse sway
       const mouseSwayX = mouseNorm.x * 0.35;
       const mouseSwayY = mouseNorm.y * 0.25;
 
-      // Smooth interpolation to position
-      sphereGroup.position.x += ((currentTweenAnchor.x + mouseSwayX) - sphereGroup.position.x) * 0.06;
-      sphereGroup.position.y += ((currentTweenAnchor.y + mouseSwayY) - sphereGroup.position.y) * 0.06;
-      sphereGroup.position.z += (currentTweenAnchor.z - sphereGroup.position.z) * 0.06;
+      // Smooth interpolation to position (accelerated from 0.06 to 0.12 for faster tweening)
+      sphereGroup.position.x += ((currentTweenAnchor.x + mouseSwayX) - sphereGroup.position.x) * 0.12;
+      sphereGroup.position.y += ((currentTweenAnchor.y + mouseSwayY) - sphereGroup.position.y) * 0.12;
+      sphereGroup.position.z += (currentTweenAnchor.z - sphereGroup.position.z) * 0.12;
 
       // Orb expansion surge on click bloom
       orbScaleSurge += (0 - orbScaleSurge) * 0.075;
