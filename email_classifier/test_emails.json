@@ -1,0 +1,38 @@
+[
+  {
+    "from": "store-news@steampowered.com",
+    "subject": "An item on your Steam Wishlist is on sale!",
+    "body": "Hi Gamer, Elden Ring and Geometry Dash are now 50% off during the Steam Autumn Sale. Check your cart now.",
+    "date": "Sun, 04 Oct 2026 12:00:00"
+  },
+  {
+    "from": "noreply@canvas.university.edu",
+    "subject": "New Assignment: CS401 Machine Learning Final Project due Friday",
+    "body": "Dear students, please submit your final PyTorch homework assignment and lab report before 11:59 PM this Friday on Canvas.",
+    "date": "Sun, 04 Oct 2026 09:30:00"
+  },
+  {
+    "from": "security-alert@github.com",
+    "subject": "[GitHub] A new personal access token was generated",
+    "body": "Hi Christopher, a new token with repo scope was generated from IP 192.168.1.1. If this was not you, visit your settings.",
+    "date": "Sun, 04 Oct 2026 14:15:00"
+  },
+  {
+    "from": "crypto-jackpot-winner@quick-claim-now.xyz",
+    "subject": "CONGRATULATIONS! You have 3.45 BTC waiting for deposit",
+    "body": "URGENT NOTICE: Your wallet address won 3.45 Bitcoin in our international lottery. Click here now to verify your secret key.",
+    "date": "Sun, 04 Oct 2026 18:22:00"
+  },
+  {
+    "from": "alex.smith.friend@gmail.com",
+    "subject": "Grabbing dinner tonight?",
+    "body": "Hey Chris! Are we still on for tacos around 7 PM? Let me know if that time works for you.",
+    "date": "Sun, 04 Oct 2026 17:00:00"
+  },
+  {
+    "from": "deals@fastfashion-clothing.com",
+    "subject": "Limited 48h flash sale: 70% off all jackets and hoodies",
+    "body": "Check out our weekly clearance catalogue. Unsubscribe at any time by clicking the footer link.",
+    "date": "Sun, 04 Oct 2026 11:10:00"
+  }
+]
