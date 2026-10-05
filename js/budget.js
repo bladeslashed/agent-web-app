@@ -105,11 +105,11 @@ function updateComparatorBadges() {
       if (comp.state === 'none') {
         labelEl.textContent = t.compVsLastMonth;
       } else if (comp.state === 'up') {
-        labelEl.textContent = `+${formatRupiah(comp.diff)} (${t.compSpendingUp})`;
+        labelEl.textContent = `+${formatRupiah(comp.diff)} (+${comp.percent}%)`;
       } else if (comp.state === 'down') {
-        labelEl.textContent = `-${formatRupiah(comp.diff)} (${t.compSpendingDown})`;
+        labelEl.textContent = `-${formatRupiah(comp.diff)} (-${comp.percent}%)`;
       } else {
-        labelEl.textContent = `${t.compSpendingEqual}`;
+        labelEl.textContent = AppState.lang === 'en' ? 'Equal spend' : 'Stabil (=)';
       }
     }
   }
@@ -125,9 +125,9 @@ function updateComparatorBadges() {
       if (comp.state === 'none') {
         labelEl.textContent = t.compVsLastMonth;
       } else if (comp.state === 'up') {
-        labelEl.textContent = `+${formatRupiah(comp.diff)} ${comp.symbol}`;
+        labelEl.textContent = `+${formatRupiah(comp.diff)}`;
       } else if (comp.state === 'down') {
-        labelEl.textContent = `-${formatRupiah(comp.diff)} ${comp.symbol}`;
+        labelEl.textContent = `-${formatRupiah(comp.diff)}`;
       } else {
         labelEl.textContent = `=`;
       }

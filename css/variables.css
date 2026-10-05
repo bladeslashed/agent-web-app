@@ -52,6 +52,29 @@
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: rgba(59, 130, 246, 0.5);
   --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* Semantic Badges / Info Bubbles & Indicators (Dark Mode Default) */
+  --badge-emerald-text: #34d399;
+  --badge-emerald-bg: rgba(16, 185, 129, 0.18);
+  --badge-emerald-border: rgba(16, 185, 129, 0.4);
+
+  --badge-rose-text: #fb7185;
+  --badge-rose-bg: rgba(244, 63, 94, 0.18);
+  --badge-rose-border: rgba(244, 63, 94, 0.4);
+
+  --badge-amber-text: #fbbf24;
+  --badge-amber-bg: rgba(245, 158, 11, 0.18);
+  --badge-amber-border: rgba(245, 158, 11, 0.4);
+
+  --badge-blue-text: #60a5fa;
+  --badge-blue-bg: rgba(59, 130, 246, 0.15);
+  --badge-blue-border: rgba(59, 130, 246, 0.35);
+
+  --badge-gray-text: #94a3b8;
+  --badge-gray-bg: rgba(148, 163, 184, 0.12);
+  --badge-gray-border: rgba(148, 163, 184, 0.25);
+
+  --meter-track-bg: rgba(255, 255, 255, 0.07);
 }
 
 /* ====================================================================
@@ -279,3 +302,32 @@
   --border-focus: rgba(225, 29, 72, 0.5);
   --card-shadow: 0 4px 14px rgba(225, 29, 72, 0.08);
 }
+
+/* ====================================================================
+   UNIVERSAL LIGHT MODE SEMANTIC HIGH-CONTRAST TOKENS
+   Ensures badges, pills, and text are crisp and accessible in ALL light themes
+   ==================================================================== */
+[data-mode="light"] {
+  --badge-emerald-text: #047857;
+  --badge-emerald-bg: rgba(16, 185, 129, 0.14);
+  --badge-emerald-border: rgba(16, 185, 129, 0.4);
+
+  --badge-rose-text: #be123c;
+  --badge-rose-bg: rgba(244, 63, 94, 0.12);
+  --badge-rose-border: rgba(244, 63, 94, 0.35);
+
+  --badge-amber-text: #b45309;
+  --badge-amber-bg: rgba(245, 158, 11, 0.14);
+  --badge-amber-border: rgba(245, 158, 11, 0.35);
+
+  --badge-blue-text: #1d4ed8;
+  --badge-blue-bg: rgba(37, 99, 235, 0.12);
+  --badge-blue-border: rgba(37, 99, 235, 0.3);
+
+  --badge-gray-text: #334155;
+  --badge-gray-bg: rgba(100, 116, 139, 0.12);
+  --badge-gray-border: rgba(100, 116, 139, 0.28);
+
+  --meter-track-bg: rgba(0, 0, 0, 0.08);
+}
+

@@ -186,12 +186,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 11. Submit Custom Form Item (Add to Cart)
+  // 11. Submit Custom Form Item (Add to Cart / Edit Cart Item)
   const itemForm = document.getElementById('item-form');
   if (itemForm) {
     itemForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const editId = (document.getElementById('edit-item-id')?.value || '').trim();
       const name = document.getElementById('item-name').value.trim();
       const category = document.getElementById('item-category').value;
       const unit = document.getElementById('item-unit').value;
@@ -207,6 +208,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const discCalc = calculateDiscount(price, discountStr);
       const subtotal = discCalc.finalUnitPrice * qty;
 
+      if (editId) {
+        // Mode Edit: Update existing item in cart
+        const idx = AppState.cart.findIndex(i => i.id === editId);
+        if (idx !== -1) {
+          AppState.cart[idx] = {
+            ...AppState.cart[idx],
+            name: name,
+            category: category,
+            unit: unit,
+            qty: qty,
+            originalPrice: price,
+            discountString: discCalc.discountString,
+            finalUnitPrice: discCalc.finalUnitPrice,
+            subtotal: subtotal
+          };
+          saveCartToStorage();
+          renderCartItems();
+          updateComparatorBadges();
+          closeAddModal();
+          showToast(`"${name}" ${AppState.lang === 'en' ? 'updated.' : 'berhasil diperbarui.'}`);
+          return;
+        }
+      }
+
+      // Mode Add: Insert new item to front of cart
       const newItem = {
         id: 'item_' + Date.now(),
         name: name,
@@ -229,12 +255,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 12. Grocery Card Actions (Increment, Decrement, Delete)
+  // 12. Grocery Card Actions (Edit, Increment, Decrement, Delete)
   const cartList = document.getElementById('grocery-items-list');
   if (cartList) {
     cartList.addEventListener('click', (e) => {
       const btn = e.target.closest('button');
-      if (!btn) return;
+      
+      // Allow tapping card-item-info to edit
+      if (!btn) {
+        const itemInfo = e.target.closest('.card-item-info');
+        if (itemInfo) {
+          const card = itemInfo.closest('.grocery-card');
+          if (card) {
+            const cardId = card.getAttribute('data-id');
+            if (cardId && typeof openEditModal === 'function') {
+              openEditModal(cardId);
+            }
+          }
+        }
+        return;
+      }
 
       const action = btn.getAttribute('data-action');
       const id = btn.getAttribute('data-id');
@@ -243,7 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const item = AppState.cart.find(i => i.id === id);
       if (!item) return;
 
-      if (action === 'increment') {
+      if (action === 'edit') {
+        if (typeof openEditModal === 'function') {
+          openEditModal(id);
+        }
+      } else if (action === 'increment') {
         item.qty += 1;
         item.subtotal = item.qty * item.finalUnitPrice;
         saveCartToStorage();

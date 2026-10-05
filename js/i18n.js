@@ -83,7 +83,12 @@ const I18N = {
     modeSelectorLabel: 'Pilih Mode Tampilan',
     modeDarkText: 'Mode Gelap',
     modeLightText: 'Mode Terang',
-    paletteSelectorLabel: 'Pilih Palet Warna'
+    paletteSelectorLabel: 'Pilih Palet Warna',
+    editItemBtn: 'Ubah',
+    editItemModalTitle: 'Edit Barang Belanja',
+    editItemModalSubtitle: 'Ubah rincian barang, harga, diskon, atau jumlah',
+    saveChangesBtn: 'Simpan Perubahan',
+    itemUpdatedToast: 'berhasil diperbarui.'
   },
   en: {
     langCode: 'ID', // Clicking toggles back to Indonesian
@@ -164,7 +169,12 @@ const I18N = {
     modeSelectorLabel: 'Select Display Mode',
     modeDarkText: 'Dark Mode',
     modeLightText: 'Light Mode',
-    paletteSelectorLabel: 'Select Color Palette'
+    paletteSelectorLabel: 'Select Color Palette',
+    editItemBtn: 'Edit',
+    editItemModalTitle: 'Edit Grocery Item',
+    editItemModalSubtitle: 'Modify item details, price, discount or quantity',
+    saveChangesBtn: 'Save Changes',
+    itemUpdatedToast: 'updated successfully.'
   }
 };
 

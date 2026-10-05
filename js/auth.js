@@ -151,7 +151,21 @@ async function loginWithGoogle() {
     }
   } catch (error) {
     console.error('Google Sign-In Error:', error);
-    if (error.code === 'auth/popup-blocked') {
+    if (error.code === 'auth/configuration-not-found') {
+      const guidanceMsg = AppState.lang === 'en'
+        ? 'Firebase Authentication is not activated in Firebase Console for this project. Please go to Firebase Console > Authentication > Enable Google Sign-In, or use offline mode.'
+        : 'Firebase Auth belum diaktifkan di Firebase Console proyek shop-tracked. Silakan buka Firebase Console > Authentication > Aktifkan Google Sign-in, atau simpan secara offline.';
+      showToast(guidanceMsg, 'error');
+
+      const promoDesc = document.getElementById('auth-promo-desc');
+      if (promoDesc) {
+        promoDesc.innerHTML = `<span style="color: var(--badge-rose-text); font-weight: 700;">⚠️ Konfigurasi Diperlukan:</span> Buka Firebase Console proyek <code>${FIREBASE_CONFIG.projectId}</code> &rarr; <strong>Build &rarr; Authentication</strong> &rarr; klik <strong>Get Started</strong> dan aktifkan <strong>Google</strong> di tab <em>Sign-in method</em>.`;
+      }
+
+      // Automatically reveal offline fallback button so user is never blocked
+      const offlineBtn = document.getElementById('btn-save-offline-anyway');
+      if (offlineBtn) offlineBtn.classList.remove('hidden');
+    } else if (error.code === 'auth/popup-blocked') {
       try {
         await firebaseAuth.signInWithRedirect(provider);
       } catch (e) {

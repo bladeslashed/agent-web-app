@@ -12,7 +12,13 @@
   border-radius: var(--radius-full);
   font-size: 0.72rem;
   font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.2s ease;
+}
+
+.spending-comparator-badge span {
+  white-space: nowrap;
 }
 
 .spending-comparator-badge .comp-icon {
@@ -21,33 +27,29 @@
   line-height: 1;
 }
 
-/* Comparator States */
-/* Gray negative sign (-) when no past data */
+/* Comparator States with Accessible High-Contrast Tokens */
 .spending-comparator-badge.comp-none {
-  background: rgba(148, 163, 184, 0.12);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  color: #94a3b8;
+  background: var(--badge-gray-bg);
+  border: 1px solid var(--badge-gray-border);
+  color: var(--badge-gray-text);
 }
 
-/* Red up arrow (↑) when spending increases */
 .spending-comparator-badge.comp-up {
-  background: rgba(244, 63, 94, 0.18);
-  border: 1px solid rgba(244, 63, 94, 0.4);
-  color: #fb7185;
+  background: var(--badge-rose-bg);
+  border: 1px solid var(--badge-rose-border);
+  color: var(--badge-rose-text);
 }
 
-/* Green down arrow (↓) when spending decreases */
 .spending-comparator-badge.comp-down {
-  background: rgba(16, 185, 129, 0.18);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #34d399;
+  background: var(--badge-emerald-bg);
+  border: 1px solid var(--badge-emerald-border);
+  color: var(--badge-emerald-text);
 }
 
-/* Yellow equals sign (=) when spending is equal */
 .spending-comparator-badge.comp-equal {
-  background: rgba(245, 158, 11, 0.18);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fbbf24;
+  background: var(--badge-amber-bg);
+  border: 1px solid var(--badge-amber-border);
+  color: var(--badge-amber-text);
 }
 
 /* Monthly Comparison Highlight Card */
@@ -97,7 +99,7 @@
 .comp-stat-col .stat-num {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 .comp-arrow-divider {
@@ -118,26 +120,26 @@
   transition: all 0.2s ease;
 }
 .comp-badge-large.comp-none {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  border: 1.5px solid rgba(148, 163, 184, 0.3);
+  background: var(--badge-gray-bg);
+  color: var(--badge-gray-text);
+  border: 1.5px solid var(--badge-gray-border);
 }
 .comp-badge-large.comp-up {
-  background: rgba(244, 63, 94, 0.2);
-  color: #fb7185;
-  border: 1.5px solid rgba(244, 63, 94, 0.5);
-  box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
+  background: var(--badge-rose-bg);
+  color: var(--badge-rose-text);
+  border: 1.5px solid var(--badge-rose-border);
+  box-shadow: 0 0 12px var(--badge-rose-bg);
 }
 .comp-badge-large.comp-down {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
-  border: 1.5px solid rgba(16, 185, 129, 0.5);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+  background: var(--badge-emerald-bg);
+  color: var(--badge-emerald-text);
+  border: 1.5px solid var(--badge-emerald-border);
+  box-shadow: 0 0 12px var(--badge-emerald-bg);
 }
 .comp-badge-large.comp-equal {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fbbf24;
-  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  background: var(--badge-amber-bg);
+  color: var(--badge-amber-text);
+  border: 1.5px solid var(--badge-amber-border);
 }
 
 .comp-summary-note {
@@ -188,12 +190,14 @@
   border-radius: var(--radius-full);
 }
 .history-status-tag.safe {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
+  background: var(--badge-emerald-bg);
+  color: var(--badge-emerald-text);
+  border: 1px solid var(--badge-emerald-border);
 }
 .history-status-tag.danger {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
+  background: var(--badge-rose-bg);
+  color: var(--badge-rose-text);
+  border: 1px solid var(--badge-rose-border);
 }
 
 .history-card-body {
@@ -204,7 +208,7 @@
 .history-total-val {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 .history-items-count {
   font-size: 0.72rem;

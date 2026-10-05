@@ -84,9 +84,9 @@
   font-weight: 600;
   padding: 2px 7px;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-surface-elevated);
   color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
 }
 
 .card-price-row {
@@ -99,7 +99,7 @@
 .price-final-unit {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #60a5fa;
+  color: var(--color-brand);
 }
 
 .price-original-struck {
@@ -111,14 +111,15 @@
 .discount-badge-pill {
   font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
+  background: var(--badge-rose-bg);
+  color: var(--badge-rose-text);
+  border: 1px solid var(--badge-rose-border);
   padding: 2px 6px;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
 }
 
-/* Price Comparator Tag on Cart Cards */
+/* Price Comparator Tag on Cart Cards - Non Wrapping */
 .comparator-tag {
   display: inline-flex;
   align-items: center;
@@ -126,27 +127,61 @@
   font-size: 0.7rem;
   font-weight: 600;
   margin-top: 4px;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+.comparator-tag span {
+  white-space: nowrap;
 }
 .comparator-tag.higher {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
+  background: var(--badge-rose-bg);
+  color: var(--badge-rose-text);
+  border: 1px solid var(--badge-rose-border);
 }
 .comparator-tag.lower {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
+  background: var(--badge-emerald-bg);
+  color: var(--badge-emerald-text);
+  border: 1px solid var(--badge-emerald-border);
 }
 .comparator-tag.equal {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
+  background: var(--badge-amber-bg);
+  color: var(--badge-amber-text);
+  border: 1px solid var(--badge-amber-border);
+}
+
+/* Card Actions: Edit & Delete Buttons */
+.card-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+}
+
+.btn-card-action {
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-edit-item {
+  color: var(--text-muted);
+}
+.btn-edit-item:hover {
+  color: var(--color-brand);
+  background: rgba(59, 130, 246, 0.12);
 }
 
 .btn-delete-item {
   color: var(--text-subtle);
-  padding: 6px;
-  border-radius: var(--radius-sm);
-  transition: color 0.15s, background 0.15s;
 }
 .btn-delete-item:hover {
   color: var(--color-rose);
@@ -195,7 +230,7 @@
   text-align: center;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 .stepper-unit-label {
@@ -217,7 +252,7 @@
 .subtotal-amount {
   font-size: 0.98rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 /* Empty State Illustration */
@@ -267,9 +302,9 @@
   position: sticky;
   bottom: calc(var(--bottom-nav-height) + 8px);
   z-index: 45;
-  background: #111827;
-  border: 1.5px solid rgba(59, 130, 246, 0.4);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--color-brand-glow);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  box-shadow: var(--shadow-float);
   border-radius: var(--radius-md);
   padding: 12px 14px;
   display: flex;
@@ -277,6 +312,7 @@
   justify-content: space-between;
   margin-top: 20px;
   animation: slideFooterUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 @keyframes slideFooterUp {
@@ -302,7 +338,7 @@
 .summary-line .total-amount {
   font-size: 1.12rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 .summary-line.sub {
   font-size: 0.72rem;
@@ -310,15 +346,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 .savings-pill {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 1px 6px;
+  background: var(--badge-emerald-bg);
+  color: var(--badge-emerald-text);
+  border: 1px solid var(--badge-emerald-border);
+  padding: 1px 7px;
   border-radius: var(--radius-full);
   font-weight: 700;
   font-size: 0.65rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-checkout {

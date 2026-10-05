@@ -7,21 +7,93 @@ function openAddModal() {
   const modal = document.getElementById('add-item-modal');
   const form = document.getElementById('item-form');
   if (form) form.reset();
-  
+
+  const editIdInput = document.getElementById('edit-item-id');
+  if (editIdInput) editIdInput.value = '';
+
+  const titleEl = document.getElementById('modal-sheet-title');
+  if (titleEl) titleEl.textContent = AppState.lang === 'en' ? 'Add Grocery Item' : 'Tambah Barang Belanja';
+
+  const subtitleEl = document.getElementById('modal-sheet-subtitle');
+  if (subtitleEl) subtitleEl.textContent = AppState.lang === 'en' ? 'Check price & real-time multi-tier discount' : 'Cek harga & kalkulasi diskon bertumpuk instan';
+
+  const submitLabel = document.getElementById('modal-submit-label');
+  if (submitLabel) submitLabel.textContent = AppState.lang === 'en' ? 'Add to Cart' : 'Masukkan ke Troli';
+
+  const submitIcon = document.getElementById('modal-submit-icon');
+  if (submitIcon) submitIcon.setAttribute('data-lucide', 'shopping-cart');
+
+  const chipsWrapper = document.querySelector('.quick-chips-wrapper');
+  if (chipsWrapper) chipsWrapper.style.display = 'block';
+
   const qtyInput = document.getElementById('item-qty');
   if (qtyInput) qtyInput.value = '1';
-  
+
   const breakdown = document.getElementById('modal-discount-breakdown');
   if (breakdown) breakdown.classList.add('hidden');
-  
+
   const compAlert = document.getElementById('price-comparator-alert');
   if (compAlert) compAlert.classList.add('hidden');
-  
+
   updateModalLiveCalculations();
   if (modal) modal.classList.remove('hidden');
 
+  if (window.lucide) lucide.createIcons();
+
   setTimeout(() => {
     const nameInput = document.getElementById('item-name');
+    if (nameInput) nameInput.focus();
+  }, 100);
+}
+
+/**
+ * Open Item Modal in EDIT Mode for an existing grocery item
+ */
+function openEditModal(itemId) {
+  const item = AppState.cart.find(i => i.id === itemId);
+  if (!item) return;
+
+  const modal = document.getElementById('add-item-modal');
+  const editIdInput = document.getElementById('edit-item-id');
+  if (editIdInput) editIdInput.value = itemId;
+
+  // Prefill form fields with existing item data
+  const nameInput = document.getElementById('item-name');
+  const catInput = document.getElementById('item-category');
+  const unitInput = document.getElementById('item-unit');
+  const priceInput = document.getElementById('item-price');
+  const discInput = document.getElementById('item-discount');
+  const qtyInput = document.getElementById('item-qty');
+
+  if (nameInput) nameInput.value = item.name;
+  if (catInput) catInput.value = item.category || 'Bahan Pokok';
+  if (unitInput) unitInput.value = item.unit || 'pack';
+  if (priceInput) priceInput.value = item.originalPrice;
+  if (discInput) discInput.value = item.discountString || '';
+  if (qtyInput) qtyInput.value = item.qty || 1;
+
+  // Update Modal Title and Buttons to Edit mode
+  const titleEl = document.getElementById('modal-sheet-title');
+  if (titleEl) titleEl.textContent = AppState.lang === 'en' ? 'Edit Grocery Item' : 'Edit Barang Belanja';
+
+  const subtitleEl = document.getElementById('modal-sheet-subtitle');
+  if (subtitleEl) subtitleEl.textContent = AppState.lang === 'en' ? 'Modify item name, price, discount or quantity' : 'Ubah rincian barang, harga, diskon, atau jumlah';
+
+  const submitLabel = document.getElementById('modal-submit-label');
+  if (submitLabel) submitLabel.textContent = AppState.lang === 'en' ? 'Save Changes' : 'Simpan Perubahan';
+
+  const submitIcon = document.getElementById('modal-submit-icon');
+  if (submitIcon) submitIcon.setAttribute('data-lucide', 'check');
+
+  const chipsWrapper = document.querySelector('.quick-chips-wrapper');
+  if (chipsWrapper) chipsWrapper.style.display = 'none';
+
+  updateModalLiveCalculations();
+  if (modal) modal.classList.remove('hidden');
+
+  if (window.lucide) lucide.createIcons();
+
+  setTimeout(() => {
     if (nameInput) nameInput.focus();
   }, 100);
 }
@@ -195,22 +267,25 @@ function openCheckoutSuccessModal(trx) {
 
   // Monthly Comparator insight
   if (compPill && compText) {
-    const comp = calculateMonthlyComparison();
-    if (comp.status === 'none') {
+    const comp = typeof calculateSpendingComparison === 'function'
+      ? calculateSpendingComparison()
+      : { state: 'none', diff: 0, percent: 0 };
+
+    if (comp.state === 'none') {
       compPill.className = 'success-comp-pill comp-none mt-2';
       const icon = compPill.querySelector('.comp-icon');
       if (icon) icon.textContent = '-';
       compText.textContent = AppState.lang === 'en'
         ? 'First recorded shopping trip! Next month will compare against this.'
         : 'Belanja pertama tercatat! Transaksi berikutnya akan dikomparasikan ke sini.';
-    } else if (comp.status === 'up') {
+    } else if (comp.state === 'up') {
       compPill.className = 'success-comp-pill comp-up mt-2';
       const icon = compPill.querySelector('.comp-icon');
       if (icon) icon.textContent = '↑';
       compText.textContent = AppState.lang === 'en'
         ? `+${formatRupiah(comp.diff)} (+${comp.percent}%) vs last month`
         : `+${formatRupiah(comp.diff)} (+${comp.percent}%) dibanding bulan lalu`;
-    } else if (comp.status === 'down') {
+    } else if (comp.state === 'down') {
       compPill.className = 'success-comp-pill comp-down mt-2';
       const icon = compPill.querySelector('.comp-icon');
       if (icon) icon.textContent = '↓';
@@ -232,7 +307,7 @@ function openCheckoutSuccessModal(trx) {
   // Trigger the SVG cart push animation and sound effect
   setTimeout(() => {
     triggerCartPushAnimation();
-  }, 80);
+  }, 120);
 
   if (window.lucide) {
     lucide.createIcons();

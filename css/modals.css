@@ -63,7 +63,7 @@
 .sheet-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 .sheet-subtitle {
   font-size: 0.78rem;
@@ -173,28 +173,28 @@
   border: 1.5px solid;
 }
 .comparator-alert-box.higher {
-  background: rgba(244, 63, 94, 0.12);
-  border-color: rgba(244, 63, 94, 0.4);
-  color: #fecdd3;
+  background: var(--badge-rose-bg);
+  border-color: var(--badge-rose-border);
+  color: var(--badge-rose-text);
 }
 .comparator-alert-box.higher .comp-arrow-symbol {
-  color: #fb7185;
+  color: var(--badge-rose-text);
 }
 .comparator-alert-box.lower {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #d1fae5;
+  background: var(--badge-emerald-bg);
+  border-color: var(--badge-emerald-border);
+  color: var(--badge-emerald-text);
 }
 .comparator-alert-box.lower .comp-arrow-symbol {
-  color: #34d399;
+  color: var(--badge-emerald-text);
 }
 .comparator-alert-box.equal {
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.4);
-  color: #fef3c7;
+  background: var(--badge-amber-bg);
+  border-color: var(--badge-amber-border);
+  color: var(--badge-amber-text);
 }
 .comparator-alert-box.equal .comp-arrow-symbol {
-  color: #fbbf24;
+  color: var(--badge-amber-text);
 }
 
 .comp-arrow-symbol {
@@ -251,7 +251,7 @@
   border: none;
   font-size: 1.1rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 /* ====================================================================
@@ -357,8 +357,8 @@
 .shelf-source-tag {
   font-size: 0.6rem;
   font-weight: 700;
-  color: #38bdf8;
-  background: rgba(56, 189, 248, 0.1);
+  color: var(--badge-blue-text);
+  background: var(--badge-blue-bg);
   padding: 1px 5px;
   border-radius: var(--radius-sm);
 }
@@ -381,7 +381,7 @@
 .shelf-item-price {
   font-size: 0.92rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
 }
 .shelf-item-unit {
   font-size: 0.65rem;
@@ -391,9 +391,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: var(--badge-blue-bg);
+  color: var(--color-brand);
+  border: 1px solid var(--badge-blue-border);
   font-size: 0.72rem;
   font-weight: 700;
   padding: 5px 8px;
@@ -406,9 +406,9 @@
   transform: scale(0.95);
 }
 .shelf-item-card.in-cart .btn-add-shelf {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.35);
+  background: var(--badge-emerald-bg);
+  color: var(--badge-emerald-text);
+  border-color: var(--badge-emerald-border);
 }
 
 /* ====================================================================
@@ -435,7 +435,7 @@
   color: var(--text-main);
 }
 .summary-stat .val.highlight {
-  color: #ffffff;
+  color: var(--text-main);
   font-size: 0.98rem;
 }
 .history-items-breakdown-list {
@@ -466,7 +466,7 @@
 }
 .history-detail-item-row .item-price {
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 /* ====================================================================
@@ -488,7 +488,7 @@
 .cloud-promo-box h4 {
   font-size: 0.88rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-main);
   margin-bottom: 2px;
 }
 .cloud-promo-box p {
@@ -716,37 +716,41 @@
 }
 
 /* THE ANIMATED SHOPPING CART + PUSHING HANDS (SVG) */
-/* Moving smoothly from Left (-150%) across stage and leaving to Right (+150%) */
+/* Rolls in smoothly from left, centers in stage, and stays visibly celebrated */
 .cart-pusher-unit {
   position: absolute;
-  left: 0;
+  left: 50%;
   bottom: 12px;
   width: 250px;
   height: 135px;
-  transform: translateX(-160%); /* Starts off-screen to the left */
+  margin-left: -125px;
+  transform: translateX(0);
   will-change: transform;
 }
 
 .cart-pusher-unit.run-animation {
-  /* Enters from left, rolls across popup screen, exits off to the right */
-  animation: pushCartAcross 3.2s cubic-bezier(0.2, 0.05, 0.25, 1) forwards;
+  /* Enters from left and rolls to center stage with celebration bounce */
+  animation: pushCartToCenter 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes pushCartAcross {
+@keyframes pushCartToCenter {
   0% {
-    transform: translateX(-160%);
+    transform: translateX(-340px);
+    opacity: 0.7;
   }
-  15% {
-    transform: translateX(-70%);
+  65% {
+    transform: translateX(18px);
+    opacity: 1;
   }
-  45% {
-    transform: translateX(18%); /* Glides past center */
+  82% {
+    transform: translateX(-6px);
   }
-  75% {
-    transform: translateX(65%);
+  93% {
+    transform: translateX(2px);
   }
   100% {
-    transform: translateX(180%); /* Leaves completely past the right popup edge */
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
@@ -756,26 +760,26 @@
   overflow: visible;
 }
 
-/* Subtle bobbing of cart and groceries as it rolls */
-.cart-pusher-unit.run-animation .groceries-group {
-  animation: groceriesBob 0.35s ease-in-out infinite alternate;
+/* Celebration gentle float/bobbing of cart and groceries */
+.cart-pusher-unit .groceries-group {
+  animation: groceriesBob 1.6s ease-in-out infinite alternate;
 }
 @keyframes groceriesBob {
   0% { transform: translateY(0); }
-  100% { transform: translateY(-3px); }
+  100% { transform: translateY(-4px); }
 }
 
-/* Wheels Rotation Animation */
+/* Wheels Rotation Animation during roll-in */
 .cart-wheel {
   transform-box: fill-box;
   transform-origin: center;
 }
 .cart-pusher-unit.run-animation .cart-wheel {
-  animation: spinWheels 3.2s cubic-bezier(0.2, 0.05, 0.25, 1) forwards;
+  animation: spinWheels 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes spinWheels {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(1800deg); }
+  0% { transform: rotate(-1080deg); }
+  100% { transform: rotate(0deg); }
 }
 
 /* Shopper's Arms Push Strain Motion */
@@ -843,20 +847,46 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
+  white-space: nowrap;
+}
+.success-comp-pill span {
+  white-space: nowrap;
 }
 .success-comp-pill.comp-up {
-  color: #f87171;
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.25);
+  color: var(--badge-rose-text);
+  background: var(--badge-rose-bg);
+  border-color: var(--badge-rose-border);
 }
 .success-comp-pill.comp-down {
-  color: #4ade80;
-  background: rgba(34, 197, 94, 0.1);
-  border-color: rgba(34, 197, 94, 0.25);
+  color: var(--badge-emerald-text);
+  background: var(--badge-emerald-bg);
+  border-color: var(--badge-emerald-border);
 }
 .success-comp-pill.comp-equal {
-  color: #fbbf24;
-  background: rgba(245, 158, 11, 0.1);
-  border-color: rgba(245, 158, 11, 0.25);
+  color: var(--badge-amber-text);
+  background: var(--badge-amber-bg);
+  border-color: var(--badge-amber-border);
+}
+.success-comp-pill.comp-none {
+  color: var(--badge-gray-text);
+  background: var(--badge-gray-bg);
+  border-color: var(--badge-gray-border);
+}
+
+/* Light Mode Overrides for Stage & SFX elements */
+[data-mode="light"] .cart-stage {
+  background: radial-gradient(circle at 50% 25%, #ffffff 0%, #f1f5f9 100%);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+[data-mode="light"] .sfx-indicator-pill,
+[data-mode="light"] .replay-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
+[data-mode="light"] .bottom-sheet-container {
+  border-color: var(--border-subtle);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
 }
 

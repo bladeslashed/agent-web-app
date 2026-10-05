@@ -101,9 +101,14 @@ function renderCartItems() {
             ${comparatorTagHtml}
           </div>
 
-          <button class="btn-delete-item" data-action="delete" data-id="${item.id}" aria-label="Hapus item">
-            <i data-lucide="trash-2"></i>
-          </button>
+          <div class="card-item-actions">
+            <button class="btn-card-action btn-edit-item" data-action="edit" data-id="${item.id}" aria-label="Edit item" title="${AppState.lang === 'en' ? 'Edit item' : 'Ubah rincian barang'}">
+              <i data-lucide="pencil"></i>
+            </button>
+            <button class="btn-card-action btn-delete-item" data-action="delete" data-id="${item.id}" aria-label="Hapus item" title="${AppState.lang === 'en' ? 'Delete item' : 'Hapus barang'}">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
         </div>
 
         <div class="card-bottom">

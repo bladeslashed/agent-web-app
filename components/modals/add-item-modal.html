@@ -7,7 +7,7 @@
     <div class="sheet-header">
       <div>
         <h3 id="modal-sheet-title" class="sheet-title">Tambah Barang Belanja</h3>
-        <p class="sheet-subtitle">Cek harga & kalkulasi diskon bertumpuk instan</p>
+        <p id="modal-sheet-subtitle" class="sheet-subtitle">Cek harga & kalkulasi diskon bertumpuk instan</p>
       </div>
       <button id="close-modal-btn" class="icon-btn-close" aria-label="Tutup form">
         <i data-lucide="x"></i>
@@ -15,6 +15,7 @@
     </div>
 
     <form id="item-form" class="sheet-form">
+      <input type="hidden" id="edit-item-id" value="">
       <!-- Nama Item & Quick Suggestion Chips -->
       <div class="form-group">
         <label for="item-name" class="form-label">Nama Barang</label>
@@ -134,11 +135,11 @@
         </div>
       </div>
 
-      <!-- Tombol Aksi Tambah -->
+      <!-- Tombol Aksi Tambah / Simpan -->
       <div class="sheet-actions">
         <button type="submit" id="modal-submit-btn" class="btn-primary-large w-full">
-          <i data-lucide="shopping-cart"></i>
-          <span>Masukkan ke Troli (<span id="modal-live-subtotal">Rp 0</span>)</span>
+          <i data-lucide="shopping-cart" id="modal-submit-icon"></i>
+          <span id="modal-submit-label">Masukkan ke Troli</span> (<span id="modal-live-subtotal">Rp 0</span>)
         </button>
       </div>
     </form>
