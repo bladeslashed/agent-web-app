@@ -591,30 +591,6 @@
   opacity: 0.75;
 }
 
-/* Confetti & Particle Accents */
-.stage-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.stage-particles .particle {
-  position: absolute;
-  font-size: 1rem;
-  user-select: none;
-  animation: floatParticle 2.5s ease-in-out infinite;
-}
-.stage-particles .p1 { top: 18%; left: 15%; animation-delay: 0.2s; }
-.stage-particles .p2 { top: 22%; left: 42%; animation-delay: 0.7s; }
-.stage-particles .p3 { top: 15%; left: 70%; animation-delay: 1.1s; }
-.stage-particles .p4 { top: 28%; left: 85%; animation-delay: 0.4s; }
-.stage-particles .p5 { top: 26%; left: 28%; animation-delay: 1.5s; }
-
-@keyframes floatParticle {
-  0% { transform: translateY(8px) scale(0.8); opacity: 0; }
-  50% { opacity: 1; transform: translateY(-6px) scale(1.15); }
-  100% { transform: translateY(-16px) scale(0.9); opacity: 0; }
-}
-
 /* Runway Floor & Motion Lines */
 .cart-runway {
   position: absolute;
@@ -659,35 +635,6 @@
   0% { transform: translateX(380px); opacity: 0; }
   30% { opacity: 0.7; }
   100% { transform: translateX(-100px); opacity: 0; }
-}
-
-/* SFX Sound Badge Pill */
-.sfx-indicator-pill {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(4px);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-full);
-  padding: 3px 8px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--color-brand);
-  letter-spacing: 0.5px;
-}
-.sfx-indicator-pill.playing {
-  animation: pulseSfx 0.8s ease-in-out infinite alternate;
-  color: var(--color-emerald);
-  border-color: var(--color-emerald-glow);
-}
-@keyframes pulseSfx {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
-  100% { transform: scale(1.08); box-shadow: 0 0 10px var(--color-emerald-glow); }
 }
 
 /* Replay Cart Animation Button */
@@ -760,25 +707,30 @@
   overflow: visible;
 }
 
-/* Celebration gentle float/bobbing of cart and groceries */
+/* Anchored groceries inside basket with subtle resting bob */
 .cart-pusher-unit .groceries-group {
+  transform: translateY(24px);
   animation: groceriesBob 1.6s ease-in-out infinite alternate;
 }
 @keyframes groceriesBob {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-4px); }
+  0% { transform: translateY(24px); }
+  100% { transform: translateY(21px); }
 }
 
-/* Wheels Rotation Animation during roll-in */
-.cart-wheel {
+/* Wheels Rotation Animation during cart roll-in */
+.wheel-spinner {
   transform-box: fill-box;
   transform-origin: center;
+  display: block;
 }
-.cart-pusher-unit.run-animation .cart-wheel {
+.cart-pusher-unit.run-animation .wheel-spinner {
   animation: spinWheels 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes spinWheels {
   0% { transform: rotate(-1080deg); }
+  65% { transform: rotate(45deg); }
+  82% { transform: rotate(-12deg); }
+  93% { transform: rotate(4deg); }
   100% { transform: rotate(0deg); }
 }
 
@@ -838,19 +790,30 @@
 
 .success-comp-pill {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   font-weight: 600;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
 }
-.success-comp-pill span {
-  white-space: nowrap;
+.success-comp-pill .comp-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.success-comp-pill span:not(.comp-icon) {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
 }
 .success-comp-pill.comp-up {
   color: var(--badge-rose-text);
@@ -873,16 +836,17 @@
   border-color: var(--badge-gray-border);
 }
 
-/* Light Mode Overrides for Stage & SFX elements */
+/* Light Mode Overrides for Stage & Replay elements */
 [data-mode="light"] .cart-stage {
   background: radial-gradient(circle at 50% 25%, #ffffff 0%, #f1f5f9 100%);
   border: 1px solid var(--border-subtle);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
 }
-[data-mode="light"] .sfx-indicator-pill,
 [data-mode="light"] .replay-btn {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
   color: var(--text-main);
 }
 [data-mode="light"] .bottom-sheet-container {

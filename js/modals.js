@@ -197,28 +197,17 @@ function closeAuthModal() {
  * Play checkout success sound effect: sfx/miraclei-sample_confirm_accept02_kofi_by_miraclei-364180.mp3
  */
 function playCheckoutSound() {
-  const indicator = document.getElementById('sfx-play-indicator');
-  if (indicator) indicator.classList.add('playing');
-
   try {
     const audio = new Audio('sfx/miraclei-sample_confirm_accept02_kofi_by_miraclei-364180.mp3');
     audio.volume = 0.85;
     const playPromise = audio.play();
     if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setTimeout(() => {
-            if (indicator) indicator.classList.remove('playing');
-          }, 3200);
-        })
-        .catch(err => {
-          console.warn('[Audio] Autoplay blocked or playback error:', err);
-          if (indicator) indicator.classList.remove('playing');
-        });
+      playPromise.catch(err => {
+        console.warn('[Audio] Autoplay blocked or playback error:', err);
+      });
     }
   } catch (err) {
     console.warn('[Audio] Failed to instantiate audio:', err);
-    if (indicator) indicator.classList.remove('playing');
   }
 }
 
@@ -276,8 +265,8 @@ function openCheckoutSuccessModal(trx) {
       const icon = compPill.querySelector('.comp-icon');
       if (icon) icon.textContent = '-';
       compText.textContent = AppState.lang === 'en'
-        ? 'First recorded shopping trip! Next month will compare against this.'
-        : 'Belanja pertama tercatat! Transaksi berikutnya akan dikomparasikan ke sini.';
+        ? 'First recorded shopping trip! Comparison active on next trip.'
+        : 'Belanja pertama tercatat! Riwayat pembanding aktif di transaksi berikutnya.';
     } else if (comp.state === 'up') {
       compPill.className = 'success-comp-pill comp-up mt-2';
       const icon = compPill.querySelector('.comp-icon');

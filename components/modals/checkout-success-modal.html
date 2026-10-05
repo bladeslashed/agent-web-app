@@ -27,14 +27,6 @@
         
         <!-- Background Elements: Glowing Aura, Speed Streaks & Confetti -->
         <div class="stage-aura"></div>
-        <div class="stage-particles">
-          <span class="particle p1">✨</span>
-          <span class="particle p2">🎉</span>
-          <span class="particle p3">⭐</span>
-          <span class="particle p4">🎊</span>
-          <span class="particle p5">✨</span>
-        </div>
-
         <!-- Runway Floor & Motion Lines -->
         <div class="cart-runway">
           <div class="runway-line"></div>
@@ -44,12 +36,6 @@
             <span class="streak s3"></span>
             <span class="streak s4"></span>
           </div>
-        </div>
-
-        <!-- Sound Wave Indicator Badge -->
-        <div class="sfx-indicator-pill" id="sfx-play-indicator" title="SFX Aktif">
-          <i data-lucide="volume-2"></i>
-          <span>SFX</span>
         </div>
 
         <!-- Replay Cart Animation Button -->
@@ -102,8 +88,8 @@
               </filter>
             </defs>
 
-            <!-- GROCERIES INSIDE CART (Animated slight bobbing) -->
-            <g class="groceries-group">
+            <!-- GROCERIES INSIDE CART (Anchored firmly into wire basket, not floating) -->
+            <g class="groceries-group" transform="translate(0, 24)">
               <!-- Crispy French Baguette Sticking Out to the Left/Up -->
               <g transform="rotate(-25 150 40)">
                 <rect x="135" y="10" width="22" height="75" rx="11" fill="url(#baguetteGrad)" stroke="#78350f" stroke-width="1.5" />
@@ -119,15 +105,15 @@
               <path d="M178,65 Q175,32 195,28 Q208,38 198,65 Z" fill="#4ade80" stroke="#16a34a" stroke-width="1.5" />
               <path d="M155,65 Q145,38 160,32 Q170,42 165,65 Z" fill="#86efac" stroke="#16a34a" stroke-width="1" />
 
-              <!-- Cereal / Oats Box -->
+              <!-- Cereal / Oats Box resting in basket -->
               <rect x="195" y="38" width="34" height="52" rx="4" fill="url(#cerealGrad)" stroke="#9f1239" stroke-width="1.5" />
               <circle cx="212" cy="54" r="8" fill="#fbbf24" />
               <path d="M212,48 L214,53 L219,53 L215,56 L217,61 L212,58 L207,61 L209,56 L205,53 L210,53 Z" fill="#ffffff" />
               <rect x="201" y="68" width="22" height="4" rx="2" fill="#ffffff" opacity="0.8" />
               <rect x="201" y="76" width="16" height="4" rx="2" fill="#ffffff" opacity="0.8" />
 
-              <!-- Fresh Milk Carton -->
-              <polygon points="172,48 184,38 198,48 198,85 172,85" fill="url(#milkGrad)" stroke="#1e40af" stroke-width="1.5" />
+              <!-- Fresh Milk Carton resting in basket -->
+              <polygon points="172,48 184,38 198,48 198,92 172,92" fill="url(#milkGrad)" stroke="#1e40af" stroke-width="1.5" />
               <polygon points="172,48 184,38 198,48 186,52" fill="#93c5fd" />
               <rect x="176" y="58" width="16" height="12" rx="2" fill="#ffffff" opacity="0.9" />
               <text x="184" y="67" font-size="7" font-weight="bold" fill="#1e40af" text-anchor="middle" font-family="sans-serif">MILK</text>
@@ -141,7 +127,7 @@
                 <path d="M221,40 Q215,28 212,22 M221,40 Q221,25 221,20 M221,40 Q227,28 230,22" stroke="#16a34a" stroke-width="2" stroke-linecap="round" fill="none" />
               </g>
 
-              <!-- Juicy Red Apple -->
+              <!-- Juicy Red Apple nestled on basket floor -->
               <circle cx="160" cy="80" r="14" fill="url(#appleGrad)" stroke="#991b1b" stroke-width="1.5" />
               <path d="M160,66 C163,62 167,61 169,63" stroke="#78350f" stroke-width="2" stroke-linecap="round" fill="none" />
               <ellipse cx="168" cy="63" rx="4" ry="2" transform="rotate(-30 168 63)" fill="#22c55e" />
@@ -199,29 +185,39 @@
               <ellipse cx="104" cy="36" rx="6" ry="5" fill="#fba866" opacity="0.8" />
             </g>
 
-            <!-- SPINNING WHEELS (Animated Rotation via CSS) -->
+            <!-- SPINNING WHEELS (Fixed translation on mount, animated spin on wheel-spinner) -->
             <!-- Rear Wheel Group -->
-            <g class="cart-wheel rear-wheel" transform="translate(142, 148)">
-              <circle cx="0" cy="0" r="14" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
-              <circle cx="0" cy="0" r="10" fill="#64748b" />
-              <circle cx="0" cy="0" r="4" fill="#f8fafc" />
-              <!-- Spokes that visibly rotate -->
-              <line x1="-10" y1="0" x2="10" y2="0" stroke="#f8fafc" stroke-width="2" />
-              <line x1="0" y1="-10" x2="0" y2="10" stroke="#f8fafc" stroke-width="2" />
-              <line x1="-7" y1="-7" x2="7" y2="7" stroke="#f8fafc" stroke-width="1.5" />
-              <line x1="-7" y1="7" x2="7" y2="-7" stroke="#f8fafc" stroke-width="1.5" />
+            <g class="wheel-mount rear-mount" transform="translate(142, 148)">
+              <!-- Stationary Chassis Bracket -->
+              <path d="M-3,-10 L3,-10 L2,0 L-2,0 Z" fill="#475569" />
+              <!-- Rotating Wheel Assembly -->
+              <g class="wheel-spinner">
+                <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#334155" stroke-width="2.5" />
+                <circle cx="0" cy="0" r="9.5" fill="#1e293b" stroke="#475569" stroke-width="1" />
+                <!-- 6 Spokes with Sky Blue Accent for High Contrast Spinning Visibility -->
+                <line x1="-9" y1="0" x2="9" y2="0" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <line x1="-4.5" y1="-7.8" x2="4.5" y2="7.8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <line x1="-4.5" y1="7.8" x2="4.5" y2="-7.8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <circle cx="0" cy="0" r="3.5" fill="#f8fafc" stroke="#0284c7" stroke-width="1" />
+                <circle cx="6" cy="0" r="1.5" fill="#facc15" />
+              </g>
             </g>
 
             <!-- Front Wheel Group -->
-            <g class="cart-wheel front-wheel" transform="translate(244, 148)">
-              <circle cx="0" cy="0" r="14" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
-              <circle cx="0" cy="0" r="10" fill="#64748b" />
-              <circle cx="0" cy="0" r="4" fill="#f8fafc" />
-              <!-- Spokes that visibly rotate -->
-              <line x1="-10" y1="0" x2="10" y2="0" stroke="#f8fafc" stroke-width="2" />
-              <line x1="0" y1="-10" x2="0" y2="10" stroke="#f8fafc" stroke-width="2" />
-              <line x1="-7" y1="-7" x2="7" y2="7" stroke="#f8fafc" stroke-width="1.5" />
-              <line x1="-7" y1="7" x2="7" y2="-7" stroke="#f8fafc" stroke-width="1.5" />
+            <g class="wheel-mount front-mount" transform="translate(244, 148)">
+              <!-- Stationary Chassis Bracket -->
+              <path d="M-3,-10 L3,-10 L2,0 L-2,0 Z" fill="#475569" />
+              <!-- Rotating Wheel Assembly -->
+              <g class="wheel-spinner">
+                <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#334155" stroke-width="2.5" />
+                <circle cx="0" cy="0" r="9.5" fill="#1e293b" stroke="#475569" stroke-width="1" />
+                <!-- 6 Spokes with Sky Blue Accent for High Contrast Spinning Visibility -->
+                <line x1="-9" y1="0" x2="9" y2="0" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <line x1="-4.5" y1="-7.8" x2="4.5" y2="7.8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <line x1="-4.5" y1="7.8" x2="4.5" y2="-7.8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <circle cx="0" cy="0" r="3.5" fill="#f8fafc" stroke="#0284c7" stroke-width="1" />
+                <circle cx="6" cy="0" r="1.5" fill="#facc15" />
+              </g>
             </g>
           </svg>
         </div>
@@ -252,7 +248,7 @@
       <!-- Comparator Insight Pill -->
       <div id="checkout-success-comp-pill" class="success-comp-pill comp-none mt-2">
         <span class="comp-icon">-</span>
-        <span id="checkout-success-comp-text">Belum ada pembanding bulan lalu</span>
+        <span id="checkout-success-comp-text">Belanja pertama tercatat! Riwayat pembanding aktif di transaksi berikutnya.</span>
       </div>
     </div>
 
