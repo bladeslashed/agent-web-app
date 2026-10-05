@@ -1,0 +1,232 @@
+<!-- TAB 3: ANGGARAN & PENGATURAN (Budget Safety Cap & Firebase Account) -->
+<section id="tab-anggaran" class="tab-view">
+  <div class="section-title-wrap">
+    <div>
+      <h2 class="section-title">Akun & Pengaturan Anggaran</h2>
+      <p class="section-subtitle">Sinkronisasi cloud Firebase & kendali dompet belanja</p>
+    </div>
+  </div>
+
+  <!-- Cloud Sync & Firebase Account Card -->
+  <div class="glass-card mb-3 auth-account-card">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-brand">
+        <i data-lucide="cloud"></i>
+      </div>
+      <div class="flex-1">
+        <div class="card-title-row">
+          <h3 id="tab-auth-title">Akun & Cloud Database</h3>
+          <span id="tab-db-badge" class="badge-db-status">
+            <span class="db-dot"></span> Firestore: shop-tracked
+          </span>
+        </div>
+        <p id="tab-auth-desc">Sinkronkan keranjang & sisa anggaran ke cloud Firebase</p>
+      </div>
+    </div>
+
+    <!-- Logged Out View -->
+    <div id="auth-tab-logged-out" class="auth-box-state mt-3">
+      <p class="auth-callout-text">
+        Masuk dengan Gmail agar data troli belanja, batas anggaran, dan riwayat perbandingan harga otomatis tersimpan di Cloud Firestore.
+      </p>
+      <button id="btn-login-google-tab" class="btn-google-sign-in" type="button">
+        <svg class="google-icon-svg" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.97 0 12c0 2.03.45 3.84 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <span>Masuk dengan Google (Gmail)</span>
+      </button>
+    </div>
+
+    <!-- Logged In View -->
+    <div id="auth-tab-logged-in" class="auth-box-state mt-3 hidden">
+      <div class="user-profile-banner">
+        <img id="tab-user-avatar" class="user-avatar" src="" alt="Avatar Pengguna">
+        <div class="user-meta">
+          <strong id="tab-user-name" class="user-name">Pengguna Google</strong>
+          <span id="tab-user-email" class="user-email">email@gmail.com</span>
+          <div class="sync-status-row">
+            <span class="sync-pill">
+              <i data-lucide="check-circle-2"></i> Tersinkron ke Firestore
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-actions-group mt-3">
+        <button id="btn-sync-now-tab" class="btn-secondary flex-1" type="button">
+          <i data-lucide="refresh-cw"></i> <span>Sinkron Sekarang</span>
+        </button>
+        <button id="btn-logout-tab" class="btn-outline-danger" type="button" title="Keluar Akun">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+
+      <div class="sync-timestamp-row">
+        <span id="tab-sync-text">Status: Tersinkronisasi Otomatis</span>
+        <span id="tab-sync-time" class="timestamp">Pukul 00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Pengaturan Anggaran -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-emerald">
+        <i data-lucide="wallet"></i>
+      </div>
+      <div>
+        <h3>Batas Anggaran Bulanan</h3>
+        <p>Batas maksimal uang saku atau belanja bulanan</p>
+      </div>
+    </div>
+
+    <div class="setting-form">
+      <label for="input-budget-cap" class="form-label">Nominal Batas (Rupiah)</label>
+      <div class="input-with-prefix">
+        <span class="prefix">Rp</span>
+        <input type="number" id="input-budget-cap" class="form-input" value="500000" min="10000" step="10000">
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="budget-chips-group">
+        <button type="button" class="budget-chip" data-amount="300000">300rb</button>
+        <button type="button" class="budget-chip" data-amount="500000">500rb</button>
+        <button type="button" class="budget-chip" data-amount="750000">750rb</button>
+        <button type="button" class="budget-chip" data-amount="1000000">1 Jt</button>
+      </div>
+
+      <button id="save-budget-btn" class="btn-primary mt-3">
+        <i data-lucide="check"></i> Simpan Setelan Anggaran
+      </button>
+    </div>
+  </div>
+
+  <!-- Theme & Appearance Customizer Card (5 Themes x Light & Dark Modes) -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-violet">
+        <i data-lucide="palette"></i>
+      </div>
+      <div>
+        <h3 id="theme-card-title">Tema & Tampilan Aplikasi</h3>
+        <p id="theme-card-subtitle">5 palet warna dengan varian Mode Gelap & Mode Terang</p>
+      </div>
+    </div>
+
+    <!-- Mode Switcher Segmented Control (Dark vs Light) -->
+    <div class="theme-mode-section mt-3">
+      <label class="form-label" id="label-mode-selector">Pilih Mode Tampilan</label>
+      <div class="theme-mode-segmented">
+        <button type="button" class="theme-mode-pill active" data-mode="dark" id="pill-mode-dark">
+          <i data-lucide="moon"></i>
+          <span id="label-mode-dark-text">Mode Gelap</span>
+        </button>
+        <button type="button" class="theme-mode-pill" data-mode="light" id="pill-mode-light">
+          <i data-lucide="sun"></i>
+          <span id="label-mode-light-text">Mode Terang</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Color Palette Selection Grid (5 Themes) -->
+    <div class="theme-palettes-section mt-3">
+      <label class="form-label" id="label-palette-selector">Pilih Palet Warna</label>
+      <div class="theme-swatches-grid" id="theme-swatches-grid">
+        <!-- 1. Midnight Slate Blue -->
+        <button type="button" class="theme-swatch-card active" data-theme="midnight" title="Midnight Slate Blue">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #1e1b4b;"></span>
+            <span class="swatch-dot" style="background: #3b82f6;"></span>
+            <span class="swatch-dot" style="background: #090d16;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Midnight Slate</strong>
+            <span class="swatch-desc">Deep Tech Blue</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+
+        <!-- 2. Emerald Supermarket Green -->
+        <button type="button" class="theme-swatch-card" data-theme="emerald" title="Emerald Supermarket Green">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #064e3b;"></span>
+            <span class="swatch-dot" style="background: #10b981;"></span>
+            <span class="swatch-dot" style="background: #02120d;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Emerald Market</strong>
+            <span class="swatch-desc">Fresh Grocery</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+
+        <!-- 3. Sunset Tangerine Amber -->
+        <button type="button" class="theme-swatch-card" data-theme="sunset" title="Sunset Tangerine Amber">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #451a03;"></span>
+            <span class="swatch-dot" style="background: #f59e0b;"></span>
+            <span class="swatch-dot" style="background: #120902;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Sunset Tangerine</strong>
+            <span class="swatch-desc">Warm Amber</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+
+        <!-- 4. Cyberpunk Violet Purple -->
+        <button type="button" class="theme-swatch-card" data-theme="violet" title="Cyberpunk Violet Purple">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #3b0764;"></span>
+            <span class="swatch-dot" style="background: #a855f7;"></span>
+            <span class="swatch-dot" style="background: #0a0314;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Cyber Violet</strong>
+            <span class="swatch-desc">Neon Lavender</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+
+        <!-- 5. Rose Berry Coral -->
+        <button type="button" class="theme-swatch-card" data-theme="rose" title="Rose Berry Coral">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #4c0519;"></span>
+            <span class="swatch-dot" style="background: #f43f5e;"></span>
+            <span class="swatch-dot" style="background: #140308;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Rose Berry</strong>
+            <span class="swatch-desc">Vibrant Crimson</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danger Zone Reset Data -->
+  <div class="glass-card mb-3 border-danger-subtle">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-rose">
+        <i data-lucide="shield-alert"></i>
+      </div>
+      <div>
+        <h3>Area Pengaturan Data</h3>
+        <p>Kelola dan bersihkan data penyimpanan lokal</p>
+      </div>
+    </div>
+
+    <div class="danger-actions-list">
+      <button id="reset-history-only-btn" class="btn-outline-danger w-full mb-2">
+        <i data-lucide="trash"></i> Hapus Semua Riwayat Belanja
+      </button>
+      <button id="reset-all-data-btn" class="btn-danger w-full">
+        <i data-lucide="alert-octagon"></i> Reset Total Aplikasi (Hapus Semua)
+      </button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,332 @@
+/* ====================================================================
+   SETTINGS & ACCOUNT STYLES (TAB 3)
+   Budget Cap Form, Preset Chips, Firebase Auth Card, Danger Zone
+   ==================================================================== */
+
+.auth-account-card {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.card-icon-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+.icon-circle.bg-brand {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  box-shadow: 0 4px 12px var(--color-brand-glow);
+}
+.icon-circle.bg-emerald {
+  background: linear-gradient(135deg, #10b981, #047857);
+  box-shadow: 0 4px 12px var(--color-emerald-glow);
+}
+.icon-circle.bg-rose {
+  background: linear-gradient(135deg, #f43f5e, #be123c);
+  box-shadow: 0 4px 12px var(--color-rose-glow);
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.card-title-row h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.badge-db-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+.db-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+
+.auth-callout-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.btn-google-sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: #ffffff;
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 11px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s, background 0.15s;
+}
+.btn-google-sign-in:hover {
+  background: #f3f4f6;
+}
+.btn-google-sign-in:active {
+  transform: scale(0.98);
+}
+
+/* User Profile Banner (Logged In) */
+.user-profile-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-elevated);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-brand);
+}
+.user-meta {
+  display: flex;
+  flex-direction: column;
+}
+.user-name {
+  font-size: 0.92rem;
+  color: #ffffff;
+}
+.user-email {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.sync-status-row {
+  margin-top: 3px;
+}
+.sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.auth-actions-group {
+  display: flex;
+  gap: 8px;
+}
+.sync-timestamp-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-subtle);
+}
+
+/* Budget Cap Setting Form & Quick Chips */
+.setting-form {
+  margin-top: 12px;
+}
+.budget-chips-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+.budget-chip {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+  color: var(--text-main);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.15s;
+}
+.budget-chip:active {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: #ffffff;
+}
+
+/* Danger Zone */
+.border-danger-subtle {
+  border-color: rgba(244, 63, 94, 0.25);
+}
+.danger-actions-list {
+  margin-top: 14px;
+}
+
+/* ====================================================================
+   THEME & APPEARANCE CUSTOMIZER (TAB 3 & HEADER)
+   ==================================================================== */
+.icon-circle.bg-violet {
+  background: linear-gradient(135deg, #a855f7, #6d28d9);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
+}
+
+.theme-mode-btn {
+  color: var(--color-brand);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.2s ease;
+}
+.theme-mode-btn:hover {
+  transform: scale(1.05) rotate(15deg);
+  border-color: var(--color-brand);
+  box-shadow: 0 0 10px var(--color-brand-glow);
+}
+
+.theme-mode-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-mode-segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--bg-surface-elevated);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.theme-mode-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-mode-pill:hover {
+  color: var(--text-main);
+}
+
+.theme-mode-pill.active {
+  background: var(--color-brand);
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--color-brand-glow);
+}
+
+/* Palette Swatches Selection Grid */
+.theme-palettes-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-swatches-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.theme-swatch-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-subtle);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.theme-swatch-card:hover {
+  border-color: var(--color-brand);
+  transform: translateY(-1px);
+}
+
+.theme-swatch-card.active {
+  border-color: var(--color-brand);
+  background: var(--bg-surface-hover);
+  box-shadow: 0 0 12px var(--color-brand-glow);
+}
+
+.swatch-preview-dots {
+  display: flex;
+  align-items: center;
+  gap: -4px;
+}
+
+.swatch-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  margin-right: -4px;
+}
+
+.swatch-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.swatch-name {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.swatch-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.swatch-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: transparent;
+  transition: all 0.2s ease;
+}
+
+.theme-swatch-card.active .swatch-check {
+  background: var(--color-brand);
+  color: #ffffff;
+}
+

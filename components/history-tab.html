@@ -1,0 +1,60 @@
+<!-- TAB 2: RIWAYAT BELANJA (Komparator Pengeluaran Bulanan) -->
+<section id="tab-riwayat" class="tab-view">
+  <div class="section-title-wrap">
+    <div>
+      <h2 id="history-section-title" class="section-title">Riwayat & Perbandingan</h2>
+      <p id="history-section-subtitle" class="section-subtitle">Perbandingan pengeluaran belanja bulanan otomatis</p>
+    </div>
+    <button id="export-history-btn" class="icon-btn-secondary" title="Unduh Catatan Belanja">
+      <i data-lucide="download-cloud"></i>
+    </button>
+  </div>
+
+  <!-- Monthly Spending Comparator Card (Replaces old manual baseline) -->
+  <div id="history-monthly-comparator-card" class="monthly-comparison-card">
+    <div class="comp-card-header">
+      <div>
+        <h3 id="comp-card-title">Perbandingan Pengeluaran</h3>
+        <span id="comp-period-label" style="font-size:0.75rem;color:var(--text-muted);">Tren Belanja vs Bulan Lalu</span>
+      </div>
+      <div id="history-comparator-badge" class="spending-comparator-badge comp-none">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
+      </div>
+    </div>
+
+    <div class="comp-stats-grid">
+      <div class="comp-stat-col">
+        <span id="comp-current-label" class="stat-title">Belanja Sekarang</span>
+        <span id="comp-current-val" class="stat-num">Rp 0</span>
+      </div>
+      <div class="comp-arrow-divider">
+        <div id="comp-large-badge" class="comp-badge-large comp-none">
+          <span id="comp-large-icon">-</span>
+        </div>
+      </div>
+      <div class="comp-stat-col text-right">
+        <span id="comp-past-label" class="stat-title">Bulan Lalu</span>
+        <span id="comp-past-val" class="stat-num">-</span>
+      </div>
+    </div>
+
+    <p id="comp-summary-text" class="comp-summary-note">
+      Belum ada riwayat belanja bulan sebelumnya sebagai acuan komparasi.
+    </p>
+  </div>
+
+  <!-- History Transaksi List -->
+  <div id="history-list-container" class="history-list">
+    <!-- Dynamic History Cards -->
+  </div>
+
+  <!-- Empty State History -->
+  <div id="history-empty-state" class="empty-state hidden">
+    <div class="empty-illustration">
+      <i data-lucide="history"></i>
+    </div>
+    <h3 id="empty-history-title">Belum Ada Riwayat Belanja</h3>
+    <p id="empty-history-desc">Selesaikan belanja pertama Anda di tab Belanja untuk mulai melihat riwayat transaksi dan perbandingan pengeluaran antar bulan.</p>
+  </div>
+</section>

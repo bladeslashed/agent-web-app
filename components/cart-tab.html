@@ -1,0 +1,72 @@
+<!-- TAB 1: BELANJA (Active by default) -->
+<section id="tab-belanja" class="tab-view active">
+  
+  <!-- Quick Cart Actions Bar -->
+  <div class="cart-toolbar">
+    <div class="cart-count-badge">
+      <i data-lucide="package-check"></i>
+      <span id="cart-item-count">0 Barang di Troli</span>
+    </div>
+    <div class="cart-actions">
+      <!-- Shelf Products Catalog Modal Button -->
+      <button id="open-shelf-btn" class="btn-text-accent" title="Pilih Produk Rak Supermarket" aria-label="Katalog Rak Supermarket">
+        <i data-lucide="store"></i> <span id="label-shelf-btn">Katalog Rak</span>
+      </button>
+      <button id="clear-cart-btn" class="btn-text-danger" title="Kosongkan Keranjang">
+        <i data-lucide="trash-2"></i> <span id="label-clear-cart">Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Button to Open Add Item Bottom Sheet -->
+  <div class="quick-add-trigger-wrap">
+    <button id="open-add-modal-btn" class="btn-primary-large">
+      <i data-lucide="plus-circle"></i>
+      <span id="label-add-item-btn">Tambah Item ke Troli</span>
+    </button>
+  </div>
+
+  <!-- Current Grocery List Container -->
+  <div id="grocery-items-list" class="grocery-card-list">
+    <!-- Dynamic Cards will be rendered here -->
+  </div>
+
+  <!-- Empty State Cart -->
+  <div id="cart-empty-state" class="empty-state">
+    <div class="empty-illustration">
+      <i data-lucide="shopping-bag"></i>
+    </div>
+    <h3 id="empty-cart-title">Troli Masih Kosong</h3>
+    <p id="empty-cart-desc">Mulai berhemat dengan mencatat barang belanjaan atau pilih langsung dari produk rak supermarket retail!</p>
+    <div class="empty-actions">
+      <button id="empty-add-item-btn" class="btn-secondary">
+        <i data-lucide="plus"></i> <span id="label-empty-add">Catat Manual</span>
+      </button>
+      <button id="empty-shelf-btn" class="btn-accent">
+        <i data-lucide="store"></i> <span id="label-empty-shelf">Pilih dari Rak Supermarket</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Checkout / Selesaikan Belanja Footer Card -->
+  <div id="cart-checkout-footer" class="checkout-footer hidden">
+    <div class="checkout-summary">
+      <div class="summary-line">
+        <span id="label-footer-total">Total Belanja:</span>
+        <span id="footer-total-price" class="total-amount">Rp 0</span>
+      </div>
+      <div class="summary-line sub">
+        <span id="footer-item-summary">0 item terdaftar</span>
+        <!-- Spending Comparator Badge in Bottom Selesaikan Belanja Bar -->
+        <div id="footer-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
+          <span class="comp-icon">-</span>
+          <span class="comp-label">vs Bulan Lalu</span>
+        </div>
+        <span id="footer-saved-badge" class="savings-pill hidden">Hemat Rp 0</span>
+      </div>
+    </div>
+    <button id="checkout-btn" class="btn-checkout" aria-label="Selesaikan Belanja dan Simpan">
+      <i data-lucide="check-circle-2"></i> <span id="label-checkout-btn">Selesaikan Belanja</span>
+    </button>
+  </div>
+</section>

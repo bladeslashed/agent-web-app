@@ -1,0 +1,17 @@
+{
+  "name": "smart-grocery-tracker",
+  "version": "1.0.0",
+  "description": "Smart Grocery & Budget Safety Tracker - Mobile PWA for Supermarket Shoppers & Students",
+  "scripts": {
+    "build": "node build.js",
+    "deploy": "firebase deploy --only hosting,firestore"
+  },
+  "keywords": [
+    "pwa",
+    "grocery",
+    "budget-tracker",
+    "firebase"
+  ],
+  "author": "",
+  "license": "MIT"
+}

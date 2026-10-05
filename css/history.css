@@ -1,0 +1,212 @@
+/* ====================================================================
+   HISTORY & SPENDING COMPARATOR STYLES (TAB 2)
+   Visual Comparator Badges, Monthly Comparison Card, History Records
+   ==================================================================== */
+
+/* Universal Spending Comparator Badges */
+.spending-comparator-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.spending-comparator-badge .comp-icon {
+  font-weight: 900;
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+/* Comparator States */
+/* Gray negative sign (-) when no past data */
+.spending-comparator-badge.comp-none {
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+}
+
+/* Red up arrow (↑) when spending increases */
+.spending-comparator-badge.comp-up {
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #fb7185;
+}
+
+/* Green down arrow (↓) when spending decreases */
+.spending-comparator-badge.comp-down {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+/* Yellow equals sign (=) when spending is equal */
+.spending-comparator-badge.comp-equal {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+/* Monthly Comparison Highlight Card */
+.monthly-comparison-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.comp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.comp-card-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.comp-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-elevated);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.comp-stat-col {
+  display: flex;
+  flex-direction: column;
+}
+.comp-stat-col .stat-title {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.comp-stat-col .stat-num {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.comp-arrow-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comp-badge-large {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 900;
+  transition: all 0.2s ease;
+}
+.comp-badge-large.comp-none {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1.5px solid rgba(148, 163, 184, 0.3);
+}
+.comp-badge-large.comp-up {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+  border: 1.5px solid rgba(244, 63, 94, 0.5);
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
+}
+.comp-badge-large.comp-down {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+.comp-badge-large.comp-equal {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+}
+
+.comp-summary-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* History Cards List */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.history-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.history-card:active {
+  transform: scale(0.99);
+}
+
+.history-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.history-month-tag {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.history-status-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+.history-status-tag.safe {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+.history-status-tag.danger {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+}
+
+.history-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.history-total-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+.history-items-count {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}

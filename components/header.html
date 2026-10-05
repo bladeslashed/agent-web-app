@@ -1,0 +1,79 @@
+<!-- Top Header & Sticky Budget Safety Cap Header Component -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">
+        <i data-lucide="shopping-cart"></i>
+      </div>
+      <div>
+        <h1 class="brand-title">Smart Grocery</h1>
+        <p class="brand-subtitle">Budget Safety Tracker Rantau</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Dark / Light Mode Toggle Button -->
+      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+        <i data-lucide="moon" id="mode-toggle-icon"></i>
+      </button>
+      <!-- Language Toggle Button (ID / EN) -->
+      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+        <span id="lang-indicator">EN</span>
+      </button>
+      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+        <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
+        <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
+      </button>
+      <div id="pwa-install-badge" class="pwa-badge hidden" title="Aplikasi Siap Pasang">
+        <i data-lucide="download"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Budget Safety Cap Card (Always Visible on Cart Tab) -->
+  <div id="budget-safety-card" class="budget-safety-cap status-safe">
+    <div class="budget-cap-row">
+      <div class="budget-stat">
+        <span id="header-budget-cap-label" class="label">Batas Dompet</span>
+        <span id="header-budget-limit" class="val">Rp 500.000</span>
+      </div>
+      <div class="budget-stat text-right">
+        <span id="header-cart-total-label" class="label">Total Keranjang</span>
+        <span id="header-cart-total" class="val highlight">Rp 0</span>
+      </div>
+    </div>
+
+    <!-- Real-time Meter Progress Bar -->
+    <div class="meter-container">
+      <div class="meter-bar-track">
+        <div id="budget-progress-bar" class="meter-bar-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <div class="budget-cap-row bottom-row">
+      <div class="status-indicator-badge">
+        <span id="budget-status-dot" class="dot"></span>
+        <span id="budget-status-text">Dompet Aman (0%)</span>
+      </div>
+      
+      <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
+      <div id="header-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
+      </div>
+
+      <div class="remaining-stat">
+        <span id="budget-remaining-label">Sisa Saldo:</span>
+        <strong id="header-budget-remaining">Rp 500.000</strong>
+      </div>
+    </div>
+
+    <!-- Alert Banner Over Budget (Hidden by default) -->
+    <div id="budget-over-alert" class="budget-alert-banner hidden">
+      <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
+      <div class="alert-content">
+        <strong>PERINGATAN OVER BUDGET!</strong>
+        <p id="budget-over-text">Belanja melebihi jatah dompet sebesar Rp 0. Pertimbangkan hapus camilan!</p>
+      </div>
+    </div>
+  </div>
+</header>

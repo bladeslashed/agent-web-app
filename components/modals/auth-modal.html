@@ -1,0 +1,94 @@
+<!-- MODAL / BOTTOM SHEET: FIREBASE AUTH & GOOGLE LOGIN -->
+<div id="auth-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-auth-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    <div class="sheet-header">
+      <div>
+        <h3 id="auth-modal-title" class="sheet-title">Akun & Sinkronisasi Cloud</h3>
+        <p id="auth-modal-subtitle" class="sheet-subtitle">Tersambung ke Firebase Firestore (shop-tracked)</p>
+      </div>
+      <button id="close-auth-modal-btn" class="icon-btn-close" aria-label="Tutup Dialog Akun">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <!-- Modal Logged Out State -->
+      <div id="modal-auth-logged-out" class="auth-modal-state">
+        <!-- Special Prompt Banner when User Attempts Checkout Without Login -->
+        <div id="checkout-auth-prompt" class="cloud-promo-box hidden" style="border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.12);">
+          <div class="promo-icon" style="color:var(--color-amber);"><i data-lucide="info"></i></div>
+          <div>
+            <h4 style="color:#fbbf24;" id="checkout-prompt-title">Simpan Riwayat ke Cloud</h4>
+            <p id="checkout-prompt-desc">Masuk dengan Gmail agar riwayat belanja ini otomatis tersimpan di Cloud Firebase Anda.</p>
+          </div>
+        </div>
+
+        <!-- General Promo Box -->
+        <div id="general-auth-promo" class="cloud-promo-box">
+          <div class="promo-icon"><i data-lucide="shield-check"></i></div>
+          <div>
+            <h4 id="auth-promo-title">Simpan Aman di Cloud</h4>
+            <p id="auth-promo-desc">Login dengan Gmail agar seluruh daftar troli belanja, batas anggaran, dan riwayat perbandingan harga selalu aman tersimpan di Google Cloud Firestore.</p>
+          </div>
+        </div>
+
+        <button id="btn-login-google-modal" class="btn-google-sign-in mt-3" type="button">
+          <svg class="google-icon-svg" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.97 0 12c0 2.03.45 3.84 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span id="label-google-login-modal">Masuk dengan Google (Gmail)</span>
+        </button>
+
+        <!-- Optional Offline Save Button if User Prefers Guest -->
+        <button id="btn-save-offline-anyway" class="btn-text-subtle mt-2 hidden" type="button">
+          <i data-lucide="hard-drive"></i>
+          <span id="label-save-offline">Simpan di Perangkat Saja (Offline)</span>
+        </button>
+      </div>
+
+      <!-- Modal Logged In State -->
+      <div id="modal-auth-logged-in" class="auth-modal-state hidden">
+        <div class="user-profile-banner">
+          <img id="modal-user-avatar" class="user-avatar" src="" alt="Avatar Pengguna">
+          <div class="user-meta">
+            <strong id="modal-user-name" class="user-name">Pengguna Google</strong>
+            <span id="modal-user-email" class="user-email">email@gmail.com</span>
+            <div class="sync-status-row">
+              <span class="sync-pill">
+                <i data-lucide="check-circle-2"></i> <span id="modal-sync-badge-text">Tersinkron ke Firestore</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="firestore-details-box mt-3">
+          <div class="detail-row">
+            <span class="label">Project ID:</span>
+            <span class="val font-mono">shop-tracked</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Database:</span>
+            <span class="val">Cloud Firestore (Default)</span>
+          </div>
+          <div class="detail-row">
+            <span class="label" id="modal-cloud-status-label">Status Cloud:</span>
+            <span id="modal-sync-time" class="val text-emerald">Aktif & Sinkron</span>
+          </div>
+        </div>
+
+        <div class="sheet-actions mt-3">
+          <button id="modal-btn-sync" class="btn-primary" type="button">
+            <i data-lucide="refresh-cw"></i> <span id="label-modal-sync-btn">Sinkronkan Data Sekarang</span>
+          </button>
+          <button id="modal-btn-logout" class="btn-outline-danger mt-2" type="button">
+            <i data-lucide="log-out"></i> <span id="label-modal-logout-btn">Keluar dari Akun</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

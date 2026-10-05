@@ -1,0 +1,50 @@
+<!-- MODAL: DETAIL RIWAYAT BELANJA (F-06) -->
+<div id="history-detail-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-history-modal-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    
+    <div class="sheet-header">
+      <div>
+        <h3 id="history-modal-title" class="sheet-title">Detail Belanja Bulanan</h3>
+        <p id="history-modal-date" class="sheet-subtitle">Tanggal Belanja</p>
+      </div>
+      <button id="close-history-detail-btn" class="icon-btn-close" aria-label="Tutup detail riwayat">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Ringkasan Anggaran Transaksi -->
+      <div class="history-detail-summary-card">
+        <div class="summary-stat">
+          <span class="label">Total Pengeluaran</span>
+          <strong id="history-modal-total" class="val highlight">Rp 0</strong>
+        </div>
+        <div class="summary-stat">
+          <span class="label">Batas Anggaran Saat Itu</span>
+          <span id="history-modal-budget" class="val">Rp 0</span>
+        </div>
+        <div class="summary-stat text-right">
+          <span class="label">Status</span>
+          <span id="history-modal-status" class="badge">Aman</span>
+        </div>
+      </div>
+
+      <!-- Daftar Barang di Transaksi -->
+      <div class="history-items-section mt-3">
+        <h4 class="subheading">Daftar Barang Belanja:</h4>
+        <div id="history-modal-items" class="history-items-breakdown-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="history-detail-actions mt-3">
+        <button id="delete-this-history-btn" class="btn-outline-danger w-full">
+          <i data-lucide="trash-2"></i> Hapus Catatan Riwayat Ini
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

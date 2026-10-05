@@ -1,0 +1,146 @@
+<!-- MODAL / BOTTOM SHEET: ADD ITEM (F-02 & F-03 & F-04) -->
+<div id="add-item-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-modal-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="modal-sheet-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    
+    <div class="sheet-header">
+      <div>
+        <h3 id="modal-sheet-title" class="sheet-title">Tambah Barang Belanja</h3>
+        <p class="sheet-subtitle">Cek harga & kalkulasi diskon bertumpuk instan</p>
+      </div>
+      <button id="close-modal-btn" class="icon-btn-close" aria-label="Tutup form">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <form id="item-form" class="sheet-form">
+      <!-- Nama Item & Quick Suggestion Chips -->
+      <div class="form-group">
+        <label for="item-name" class="form-label">Nama Barang</label>
+        <input type="text" id="item-name" class="form-input" placeholder="cth: Beras Ramos 5kg, Minyak 2L" required autocomplete="off">
+        <div class="quick-chips-wrapper">
+          <span class="chips-label">Pilihan Cepat Kos:</span>
+          <div class="chips-scroll">
+            <button type="button" class="item-suggestion" data-name="Beras Ramos 5kg" data-cat="Bahan Pokok" data-unit="pack" data-price="68000">Beras 5kg</button>
+            <button type="button" class="item-suggestion" data-name="Minyak Goreng 2L" data-cat="Bahan Pokok" data-unit="liter" data-price="34000">Minyak 2L</button>
+            <button type="button" class="item-suggestion" data-name="Telur Ayam 1kg" data-cat="Bahan Pokok" data-unit="kg" data-price="28000">Telur 1kg</button>
+            <button type="button" class="item-suggestion" data-name="Mie Instan Dus" data-cat="Makanan Instan" data-unit="pack" data-price="110000">Mie Dus</button>
+            <button type="button" class="item-suggestion" data-name="Deterjen Bubuk 800g" data-cat="Perlengkapan Cuci" data-unit="pack" data-price="22000">Deterjen</button>
+            <button type="button" class="item-suggestion" data-name="Sabun Mandi Cair" data-cat="Perlengkapan Mandi" data-unit="botol" data-price="26000">Sabun Cair</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kategori & Satuan -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="item-category" class="form-label">Kategori</label>
+          <select id="item-category" class="form-select">
+            <option value="Bahan Pokok">Bahan Pokok</option>
+            <option value="Makanan Instan">Makanan Instan</option>
+            <option value="Perlengkapan Mandi">Perlengkapan Mandi</option>
+            <option value="Perlengkapan Cuci">Perlengkapan Cuci</option>
+            <option value="Camilan">Camilan / Snack</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Lainnya">Lain-lain</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="item-unit" class="form-label">Satuan</label>
+          <select id="item-unit" class="form-select">
+            <option value="pack">Pack / Bungkus</option>
+            <option value="pcs">Pcs / Buah</option>
+            <option value="kg">Kilogram (kg)</option>
+            <option value="liter">Liter (L)</option>
+            <option value="botol">Botol</option>
+            <option value="kaleng">Kaleng</option>
+            <option value="dus">Dus / Karton</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Harga Satuan Label & Diskon Bertumpuk -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="item-price" class="form-label">Harga di Label (Rp)</label>
+          <div class="input-with-prefix">
+            <span class="prefix">Rp</span>
+            <input type="number" id="item-price" class="form-input" placeholder="0" min="0" step="100" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="item-discount" class="form-label">
+            Diskon Promo (%)
+            <span class="tooltip-icon" title="Mendukung diskon bertumpuk contoh: 50+20 atau 30+10">ℹ️</span>
+          </label>
+          <input type="text" id="item-discount" class="form-input" placeholder="Cth: 50+20 atau 30" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Tombol Diskon Preset Cepat -->
+      <div class="discount-presets-row">
+        <button type="button" class="disc-preset-btn" data-disc="10">10%</button>
+        <button type="button" class="disc-preset-btn" data-disc="20">20%</button>
+        <button type="button" class="disc-preset-btn" data-disc="30">30%</button>
+        <button type="button" class="disc-preset-btn" data-disc="50">50%</button>
+        <button type="button" class="disc-preset-btn highlight" data-disc="50+20">50%+20%</button>
+        <button type="button" class="disc-preset-btn highlight" data-disc="70+10">70%+10%</button>
+      </div>
+
+      <!-- LIVE BREAKDOWN KALKULASI DISKONTING (F-03) -->
+      <div id="modal-discount-breakdown" class="discount-calculation-card hidden">
+        <div class="calc-row">
+          <span>Harga Normal Asli:</span>
+          <span id="breakdown-original" class="line-through text-muted">Rp 0</span>
+        </div>
+        <div class="calc-row highlight-discount">
+          <span>Total Potongan Diskon:</span>
+          <span id="breakdown-discount-val">-Rp 0 (0%)</span>
+        </div>
+        <div class="calc-row total-unit">
+          <strong>Harga Bersih Satuan:</strong>
+          <strong id="breakdown-final-price" class="text-emerald">Rp 0</strong>
+        </div>
+      </div>
+
+      <!-- REAL-TIME PRICE COMPARATOR ALERT (F-04) -->
+      <div id="price-comparator-alert" class="comparator-alert-box hidden">
+        <div class="comp-icon-col">
+          <span id="comp-arrow" class="comp-arrow-symbol">↑</span>
+        </div>
+        <div class="comp-text-col">
+          <strong id="comp-title">Perbandingan Harga vs Bulan Lalu</strong>
+          <p id="comp-desc">Menganalisis perbedaan harga...</p>
+        </div>
+      </div>
+
+      <!-- Kuantitas & Tombol Stepper Jempol -->
+      <div class="form-row-stepper">
+        <div class="stepper-label-wrap">
+          <label class="form-label mb-0">Jumlah Beli</label>
+          <span class="text-subtle">Kuantitas di troli</span>
+        </div>
+        <div class="thumb-stepper">
+          <button type="button" id="modal-qty-minus" class="stepper-btn" aria-label="Kurangi kuantitas">
+            <i data-lucide="minus"></i>
+          </button>
+          <input type="number" id="item-qty" class="stepper-input" value="1" min="1" max="999">
+          <button type="button" id="modal-qty-plus" class="stepper-btn" aria-label="Tambah kuantitas">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi Tambah -->
+      <div class="sheet-actions">
+        <button type="submit" id="modal-submit-btn" class="btn-primary-large w-full">
+          <i data-lucide="shopping-cart"></i>
+          <span>Masukkan ke Troli (<span id="modal-live-subtotal">Rp 0</span>)</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

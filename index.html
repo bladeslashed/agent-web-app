@@ -24,7 +24,12 @@
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
   
-  <!-- Stylesheet -->
+  <!-- Firebase SDKs (Compat v10 for PWA client) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+
+  <!-- Modular Stylesheet (Master stylesheet imports css/*.css) -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,514 +37,1097 @@
   <div class="desktop-wrapper">
     <div class="mobile-device">
       
-      <!-- Top Status & Sticky Budget Safety Cap Header -->
-      <header class="app-header">
-        <div class="header-top">
-          <div class="brand">
-            <div class="brand-icon">
-              <i data-lucide="shopping-cart"></i>
-            </div>
-            <div>
-              <h1 class="brand-title">Smart Grocery</h1>
-              <p class="brand-subtitle">Budget Safety Tracker Rantau</p>
-            </div>
-          </div>
-          <div class="header-actions">
-            <button id="quick-demo-btn" class="icon-btn" title="Muat Data Sampel Kos" aria-label="Muat Data Sampel">
-              <i data-lucide="sparkles"></i>
-            </button>
-            <div id="pwa-install-badge" class="pwa-badge hidden" title="Aplikasi Siap Pasang">
-              <i data-lucide="download"></i>
-            </div>
-          </div>
-        </div>
+      <!-- COMPONENT: HEADER & STICKY BUDGET SAFETY CAP (components/header.html) -->
+      <!-- Top Header & Sticky Budget Safety Cap Header Component -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">
+        <i data-lucide="shopping-cart"></i>
+      </div>
+      <div>
+        <h1 class="brand-title">Smart Grocery</h1>
+        <p class="brand-subtitle">Budget Safety Tracker Rantau</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Dark / Light Mode Toggle Button -->
+      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+        <i data-lucide="moon" id="mode-toggle-icon"></i>
+      </button>
+      <!-- Language Toggle Button (ID / EN) -->
+      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+        <span id="lang-indicator">EN</span>
+      </button>
+      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+        <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
+        <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
+      </button>
+      <div id="pwa-install-badge" class="pwa-badge hidden" title="Aplikasi Siap Pasang">
+        <i data-lucide="download"></i>
+      </div>
+    </div>
+  </div>
 
-        <!-- Sticky Budget Safety Cap Card (Always Visible on Cart Tab) -->
-        <div id="budget-safety-card" class="budget-safety-cap status-safe">
-          <div class="budget-cap-row">
-            <div class="budget-stat">
-              <span class="label">Batas Dompet</span>
-              <span id="header-budget-limit" class="val">Rp 500.000</span>
-            </div>
-            <div class="budget-stat text-right">
-              <span class="label">Total Keranjang</span>
-              <span id="header-cart-total" class="val highlight">Rp 0</span>
-            </div>
-          </div>
+  <!-- Sticky Budget Safety Cap Card (Always Visible on Cart Tab) -->
+  <div id="budget-safety-card" class="budget-safety-cap status-safe">
+    <div class="budget-cap-row">
+      <div class="budget-stat">
+        <span id="header-budget-cap-label" class="label">Batas Dompet</span>
+        <span id="header-budget-limit" class="val">Rp 500.000</span>
+      </div>
+      <div class="budget-stat text-right">
+        <span id="header-cart-total-label" class="label">Total Keranjang</span>
+        <span id="header-cart-total" class="val highlight">Rp 0</span>
+      </div>
+    </div>
 
-          <!-- Real-time Meter Progress Bar -->
-          <div class="meter-container">
-            <div class="meter-bar-track">
-              <div id="budget-progress-bar" class="meter-bar-fill" style="width: 0%;"></div>
-            </div>
-          </div>
+    <!-- Real-time Meter Progress Bar -->
+    <div class="meter-container">
+      <div class="meter-bar-track">
+        <div id="budget-progress-bar" class="meter-bar-fill" style="width: 0%;"></div>
+      </div>
+    </div>
 
-          <div class="budget-cap-row bottom-row">
-            <div class="status-indicator-badge">
-              <span id="budget-status-dot" class="dot"></span>
-              <span id="budget-status-text">Dompet Aman (0%)</span>
-            </div>
-            <div class="remaining-stat">
-              <span id="budget-remaining-label">Sisa Saldo:</span>
-              <strong id="header-budget-remaining">Rp 500.000</strong>
-            </div>
-          </div>
+    <div class="budget-cap-row bottom-row">
+      <div class="status-indicator-badge">
+        <span id="budget-status-dot" class="dot"></span>
+        <span id="budget-status-text">Dompet Aman (0%)</span>
+      </div>
+      
+      <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
+      <div id="header-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
+      </div>
 
-          <!-- Alert Banner Over Budget (Hidden by default) -->
-          <div id="budget-over-alert" class="budget-alert-banner hidden">
-            <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
-            <div class="alert-content">
-              <strong>PERINGATAN OVER BUDGET!</strong>
-              <p id="budget-over-text">Belanja melebihi jatah dompet sebesar Rp 0. Pertimbangkan hapus camilan!</p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <div class="remaining-stat">
+        <span id="budget-remaining-label">Sisa Saldo:</span>
+        <strong id="header-budget-remaining">Rp 500.000</strong>
+      </div>
+    </div>
+
+    <!-- Alert Banner Over Budget (Hidden by default) -->
+    <div id="budget-over-alert" class="budget-alert-banner hidden">
+      <div class="alert-icon"><i data-lucide="alert-triangle"></i></div>
+      <div class="alert-content">
+        <strong>PERINGATAN OVER BUDGET!</strong>
+        <p id="budget-over-text">Belanja melebihi jatah dompet sebesar Rp 0. Pertimbangkan hapus camilan!</p>
+      </div>
+    </div>
+  </div>
+</header>
 
       <!-- Main Scrollable Content Area -->
       <main class="app-content">
 
+        <!-- COMPONENT: TAB 1 BELANJA (components/cart-tab.html) -->
         <!-- TAB 1: BELANJA (Active by default) -->
-        <section id="tab-belanja" class="tab-view active">
-          
-          <!-- Quick Cart Actions Bar -->
-          <div class="cart-toolbar">
-            <div class="cart-count-badge">
-              <i data-lucide="package-check"></i>
-              <span id="cart-item-count">0 Barang di Troli</span>
-            </div>
-            <div class="cart-actions">
-              <button id="clear-cart-btn" class="btn-text-danger" title="Kosongkan Keranjang">
-                <i data-lucide="trash-2"></i> Reset
-              </button>
-            </div>
+<section id="tab-belanja" class="tab-view active">
+  
+  <!-- Quick Cart Actions Bar -->
+  <div class="cart-toolbar">
+    <div class="cart-count-badge">
+      <i data-lucide="package-check"></i>
+      <span id="cart-item-count">0 Barang di Troli</span>
+    </div>
+    <div class="cart-actions">
+      <!-- Shelf Products Catalog Modal Button -->
+      <button id="open-shelf-btn" class="btn-text-accent" title="Pilih Produk Rak Supermarket" aria-label="Katalog Rak Supermarket">
+        <i data-lucide="store"></i> <span id="label-shelf-btn">Katalog Rak</span>
+      </button>
+      <button id="clear-cart-btn" class="btn-text-danger" title="Kosongkan Keranjang">
+        <i data-lucide="trash-2"></i> <span id="label-clear-cart">Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Button to Open Add Item Bottom Sheet -->
+  <div class="quick-add-trigger-wrap">
+    <button id="open-add-modal-btn" class="btn-primary-large">
+      <i data-lucide="plus-circle"></i>
+      <span id="label-add-item-btn">Tambah Item ke Troli</span>
+    </button>
+  </div>
+
+  <!-- Current Grocery List Container -->
+  <div id="grocery-items-list" class="grocery-card-list">
+    <!-- Dynamic Cards will be rendered here -->
+  </div>
+
+  <!-- Empty State Cart -->
+  <div id="cart-empty-state" class="empty-state">
+    <div class="empty-illustration">
+      <i data-lucide="shopping-bag"></i>
+    </div>
+    <h3 id="empty-cart-title">Troli Masih Kosong</h3>
+    <p id="empty-cart-desc">Mulai berhemat dengan mencatat barang belanjaan atau pilih langsung dari produk rak supermarket retail!</p>
+    <div class="empty-actions">
+      <button id="empty-add-item-btn" class="btn-secondary">
+        <i data-lucide="plus"></i> <span id="label-empty-add">Catat Manual</span>
+      </button>
+      <button id="empty-shelf-btn" class="btn-accent">
+        <i data-lucide="store"></i> <span id="label-empty-shelf">Pilih dari Rak Supermarket</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Checkout / Selesaikan Belanja Footer Card -->
+  <div id="cart-checkout-footer" class="checkout-footer hidden">
+    <div class="checkout-summary">
+      <div class="summary-line">
+        <span id="label-footer-total">Total Belanja:</span>
+        <span id="footer-total-price" class="total-amount">Rp 0</span>
+      </div>
+      <div class="summary-line sub">
+        <span id="footer-item-summary">0 item terdaftar</span>
+        <!-- Spending Comparator Badge in Bottom Selesaikan Belanja Bar -->
+        <div id="footer-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
+          <span class="comp-icon">-</span>
+          <span class="comp-label">vs Bulan Lalu</span>
+        </div>
+        <span id="footer-saved-badge" class="savings-pill hidden">Hemat Rp 0</span>
+      </div>
+    </div>
+    <button id="checkout-btn" class="btn-checkout" aria-label="Selesaikan Belanja dan Simpan">
+      <i data-lucide="check-circle-2"></i> <span id="label-checkout-btn">Selesaikan Belanja</span>
+    </button>
+  </div>
+</section>
+
+        <!-- COMPONENT: TAB 2 RIWAYAT (components/history-tab.html) -->
+        <!-- TAB 2: RIWAYAT BELANJA (Komparator Pengeluaran Bulanan) -->
+<section id="tab-riwayat" class="tab-view">
+  <div class="section-title-wrap">
+    <div>
+      <h2 id="history-section-title" class="section-title">Riwayat & Perbandingan</h2>
+      <p id="history-section-subtitle" class="section-subtitle">Perbandingan pengeluaran belanja bulanan otomatis</p>
+    </div>
+    <button id="export-history-btn" class="icon-btn-secondary" title="Unduh Catatan Belanja">
+      <i data-lucide="download-cloud"></i>
+    </button>
+  </div>
+
+  <!-- Monthly Spending Comparator Card (Replaces old manual baseline) -->
+  <div id="history-monthly-comparator-card" class="monthly-comparison-card">
+    <div class="comp-card-header">
+      <div>
+        <h3 id="comp-card-title">Perbandingan Pengeluaran</h3>
+        <span id="comp-period-label" style="font-size:0.75rem;color:var(--text-muted);">Tren Belanja vs Bulan Lalu</span>
+      </div>
+      <div id="history-comparator-badge" class="spending-comparator-badge comp-none">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
+      </div>
+    </div>
+
+    <div class="comp-stats-grid">
+      <div class="comp-stat-col">
+        <span id="comp-current-label" class="stat-title">Belanja Sekarang</span>
+        <span id="comp-current-val" class="stat-num">Rp 0</span>
+      </div>
+      <div class="comp-arrow-divider">
+        <div id="comp-large-badge" class="comp-badge-large comp-none">
+          <span id="comp-large-icon">-</span>
+        </div>
+      </div>
+      <div class="comp-stat-col text-right">
+        <span id="comp-past-label" class="stat-title">Bulan Lalu</span>
+        <span id="comp-past-val" class="stat-num">-</span>
+      </div>
+    </div>
+
+    <p id="comp-summary-text" class="comp-summary-note">
+      Belum ada riwayat belanja bulan sebelumnya sebagai acuan komparasi.
+    </p>
+  </div>
+
+  <!-- History Transaksi List -->
+  <div id="history-list-container" class="history-list">
+    <!-- Dynamic History Cards -->
+  </div>
+
+  <!-- Empty State History -->
+  <div id="history-empty-state" class="empty-state hidden">
+    <div class="empty-illustration">
+      <i data-lucide="history"></i>
+    </div>
+    <h3 id="empty-history-title">Belum Ada Riwayat Belanja</h3>
+    <p id="empty-history-desc">Selesaikan belanja pertama Anda di tab Belanja untuk mulai melihat riwayat transaksi dan perbandingan pengeluaran antar bulan.</p>
+  </div>
+</section>
+
+        <!-- COMPONENT: TAB 3 ANGGARAN & AKUN (components/settings-tab.html) -->
+        <!-- TAB 3: ANGGARAN & PENGATURAN (Budget Safety Cap & Firebase Account) -->
+<section id="tab-anggaran" class="tab-view">
+  <div class="section-title-wrap">
+    <div>
+      <h2 class="section-title">Akun & Pengaturan Anggaran</h2>
+      <p class="section-subtitle">Sinkronisasi cloud Firebase & kendali dompet belanja</p>
+    </div>
+  </div>
+
+  <!-- Cloud Sync & Firebase Account Card -->
+  <div class="glass-card mb-3 auth-account-card">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-brand">
+        <i data-lucide="cloud"></i>
+      </div>
+      <div class="flex-1">
+        <div class="card-title-row">
+          <h3 id="tab-auth-title">Akun & Cloud Database</h3>
+          <span id="tab-db-badge" class="badge-db-status">
+            <span class="db-dot"></span> Firestore: shop-tracked
+          </span>
+        </div>
+        <p id="tab-auth-desc">Sinkronkan keranjang & sisa anggaran ke cloud Firebase</p>
+      </div>
+    </div>
+
+    <!-- Logged Out View -->
+    <div id="auth-tab-logged-out" class="auth-box-state mt-3">
+      <p class="auth-callout-text">
+        Masuk dengan Gmail agar data troli belanja, batas anggaran, dan riwayat perbandingan harga otomatis tersimpan di Cloud Firestore.
+      </p>
+      <button id="btn-login-google-tab" class="btn-google-sign-in" type="button">
+        <svg class="google-icon-svg" viewBox="0 0 24 24" width="20" height="20">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.97 0 12c0 2.03.45 3.84 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <span>Masuk dengan Google (Gmail)</span>
+      </button>
+    </div>
+
+    <!-- Logged In View -->
+    <div id="auth-tab-logged-in" class="auth-box-state mt-3 hidden">
+      <div class="user-profile-banner">
+        <img id="tab-user-avatar" class="user-avatar" src="" alt="Avatar Pengguna">
+        <div class="user-meta">
+          <strong id="tab-user-name" class="user-name">Pengguna Google</strong>
+          <span id="tab-user-email" class="user-email">email@gmail.com</span>
+          <div class="sync-status-row">
+            <span class="sync-pill">
+              <i data-lucide="check-circle-2"></i> Tersinkron ke Firestore
+            </span>
           </div>
+        </div>
+      </div>
 
-          <!-- Floating Button to Open Add Item Bottom Sheet -->
-          <div class="quick-add-trigger-wrap">
-            <button id="open-add-modal-btn" class="btn-primary-large">
-              <i data-lucide="plus-circle"></i>
-              <span>Tambah Item ke Troli</span>
-            </button>
+      <div class="auth-actions-group mt-3">
+        <button id="btn-sync-now-tab" class="btn-secondary flex-1" type="button">
+          <i data-lucide="refresh-cw"></i> <span>Sinkron Sekarang</span>
+        </button>
+        <button id="btn-logout-tab" class="btn-outline-danger" type="button" title="Keluar Akun">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+
+      <div class="sync-timestamp-row">
+        <span id="tab-sync-text">Status: Tersinkronisasi Otomatis</span>
+        <span id="tab-sync-time" class="timestamp">Pukul 00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Pengaturan Anggaran -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-emerald">
+        <i data-lucide="wallet"></i>
+      </div>
+      <div>
+        <h3>Batas Anggaran Bulanan</h3>
+        <p>Batas maksimal uang saku atau belanja bulanan</p>
+      </div>
+    </div>
+
+    <div class="setting-form">
+      <label for="input-budget-cap" class="form-label">Nominal Batas (Rupiah)</label>
+      <div class="input-with-prefix">
+        <span class="prefix">Rp</span>
+        <input type="number" id="input-budget-cap" class="form-input" value="500000" min="10000" step="10000">
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div class="budget-chips-group">
+        <button type="button" class="budget-chip" data-amount="300000">300rb</button>
+        <button type="button" class="budget-chip" data-amount="500000">500rb</button>
+        <button type="button" class="budget-chip" data-amount="750000">750rb</button>
+        <button type="button" class="budget-chip" data-amount="1000000">1 Jt</button>
+      </div>
+
+      <button id="save-budget-btn" class="btn-primary mt-3">
+        <i data-lucide="check"></i> Simpan Setelan Anggaran
+      </button>
+    </div>
+  </div>
+
+  <!-- Theme & Appearance Customizer Card (5 Themes x Light & Dark Modes) -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-violet">
+        <i data-lucide="palette"></i>
+      </div>
+      <div>
+        <h3 id="theme-card-title">Tema & Tampilan Aplikasi</h3>
+        <p id="theme-card-subtitle">5 palet warna dengan varian Mode Gelap & Mode Terang</p>
+      </div>
+    </div>
+
+    <!-- Mode Switcher Segmented Control (Dark vs Light) -->
+    <div class="theme-mode-section mt-3">
+      <label class="form-label" id="label-mode-selector">Pilih Mode Tampilan</label>
+      <div class="theme-mode-segmented">
+        <button type="button" class="theme-mode-pill active" data-mode="dark" id="pill-mode-dark">
+          <i data-lucide="moon"></i>
+          <span id="label-mode-dark-text">Mode Gelap</span>
+        </button>
+        <button type="button" class="theme-mode-pill" data-mode="light" id="pill-mode-light">
+          <i data-lucide="sun"></i>
+          <span id="label-mode-light-text">Mode Terang</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Color Palette Selection Grid (5 Themes) -->
+    <div class="theme-palettes-section mt-3">
+      <label class="form-label" id="label-palette-selector">Pilih Palet Warna</label>
+      <div class="theme-swatches-grid" id="theme-swatches-grid">
+        <!-- 1. Midnight Slate Blue -->
+        <button type="button" class="theme-swatch-card active" data-theme="midnight" title="Midnight Slate Blue">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #1e1b4b;"></span>
+            <span class="swatch-dot" style="background: #3b82f6;"></span>
+            <span class="swatch-dot" style="background: #090d16;"></span>
           </div>
-
-          <!-- Current Grocery List Container -->
-          <div id="grocery-items-list" class="grocery-card-list">
-            <!-- Dynamic Cards will be rendered here -->
+          <div class="swatch-info">
+            <strong class="swatch-name">Midnight Slate</strong>
+            <span class="swatch-desc">Deep Tech Blue</span>
           </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
 
-          <!-- Empty State Cart -->
-          <div id="cart-empty-state" class="empty-state">
-            <div class="empty-illustration">
-              <i data-lucide="shopping-bag"></i>
-            </div>
-            <h3>Troli Masih Kosong</h3>
-            <p>Masukkan item belanjaan atau muat data sampel kebutuhan anak rantau untuk mulai berhemat!</p>
-            <div class="empty-actions">
-              <button id="empty-add-item-btn" class="btn-secondary">
-                <i data-lucide="plus"></i> Masukkan Belanjaan
-              </button>
-              <button id="load-sample-btn" class="btn-accent">
-                <i data-lucide="sparkles"></i> Muat Data Kos Populer
-              </button>
-            </div>
+        <!-- 2. Emerald Supermarket Green -->
+        <button type="button" class="theme-swatch-card" data-theme="emerald" title="Emerald Supermarket Green">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #064e3b;"></span>
+            <span class="swatch-dot" style="background: #10b981;"></span>
+            <span class="swatch-dot" style="background: #02120d;"></span>
           </div>
-
-          <!-- Floating Checkout / Selesaikan Belanja Footer Card -->
-          <div id="cart-checkout-footer" class="checkout-footer hidden">
-            <div class="checkout-summary">
-              <div class="summary-line">
-                <span>Total Belanja:</span>
-                <span id="footer-total-price" class="total-amount">Rp 0</span>
-              </div>
-              <div class="summary-line sub">
-                <span id="footer-item-summary">0 item terdaftar</span>
-                <span id="footer-saved-badge" class="savings-pill hidden">Hemat Rp 0</span>
-              </div>
-            </div>
-            <button id="checkout-btn" class="btn-checkout" aria-label="Selesaikan Belanja dan Simpan">
-              <i data-lucide="check-circle-2"></i> Selesaikan Belanja
-            </button>
+          <div class="swatch-info">
+            <strong class="swatch-name">Emerald Market</strong>
+            <span class="swatch-desc">Fresh Grocery</span>
           </div>
-        </section>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
 
-        <!-- TAB 2: RIWAYAT BELANJA (F-06 & Pembanding Harga) -->
-        <section id="tab-riwayat" class="tab-view">
-          <div class="section-title-wrap">
-            <div>
-              <h2 class="section-title">Riwayat & Acuan Harga</h2>
-              <p class="section-subtitle">Database pengeluaran & dasar komparator harga bulan lalu</p>
-            </div>
-            <button id="export-history-btn" class="icon-btn-secondary" title="Unduh Catatan Belanja">
-              <i data-lucide="download-cloud"></i>
-            </button>
+        <!-- 3. Sunset Tangerine Amber -->
+        <button type="button" class="theme-swatch-card" data-theme="sunset" title="Sunset Tangerine Amber">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #451a03;"></span>
+            <span class="swatch-dot" style="background: #f59e0b;"></span>
+            <span class="swatch-dot" style="background: #120902;"></span>
           </div>
-
-          <!-- Official Baseline Reference Card -->
-          <div class="baseline-reference-card">
-            <div class="baseline-header">
-              <i data-lucide="scale"></i>
-              <div>
-                <h4>Acuan Pembanding Bulan Lalu</h4>
-                <p id="baseline-month-label">Memakai data: Belum ditentukan</p>
-              </div>
-            </div>
-            <p class="baseline-note">Harga barang di supermarket saat ini otomatis dicocokkan dengan transaksi ini.</p>
+          <div class="swatch-info">
+            <strong class="swatch-name">Sunset Tangerine</strong>
+            <span class="swatch-desc">Warm Amber</span>
           </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
 
-          <!-- History Transaksi List -->
-          <div id="history-list-container" class="history-list">
-            <!-- Dynamic History Cards -->
+        <!-- 4. Cyberpunk Violet Purple -->
+        <button type="button" class="theme-swatch-card" data-theme="violet" title="Cyberpunk Violet Purple">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #3b0764;"></span>
+            <span class="swatch-dot" style="background: #a855f7;"></span>
+            <span class="swatch-dot" style="background: #0a0314;"></span>
           </div>
-
-          <!-- Empty State History -->
-          <div id="history-empty-state" class="empty-state hidden">
-            <div class="empty-illustration">
-              <i data-lucide="history"></i>
-            </div>
-            <h3>Belum Ada Riwayat Belanja</h3>
-            <p>Selesaikan belanja pertama Anda di tab Belanja atau tekan tombol sampel untuk membuat acuan harga bulan lalu.</p>
-            <button id="history-load-sample-btn" class="btn-accent">
-              <i data-lucide="sparkles"></i> Buat Riwayat Bulan Lalu (Sampel)
-            </button>
+          <div class="swatch-info">
+            <strong class="swatch-name">Cyber Violet</strong>
+            <span class="swatch-desc">Neon Lavender</span>
           </div>
-        </section>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
 
-        <!-- TAB 3: ANGGARAN & PENGATURAN (F-05 & Insights) -->
-        <section id="tab-anggaran" class="tab-view">
-          <div class="section-title-wrap">
-            <div>
-              <h2 class="section-title">Pengaturan Anggaran</h2>
-              <p class="section-subtitle">Kendalikan batas dompet bulanan anak kos</p>
-            </div>
+        <!-- 5. Rose Berry Coral -->
+        <button type="button" class="theme-swatch-card" data-theme="rose" title="Rose Berry Coral">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #4c0519;"></span>
+            <span class="swatch-dot" style="background: #f43f5e;"></span>
+            <span class="swatch-dot" style="background: #140308;"></span>
           </div>
-
-          <!-- Form Input Budget Safety Cap -->
-          <div class="glass-card budget-setting-card">
-            <div class="card-icon-header">
-              <div class="icon-circle bg-emerald">
-                <i data-lucide="wallet"></i>
-              </div>
-              <div>
-                <h3>Safety Budget Cap (Batas Dompet)</h3>
-                <p>Maksimal uang yang boleh dibelanjakan</p>
-              </div>
-            </div>
-
-            <div class="form-group mt-3">
-              <label for="input-budget-cap">Nominal Anggaran (Rp)</label>
-              <div class="input-currency-wrapper">
-                <span class="currency-prefix">Rp</span>
-                <input type="number" id="input-budget-cap" class="form-control text-lg" placeholder="500.000" min="10000" step="5000" inputmode="numeric">
-              </div>
-            </div>
-
-            <!-- Quick Budget Presets for Anak Rantau -->
-            <div class="quick-chips-group">
-              <span class="chips-label">Pilihan Cepat:</span>
-              <button type="button" class="budget-chip" data-amount="300000">300rb</button>
-              <button type="button" class="budget-chip" data-amount="450000">450rb</button>
-              <button type="button" class="budget-chip" data-amount="600000">600rb</button>
-              <button type="button" class="budget-chip" data-amount="800000">800rb</button>
-            </div>
-
-            <button id="save-budget-btn" class="btn-primary mt-3">
-              <i data-lucide="save"></i> Simpan Batas Anggaran
-            </button>
+          <div class="swatch-info">
+            <strong class="swatch-name">Rose Berry</strong>
+            <span class="swatch-desc">Vibrant Crimson</span>
           </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+      </div>
+    </div>
+  </div>
 
-          <!-- Rantau Financial Insights Card -->
-          <div class="glass-card mt-3">
-            <div class="card-icon-header">
-              <div class="icon-circle bg-amber">
-                <i data-lucide="lightbulb"></i>
-              </div>
-              <div>
-                <h3>Tips Belanja Aman Anak Rantau</h3>
-                <p>Trik bertahan hidup di supermarket</p>
-              </div>
-            </div>
+  <!-- Danger Zone Reset Data -->
+  <div class="glass-card mb-3 border-danger-subtle">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-rose">
+        <i data-lucide="shield-alert"></i>
+      </div>
+      <div>
+        <h3>Area Pengaturan Data</h3>
+        <p>Kelola dan bersihkan data penyimpanan lokal</p>
+      </div>
+    </div>
 
-            <ul class="tips-list">
-              <li>
-                <i data-lucide="check"></i>
-                <span><strong>Beli Beras & Telur Dulu:</strong> Amankan kebutuhan primer sebelum melirik lorong camilan & minuman botol.</span>
-              </li>
-              <li>
-                <i data-lucide="check"></i>
-                <span><strong>Cek Diskon Bertingkat:</strong> Diskon 50% + 20% sama dengan diskon 60%, bukan 70%! Gunakan kalkulator kami agar tidak terkecoh.</span>
-              </li>
-              <li>
-                <i data-lucide="check"></i>
-                <span><strong>Perhatikan Harga Bulan Lalu:</strong> Jika ada panah merah naik tajam (↑), pertimbangkan beli merek alternatif atau cari promo kemasan ekonomis.</span>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Reset & Data Management -->
-          <div class="glass-card mt-3 border-danger-subtle">
-            <div class="card-icon-header">
-              <div class="icon-circle bg-rose">
-                <i data-lucide="database"></i>
-              </div>
-              <div>
-                <h3>Kelola Data Aplikasi</h3>
-                <p>Bersihkan riwayat atau reset ke setelan awal</p>
-              </div>
-            </div>
-
-            <div class="danger-actions-grid mt-3">
-              <button id="reset-history-only-btn" class="btn-outline-danger">
-                <i data-lucide="clock"></i> Hapus Semua Riwayat
-              </button>
-              <button id="reset-all-data-btn" class="btn-danger">
-                <i data-lucide="alert-octagon"></i> Reset Seluruh Data
-              </button>
-            </div>
-          </div>
-        </section>
+    <div class="danger-actions-list">
+      <button id="reset-history-only-btn" class="btn-outline-danger w-full mb-2">
+        <i data-lucide="trash"></i> Hapus Semua Riwayat Belanja
+      </button>
+      <button id="reset-all-data-btn" class="btn-danger w-full">
+        <i data-lucide="alert-octagon"></i> Reset Total Aplikasi (Hapus Semua)
+      </button>
+    </div>
+  </div>
+</section>
 
       </main>
 
-      <!-- BOTTOM NAVIGATION BAR (Floating with Lucide Icons) -->
-      <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="tab-belanja" id="nav-tab-belanja" aria-label="Tab Belanja">
-          <div class="nav-icon-wrapper">
-            <i data-lucide="shopping-cart"></i>
-            <span id="nav-cart-badge" class="nav-badge hidden">0</span>
+      <!-- COMPONENT: BOTTOM NAVIGATION BAR (components/navigation.html) -->
+      <!-- Bottom Thumb-Friendly Navigation Bar Component -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-tab="tab-belanja" id="nav-tab-belanja">
+    <div class="nav-icon-wrap">
+      <i data-lucide="shopping-cart"></i>
+      <span id="nav-cart-badge" class="badge-count hidden">0</span>
+    </div>
+    <span class="nav-label">Troli Belanja</span>
+  </button>
+  <button class="nav-item" data-tab="tab-riwayat" id="nav-tab-riwayat">
+    <div class="nav-icon-wrap">
+      <i data-lucide="history"></i>
+    </div>
+    <span class="nav-label">Riwayat</span>
+  </button>
+  <button class="nav-item" data-tab="tab-anggaran" id="nav-tab-anggaran">
+    <div class="nav-icon-wrap">
+      <i data-lucide="settings"></i>
+    </div>
+    <span class="nav-label">Anggaran & Akun</span>
+  </button>
+</nav>
+
+      <!-- COMPONENT: MODALS & BOTTOM SHEETS -->
+      <!-- Add Item Modal (components/modals/add-item-modal.html) -->
+      <!-- MODAL / BOTTOM SHEET: ADD ITEM (F-02 & F-03 & F-04) -->
+<div id="add-item-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-modal-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="modal-sheet-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    
+    <div class="sheet-header">
+      <div>
+        <h3 id="modal-sheet-title" class="sheet-title">Tambah Barang Belanja</h3>
+        <p class="sheet-subtitle">Cek harga & kalkulasi diskon bertumpuk instan</p>
+      </div>
+      <button id="close-modal-btn" class="icon-btn-close" aria-label="Tutup form">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <form id="item-form" class="sheet-form">
+      <!-- Nama Item & Quick Suggestion Chips -->
+      <div class="form-group">
+        <label for="item-name" class="form-label">Nama Barang</label>
+        <input type="text" id="item-name" class="form-input" placeholder="cth: Beras Ramos 5kg, Minyak 2L" required autocomplete="off">
+        <div class="quick-chips-wrapper">
+          <span class="chips-label">Pilihan Cepat Kos:</span>
+          <div class="chips-scroll">
+            <button type="button" class="item-suggestion" data-name="Beras Ramos 5kg" data-cat="Bahan Pokok" data-unit="pack" data-price="68000">Beras 5kg</button>
+            <button type="button" class="item-suggestion" data-name="Minyak Goreng 2L" data-cat="Bahan Pokok" data-unit="liter" data-price="34000">Minyak 2L</button>
+            <button type="button" class="item-suggestion" data-name="Telur Ayam 1kg" data-cat="Bahan Pokok" data-unit="kg" data-price="28000">Telur 1kg</button>
+            <button type="button" class="item-suggestion" data-name="Mie Instan Dus" data-cat="Makanan Instan" data-unit="pack" data-price="110000">Mie Dus</button>
+            <button type="button" class="item-suggestion" data-name="Deterjen Bubuk 800g" data-cat="Perlengkapan Cuci" data-unit="pack" data-price="22000">Deterjen</button>
+            <button type="button" class="item-suggestion" data-name="Sabun Mandi Cair" data-cat="Perlengkapan Mandi" data-unit="botol" data-price="26000">Sabun Cair</button>
           </div>
-          <span class="nav-label">Belanja</span>
-        </button>
-
-        <button class="nav-item" data-tab="tab-riwayat" id="nav-tab-riwayat" aria-label="Tab Riwayat">
-          <div class="nav-icon-wrapper">
-            <i data-lucide="history"></i>
-          </div>
-          <span class="nav-label">Riwayat</span>
-        </button>
-
-        <button class="nav-item" data-tab="tab-anggaran" id="nav-tab-anggaran" aria-label="Tab Anggaran">
-          <div class="nav-icon-wrapper">
-            <i data-lucide="pie-chart"></i>
-          </div>
-          <span class="nav-label">Anggaran</span>
-        </button>
-      </nav>
-
-      <!-- ============================================ -->
-      <!-- MODAL / BOTTOM SHEET: FORM INPUT ITEM (F-01 s.d. F-04) -->
-      <!-- ============================================ -->
-      <div id="add-item-modal" class="bottom-sheet-overlay hidden">
-        <div class="bottom-sheet-backdrop" id="close-modal-backdrop"></div>
-        <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-          
-          <div class="sheet-handle-bar">
-            <span class="sheet-handle"></span>
-          </div>
-
-          <div class="sheet-header">
-            <div>
-              <h3 id="modal-title" class="sheet-title">Catat Barang Belanjaan</h3>
-              <p class="sheet-subtitle">Sambil dorong troli, catat harga & cek diskon</p>
-            </div>
-            <button id="close-modal-btn" class="icon-btn-close" aria-label="Tutup Form">
-              <i data-lucide="x"></i>
-            </button>
-          </div>
-
-          <form id="item-form" class="sheet-body">
-            
-            <!-- Quick Suggestions Chips for Fast Thumb Typing -->
-            <div class="quick-suggest-scroll">
-              <span class="suggest-badge">Saran Cepat:</span>
-              <button type="button" class="item-suggestion" data-name="Beras 5kg" data-cat="Bahan Pokok" data-unit="pack" data-price="72000">Beras</button>
-              <button type="button" class="item-suggestion" data-name="Minyak Goreng 2L" data-cat="Bahan Pokok" data-unit="liter" data-price="35000">Minyak 2L</button>
-              <button type="button" class="item-suggestion" data-name="Telur Ayam 1kg" data-cat="Bahan Pokok" data-unit="kg" data-price="29000">Telur 1kg</button>
-              <button type="button" class="item-suggestion" data-name="Mie Instan Dus" data-cat="Makanan Instan" data-unit="pack" data-price="115000">Mie Dus</button>
-              <button type="button" class="item-suggestion" data-name="Deterjen Bubuk" data-cat="Perlengkapan Cuci" data-unit="pack" data-price="21000">Deterjen</button>
-              <button type="button" class="item-suggestion" data-name="Sabun Mandi Pack" data-cat="Perlengkapan Mandi" data-unit="pack" data-price="18500">Sabun</button>
-              <button type="button" class="item-suggestion" data-name="Susu UHT 1L" data-cat="Makanan Instan" data-unit="pcs" data-price="19000">Susu UHT</button>
-            </div>
-
-            <!-- F-01: Nama Produk & Kategori -->
-            <div class="form-group">
-              <label for="item-name">Nama Produk <span class="req">*</span></label>
-              <div class="input-with-icon">
-                <i data-lucide="tag" class="field-icon"></i>
-                <input type="text" id="item-name" class="form-control" placeholder="Contoh: Beras Ramos 5kg, Sabun..." required autocomplete="off">
-              </div>
-            </div>
-
-            <!-- F-04: Real-time Price Comparator Feedback Box (Dynamic) -->
-            <div id="price-comparator-alert" class="comparator-preview hidden">
-              <div class="comparator-icon">
-                <span id="comp-arrow">↑</span>
-              </div>
-              <div class="comparator-text">
-                <strong id="comp-title">Bulan lalu: Rp 0</strong>
-                <p id="comp-desc">Harga bulan ini lebih mahal Rp 0 (+0%)</p>
-              </div>
-            </div>
-
-            <!-- Kategori & Satuan (Thumb Friendly Select / Grid) -->
-            <div class="form-row-2">
-              <div class="form-group">
-                <label for="item-category">Kategori</label>
-                <select id="item-category" class="form-control">
-                  <option value="Bahan Pokok">🌾 Bahan Pokok</option>
-                  <option value="Makanan Instan">🍜 Makanan & Minuman</option>
-                  <option value="Bumbu & Masak">🧂 Bumbu Dapur</option>
-                  <option value="Perlengkapan Mandi">🧼 Mandi & Kebersihan</option>
-                  <option value="Perlengkapan Cuci">🧺 Cuci & Rumah</option>
-                  <option value="Camilan">🍪 Camilan & Santai</option>
-                  <option value="Lainnya">📦 Lain-lain</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="item-unit">Satuan</label>
-                <select id="item-unit" class="form-control">
-                  <option value="pcs">pcs (buah)</option>
-                  <option value="kg">kg (kilo)</option>
-                  <option value="liter">liter (lt)</option>
-                  <option value="pack">pack (bungkus)</option>
-                  <option value="botol">botol</option>
-                  <option value="kaleng">kaleng</option>
-                  <option value="gram">gram</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Harga Satuan Asli -->
-            <div class="form-group">
-              <label for="item-price">Harga Satuan Asli (Rp) <span class="req">*</span></label>
-              <div class="input-currency-wrapper">
-                <span class="currency-prefix">Rp</span>
-                <input type="number" id="item-price" class="form-control text-lg" placeholder="0" min="0" step="500" required inputmode="numeric">
-              </div>
-            </div>
-
-            <!-- F-03: Kalkulator Diskon Bertingkat (Single / Bertumpuk) -->
-            <div class="discount-section">
-              <div class="discount-header">
-                <label for="item-discount" class="discount-title">
-                  <i data-lucide="percent"></i> Diskon Bertingkat (Opsional)
-                </label>
-                <span class="discount-hint">Bisa tunggal (20%) atau tumpuk (50+20)</span>
-              </div>
-
-              <div class="form-row-discount">
-                <div class="input-with-icon flex-1">
-                  <i data-lucide="tag" class="field-icon"></i>
-                  <input type="text" id="item-discount" class="form-control" placeholder="Contoh: 25 atau 50+20">
-                </div>
-                <div class="discount-presets">
-                  <button type="button" class="disc-preset-btn" data-disc="10">10%</button>
-                  <button type="button" class="disc-preset-btn" data-disc="20">20%</button>
-                  <button type="button" class="disc-preset-btn" data-disc="50">50%</button>
-                  <button type="button" class="disc-preset-btn" data-disc="50+20">50+20</button>
-                </div>
-              </div>
-
-              <!-- Live Discount Calculation Breakdown Card -->
-              <div id="modal-discount-breakdown" class="discount-breakdown-card hidden">
-                <div class="breakdown-row">
-                  <span>Harga Normal:</span>
-                  <span id="breakdown-original">Rp 0</span>
-                </div>
-                <div class="breakdown-row text-emerald">
-                  <span>Total Potongan Diskon:</span>
-                  <span id="breakdown-discount-val">-Rp 0</span>
-                </div>
-                <div class="breakdown-row final">
-                  <span>Harga Akhir Satuan:</span>
-                  <strong id="breakdown-final-price">Rp 0</strong>
-                </div>
-              </div>
-            </div>
-
-            <!-- F-02: Kuantitas dengan Stepper Jempol Lebar -->
-            <div class="form-group mt-2">
-              <label>Kuantitas Barang</label>
-              <div class="stepper-thumb-group">
-                <button type="button" id="modal-qty-minus" class="stepper-btn" aria-label="Kurangi kuantitas">
-                  <i data-lucide="minus"></i>
-                </button>
-                <input type="number" id="item-qty" class="stepper-input" value="1" min="1" step="1" inputmode="numeric">
-                <button type="button" id="modal-qty-plus" class="stepper-btn" aria-label="Tambah kuantitas">
-                  <i data-lucide="plus"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Real-time Live Subtotal Preview -->
-            <div class="modal-subtotal-preview">
-              <div class="subtotal-info">
-                <span class="label">Subtotal Item Ini:</span>
-                <span id="modal-live-subtotal" class="value">Rp 0</span>
-              </div>
-            </div>
-
-            <!-- Tombol Simpan Barang ke Troli -->
-            <div class="sheet-actions">
-              <button type="submit" id="submit-item-btn" class="btn-primary-large">
-                <i data-lucide="shopping-bag"></i> Masukkan ke Troli Belanja
-              </button>
-            </div>
-
-          </form>
-
         </div>
       </div>
 
-      <!-- ============================================ -->
-      <!-- MODAL DETAIL TRANSAKSI RIWAYAT (F-06) -->
-      <!-- ============================================ -->
-      <div id="history-detail-modal" class="bottom-sheet-overlay hidden">
-        <div class="bottom-sheet-backdrop" id="close-history-modal-backdrop"></div>
-        <div class="bottom-sheet-container">
-          <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
-          <div class="sheet-header">
-            <div>
-              <h3 id="history-modal-title" class="sheet-title">Rincian Belanja</h3>
-              <p id="history-modal-date" class="sheet-subtitle">Tanggal: -</p>
-            </div>
-            <button id="close-history-detail-btn" class="icon-btn-close">
-              <i data-lucide="x"></i>
-            </button>
+      <!-- Kategori & Satuan -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="item-category" class="form-label">Kategori</label>
+          <select id="item-category" class="form-select">
+            <option value="Bahan Pokok">Bahan Pokok</option>
+            <option value="Makanan Instan">Makanan Instan</option>
+            <option value="Perlengkapan Mandi">Perlengkapan Mandi</option>
+            <option value="Perlengkapan Cuci">Perlengkapan Cuci</option>
+            <option value="Camilan">Camilan / Snack</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Lainnya">Lain-lain</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="item-unit" class="form-label">Satuan</label>
+          <select id="item-unit" class="form-select">
+            <option value="pack">Pack / Bungkus</option>
+            <option value="pcs">Pcs / Buah</option>
+            <option value="kg">Kilogram (kg)</option>
+            <option value="liter">Liter (L)</option>
+            <option value="botol">Botol</option>
+            <option value="kaleng">Kaleng</option>
+            <option value="dus">Dus / Karton</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Harga Satuan Label & Diskon Bertumpuk -->
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="item-price" class="form-label">Harga di Label (Rp)</label>
+          <div class="input-with-prefix">
+            <span class="prefix">Rp</span>
+            <input type="number" id="item-price" class="form-input" placeholder="0" min="0" step="100" required>
           </div>
-          <div class="sheet-body">
-            <div class="history-meta-box">
-              <div class="meta-item">
-                <span>Total Belanja:</span>
-                <strong id="history-modal-total">Rp 0</strong>
-              </div>
-              <div class="meta-item">
-                <span>Batas Anggaran:</span>
-                <strong id="history-modal-budget">Rp 0</strong>
-              </div>
-              <div class="meta-item">
-                <span>Status Dompet:</span>
-                <span id="history-modal-status" class="badge">Aman</span>
-              </div>
-            </div>
+        </div>
 
-            <h4 class="mt-3 font-semibold text-slate-200">Daftar Barang Dibeli:</h4>
-            <div id="history-modal-items" class="history-modal-items-list">
-              <!-- Item list -->
-            </div>
+        <div class="form-group">
+          <label for="item-discount" class="form-label">
+            Diskon Promo (%)
+            <span class="tooltip-icon" title="Mendukung diskon bertumpuk contoh: 50+20 atau 30+10">ℹ️</span>
+          </label>
+          <input type="text" id="item-discount" class="form-input" placeholder="Cth: 50+20 atau 30" autocomplete="off">
+        </div>
+      </div>
 
-            <div class="sheet-actions mt-3">
-              <button id="set-as-baseline-btn" class="btn-accent">
-                <i data-lucide="check-check"></i> Jadikan Acuan Pembanding Aktif
-              </button>
-              <button id="delete-this-history-btn" class="btn-text-danger mt-1">
-                <i data-lucide="trash-2"></i> Hapus Transaksi Ini
-              </button>
+      <!-- Tombol Diskon Preset Cepat -->
+      <div class="discount-presets-row">
+        <button type="button" class="disc-preset-btn" data-disc="10">10%</button>
+        <button type="button" class="disc-preset-btn" data-disc="20">20%</button>
+        <button type="button" class="disc-preset-btn" data-disc="30">30%</button>
+        <button type="button" class="disc-preset-btn" data-disc="50">50%</button>
+        <button type="button" class="disc-preset-btn highlight" data-disc="50+20">50%+20%</button>
+        <button type="button" class="disc-preset-btn highlight" data-disc="70+10">70%+10%</button>
+      </div>
+
+      <!-- LIVE BREAKDOWN KALKULASI DISKONTING (F-03) -->
+      <div id="modal-discount-breakdown" class="discount-calculation-card hidden">
+        <div class="calc-row">
+          <span>Harga Normal Asli:</span>
+          <span id="breakdown-original" class="line-through text-muted">Rp 0</span>
+        </div>
+        <div class="calc-row highlight-discount">
+          <span>Total Potongan Diskon:</span>
+          <span id="breakdown-discount-val">-Rp 0 (0%)</span>
+        </div>
+        <div class="calc-row total-unit">
+          <strong>Harga Bersih Satuan:</strong>
+          <strong id="breakdown-final-price" class="text-emerald">Rp 0</strong>
+        </div>
+      </div>
+
+      <!-- REAL-TIME PRICE COMPARATOR ALERT (F-04) -->
+      <div id="price-comparator-alert" class="comparator-alert-box hidden">
+        <div class="comp-icon-col">
+          <span id="comp-arrow" class="comp-arrow-symbol">↑</span>
+        </div>
+        <div class="comp-text-col">
+          <strong id="comp-title">Perbandingan Harga vs Bulan Lalu</strong>
+          <p id="comp-desc">Menganalisis perbedaan harga...</p>
+        </div>
+      </div>
+
+      <!-- Kuantitas & Tombol Stepper Jempol -->
+      <div class="form-row-stepper">
+        <div class="stepper-label-wrap">
+          <label class="form-label mb-0">Jumlah Beli</label>
+          <span class="text-subtle">Kuantitas di troli</span>
+        </div>
+        <div class="thumb-stepper">
+          <button type="button" id="modal-qty-minus" class="stepper-btn" aria-label="Kurangi kuantitas">
+            <i data-lucide="minus"></i>
+          </button>
+          <input type="number" id="item-qty" class="stepper-input" value="1" min="1" max="999">
+          <button type="button" id="modal-qty-plus" class="stepper-btn" aria-label="Tambah kuantitas">
+            <i data-lucide="plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi Tambah -->
+      <div class="sheet-actions">
+        <button type="submit" id="modal-submit-btn" class="btn-primary-large w-full">
+          <i data-lucide="shopping-cart"></i>
+          <span>Masukkan ke Troli (<span id="modal-live-subtotal">Rp 0</span>)</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+      <!-- History Detail Modal (components/modals/history-detail-modal.html) -->
+      <!-- MODAL: DETAIL RIWAYAT BELANJA (F-06) -->
+<div id="history-detail-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-history-modal-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    
+    <div class="sheet-header">
+      <div>
+        <h3 id="history-modal-title" class="sheet-title">Detail Belanja Bulanan</h3>
+        <p id="history-modal-date" class="sheet-subtitle">Tanggal Belanja</p>
+      </div>
+      <button id="close-history-detail-btn" class="icon-btn-close" aria-label="Tutup detail riwayat">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Ringkasan Anggaran Transaksi -->
+      <div class="history-detail-summary-card">
+        <div class="summary-stat">
+          <span class="label">Total Pengeluaran</span>
+          <strong id="history-modal-total" class="val highlight">Rp 0</strong>
+        </div>
+        <div class="summary-stat">
+          <span class="label">Batas Anggaran Saat Itu</span>
+          <span id="history-modal-budget" class="val">Rp 0</span>
+        </div>
+        <div class="summary-stat text-right">
+          <span class="label">Status</span>
+          <span id="history-modal-status" class="badge">Aman</span>
+        </div>
+      </div>
+
+      <!-- Daftar Barang di Transaksi -->
+      <div class="history-items-section mt-3">
+        <h4 class="subheading">Daftar Barang Belanja:</h4>
+        <div id="history-modal-items" class="history-items-breakdown-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="history-detail-actions mt-3">
+        <button id="delete-this-history-btn" class="btn-outline-danger w-full">
+          <i data-lucide="trash-2"></i> Hapus Catatan Riwayat Ini
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Firebase Auth & Google Login Modal (components/modals/auth-modal.html) -->
+      <!-- MODAL / BOTTOM SHEET: FIREBASE AUTH & GOOGLE LOGIN -->
+<div id="auth-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-auth-backdrop"></div>
+  <div class="bottom-sheet-container" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    <div class="sheet-header">
+      <div>
+        <h3 id="auth-modal-title" class="sheet-title">Akun & Sinkronisasi Cloud</h3>
+        <p id="auth-modal-subtitle" class="sheet-subtitle">Tersambung ke Firebase Firestore (shop-tracked)</p>
+      </div>
+      <button id="close-auth-modal-btn" class="icon-btn-close" aria-label="Tutup Dialog Akun">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <!-- Modal Logged Out State -->
+      <div id="modal-auth-logged-out" class="auth-modal-state">
+        <!-- Special Prompt Banner when User Attempts Checkout Without Login -->
+        <div id="checkout-auth-prompt" class="cloud-promo-box hidden" style="border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.12);">
+          <div class="promo-icon" style="color:var(--color-amber);"><i data-lucide="info"></i></div>
+          <div>
+            <h4 style="color:#fbbf24;" id="checkout-prompt-title">Simpan Riwayat ke Cloud</h4>
+            <p id="checkout-prompt-desc">Masuk dengan Gmail agar riwayat belanja ini otomatis tersimpan di Cloud Firebase Anda.</p>
+          </div>
+        </div>
+
+        <!-- General Promo Box -->
+        <div id="general-auth-promo" class="cloud-promo-box">
+          <div class="promo-icon"><i data-lucide="shield-check"></i></div>
+          <div>
+            <h4 id="auth-promo-title">Simpan Aman di Cloud</h4>
+            <p id="auth-promo-desc">Login dengan Gmail agar seluruh daftar troli belanja, batas anggaran, dan riwayat perbandingan harga selalu aman tersimpan di Google Cloud Firestore.</p>
+          </div>
+        </div>
+
+        <button id="btn-login-google-modal" class="btn-google-sign-in mt-3" type="button">
+          <svg class="google-icon-svg" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.97 0 12c0 2.03.45 3.84 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span id="label-google-login-modal">Masuk dengan Google (Gmail)</span>
+        </button>
+
+        <!-- Optional Offline Save Button if User Prefers Guest -->
+        <button id="btn-save-offline-anyway" class="btn-text-subtle mt-2 hidden" type="button">
+          <i data-lucide="hard-drive"></i>
+          <span id="label-save-offline">Simpan di Perangkat Saja (Offline)</span>
+        </button>
+      </div>
+
+      <!-- Modal Logged In State -->
+      <div id="modal-auth-logged-in" class="auth-modal-state hidden">
+        <div class="user-profile-banner">
+          <img id="modal-user-avatar" class="user-avatar" src="" alt="Avatar Pengguna">
+          <div class="user-meta">
+            <strong id="modal-user-name" class="user-name">Pengguna Google</strong>
+            <span id="modal-user-email" class="user-email">email@gmail.com</span>
+            <div class="sync-status-row">
+              <span class="sync-pill">
+                <i data-lucide="check-circle-2"></i> <span id="modal-sync-badge-text">Tersinkron ke Firestore</span>
+              </span>
             </div>
           </div>
         </div>
+
+        <div class="firestore-details-box mt-3">
+          <div class="detail-row">
+            <span class="label">Project ID:</span>
+            <span class="val font-mono">shop-tracked</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Database:</span>
+            <span class="val">Cloud Firestore (Default)</span>
+          </div>
+          <div class="detail-row">
+            <span class="label" id="modal-cloud-status-label">Status Cloud:</span>
+            <span id="modal-sync-time" class="val text-emerald">Aktif & Sinkron</span>
+          </div>
+        </div>
+
+        <div class="sheet-actions mt-3">
+          <button id="modal-btn-sync" class="btn-primary" type="button">
+            <i data-lucide="refresh-cw"></i> <span id="label-modal-sync-btn">Sinkronkan Data Sekarang</span>
+          </button>
+          <button id="modal-btn-logout" class="btn-outline-danger mt-2" type="button">
+            <i data-lucide="log-out"></i> <span id="label-modal-logout-btn">Keluar dari Akun</span>
+          </button>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Supermarket Shelf Catalog Popup (components/modals/shelf-catalog-modal.html) -->
+      <!-- MODAL / BOTTOM SHEET: SHELF PRODUCTS CATALOG POPUP (Indonesian Retail Shelf Products) -->
+<div id="shelf-catalog-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-shelf-backdrop"></div>
+  <div class="bottom-sheet-container shelf-catalog-container" role="dialog" aria-modal="true" aria-labelledby="shelf-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    <div class="sheet-header">
+      <div>
+        <h3 id="shelf-modal-title" class="sheet-title">Katalog Rak Supermarket</h3>
+        <p id="shelf-modal-subtitle" class="sheet-subtitle">Harga retail Indomaret, Alfamart, Hypermart & Super Indo</p>
+      </div>
+      <button id="close-shelf-modal-btn" class="icon-btn-close" aria-label="Tutup Katalog">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="sheet-body" style="padding-top:10px;">
+      <!-- Shelf Search Bar -->
+      <div class="shelf-search-bar">
+        <div class="shelf-search-icon"><i data-lucide="search"></i></div>
+        <input type="text" id="shelf-search-input" placeholder="Cari produk rak (cth: Minyak, Beras, Telur)..." aria-label="Cari produk rak">
+      </div>
+
+      <!-- Categories Scroll -->
+      <div class="shelf-categories-scroll" id="shelf-categories-bar">
+        <button type="button" class="shelf-cat-chip active" data-category="all" id="cat-all">Semua</button>
+        <button type="button" class="shelf-cat-chip" data-category="Bahan Pokok" id="cat-staples">Bahan Pokok</button>
+        <button type="button" class="shelf-cat-chip" data-category="Makanan Instan" id="cat-instant">Mie & Makanan</button>
+        <button type="button" class="shelf-cat-chip" data-category="Minuman & Susu" id="cat-drinks">Minuman & Susu</button>
+        <button type="button" class="shelf-cat-chip" data-category="Perlengkapan Mandi" id="cat-bath">Mandi & Rawat</button>
+        <button type="button" class="shelf-cat-chip" data-category="Perlengkapan Cuci" id="cat-clean">Cuci & Rumah</button>
+        <button type="button" class="shelf-cat-chip" data-category="Camilan" id="cat-snacks">Camilan</button>
+      </div>
+
+      <!-- Products List Grid -->
+      <div id="shelf-products-list" class="shelf-products-grid">
+        <!-- Dynamically populated from SHELF_PRODUCTS in js/shelf.js -->
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Animated Shopping Cart Checkout Success Popup (components/modals/checkout-success-modal.html) -->
+      <!-- Supermarket Checkout Success & Animated Cart Popup Modal -->
+<div id="checkout-success-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="checkout-success-heading">
+  <div class="bottom-sheet-backdrop" id="close-checkout-success-backdrop"></div>
+  
+  <div class="bottom-sheet-container checkout-success-sheet">
+    <div class="sheet-handle-bar">
+      <div class="sheet-handle"></div>
+    </div>
+
+    <div class="sheet-header">
+      <div>
+        <div class="success-badge-pill">
+          <i data-lucide="party-popper"></i>
+          <span id="checkout-success-pill-text">Transaksi Selesai</span>
+        </div>
+        <h3 id="checkout-success-heading" class="sheet-title mt-1">Belanja Berhasil Disimpan!</h3>
+        <p id="checkout-success-sub" class="sheet-subtitle">Keranjang belanja telah dipindahkan ke riwayat</p>
+      </div>
+      <button id="close-checkout-success-btn" class="icon-btn" title="Tutup" aria-label="Tutup">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <!-- Animated Shopping Cart Stage (Strictly Contained within Popup Bounds) -->
+    <div class="cart-stage-wrapper">
+      <div class="cart-stage" id="cart-animation-stage">
+        
+        <!-- Background Elements: Glowing Aura, Speed Streaks & Confetti -->
+        <div class="stage-aura"></div>
+        <div class="stage-particles">
+          <span class="particle p1">✨</span>
+          <span class="particle p2">🎉</span>
+          <span class="particle p3">⭐</span>
+          <span class="particle p4">🎊</span>
+          <span class="particle p5">✨</span>
+        </div>
+
+        <!-- Runway Floor & Motion Lines -->
+        <div class="cart-runway">
+          <div class="runway-line"></div>
+          <div class="speed-streaks">
+            <span class="streak s1"></span>
+            <span class="streak s2"></span>
+            <span class="streak s3"></span>
+            <span class="streak s4"></span>
+          </div>
+        </div>
+
+        <!-- Sound Wave Indicator Badge -->
+        <div class="sfx-indicator-pill" id="sfx-play-indicator" title="SFX Aktif">
+          <i data-lucide="volume-2"></i>
+          <span>SFX</span>
+        </div>
+
+        <!-- Replay Cart Animation Button -->
+        <button id="replay-cart-animation-btn" class="replay-btn" type="button" title="Putar Ulang Animasi Keranjang" aria-label="Putar Ulang">
+          <i data-lucide="rotate-ccw"></i>
+        </button>
+
+        <!-- THE ANIMATED SHOPPING CART + PUSHING HANDS (SVG) -->
+        <!-- Animates from Left (-150%) across screen to Right (+150%) -->
+        <div class="cart-pusher-unit" id="cart-pusher-unit">
+          <svg class="cart-svg-illustration" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Metallic Gradients -->
+              <linearGradient id="cartMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#94a3b8" />
+                <stop offset="50%" stop-color="#cbd5e1" />
+                <stop offset="100%" stop-color="#64748b" />
+              </linearGradient>
+              <linearGradient id="cartHandle" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ef4444" />
+                <stop offset="100%" stop-color="#991b1b" />
+              </linearGradient>
+              <linearGradient id="baguetteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde047" />
+                <stop offset="50%" stop-color="#d97706" />
+                <stop offset="100%" stop-color="#92400e" />
+              </linearGradient>
+              <linearGradient id="milkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#60a5fa" />
+                <stop offset="100%" stop-color="#2563eb" />
+              </linearGradient>
+              <linearGradient id="cerealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f43f5e" />
+                <stop offset="100%" stop-color="#be123c" />
+              </linearGradient>
+              <linearGradient id="appleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ef4444" />
+                <stop offset="100%" stop-color="#b91c1c" />
+              </linearGradient>
+              <linearGradient id="sleeveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#1d4ed8" />
+              </linearGradient>
+              <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fed7aa" />
+                <stop offset="100%" stop-color="#fba866" />
+              </linearGradient>
+              <filter id="cartGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="rgba(59, 130, 246, 0.45)" />
+              </filter>
+            </defs>
+
+            <!-- GROCERIES INSIDE CART (Animated slight bobbing) -->
+            <g class="groceries-group">
+              <!-- Crispy French Baguette Sticking Out to the Left/Up -->
+              <g transform="rotate(-25 150 40)">
+                <rect x="135" y="10" width="22" height="75" rx="11" fill="url(#baguetteGrad)" stroke="#78350f" stroke-width="1.5" />
+                <!-- Baguette crust score slits -->
+                <line x1="140" y1="22" x2="152" y2="28" stroke="#fef3c7" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="140" y1="36" x2="152" y2="42" stroke="#fef3c7" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="140" y1="50" x2="152" y2="56" stroke="#fef3c7" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="140" y1="64" x2="152" y2="70" stroke="#fef3c7" stroke-width="2.5" stroke-linecap="round" />
+              </g>
+
+              <!-- Fresh Supermarket Greens / Celery / Lettuce -->
+              <path d="M165,65 Q158,25 175,18 Q192,25 185,65 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5" />
+              <path d="M178,65 Q175,32 195,28 Q208,38 198,65 Z" fill="#4ade80" stroke="#16a34a" stroke-width="1.5" />
+              <path d="M155,65 Q145,38 160,32 Q170,42 165,65 Z" fill="#86efac" stroke="#16a34a" stroke-width="1" />
+
+              <!-- Cereal / Oats Box -->
+              <rect x="195" y="38" width="34" height="52" rx="4" fill="url(#cerealGrad)" stroke="#9f1239" stroke-width="1.5" />
+              <circle cx="212" cy="54" r="8" fill="#fbbf24" />
+              <path d="M212,48 L214,53 L219,53 L215,56 L217,61 L212,58 L207,61 L209,56 L205,53 L210,53 Z" fill="#ffffff" />
+              <rect x="201" y="68" width="22" height="4" rx="2" fill="#ffffff" opacity="0.8" />
+              <rect x="201" y="76" width="16" height="4" rx="2" fill="#ffffff" opacity="0.8" />
+
+              <!-- Fresh Milk Carton -->
+              <polygon points="172,48 184,38 198,48 198,85 172,85" fill="url(#milkGrad)" stroke="#1e40af" stroke-width="1.5" />
+              <polygon points="172,48 184,38 198,48 186,52" fill="#93c5fd" />
+              <rect x="176" y="58" width="16" height="12" rx="2" fill="#ffffff" opacity="0.9" />
+              <text x="184" y="67" font-size="7" font-weight="bold" fill="#1e40af" text-anchor="middle" font-family="sans-serif">MILK</text>
+
+              <!-- Fresh Orange Carrot with Greens -->
+              <g transform="rotate(35 220 70)">
+                <polygon points="216,40 226,40 221,75" fill="#f97316" stroke="#c2410c" stroke-width="1.5" />
+                <line x1="218" y1="48" x2="223" y2="48" stroke="#ea580c" stroke-width="1" />
+                <line x1="219" y1="58" x2="223" y2="58" stroke="#ea580c" stroke-width="1" />
+                <!-- Carrot Leafy Tops -->
+                <path d="M221,40 Q215,28 212,22 M221,40 Q221,25 221,20 M221,40 Q227,28 230,22" stroke="#16a34a" stroke-width="2" stroke-linecap="round" fill="none" />
+              </g>
+
+              <!-- Juicy Red Apple -->
+              <circle cx="160" cy="80" r="14" fill="url(#appleGrad)" stroke="#991b1b" stroke-width="1.5" />
+              <path d="M160,66 C163,62 167,61 169,63" stroke="#78350f" stroke-width="2" stroke-linecap="round" fill="none" />
+              <ellipse cx="168" cy="63" rx="4" ry="2" transform="rotate(-30 168 63)" fill="#22c55e" />
+            </g>
+
+            <!-- SHOPPING CART FRAME & WIRE BASKET -->
+            <g class="cart-frame" filter="url(#cartGlow)">
+              <!-- Lower Chassis Frame Bar -->
+              <path d="M125,138 L255,138 L262,118 L142,118 Z" fill="#475569" stroke="url(#cartMetal)" stroke-width="2.5" stroke-linejoin="round" />
+              
+              <!-- Diagonal Support Strut to Basket -->
+              <line x1="140" y1="120" x2="165" y2="65" stroke="url(#cartMetal)" stroke-width="4" stroke-linecap="round" />
+              <line x1="245" y1="120" x2="240" y2="70" stroke="url(#cartMetal)" stroke-width="4" stroke-linecap="round" />
+
+              <!-- Wire Basket Outline -->
+              <polygon points="135,62 258,62 248,118 152,118" fill="rgba(241, 245, 249, 0.15)" stroke="url(#cartMetal)" stroke-width="3.5" stroke-linejoin="round" />
+              
+              <!-- Basket Front Rounded Bumper -->
+              <path d="M258,62 Q264,62 264,68 L253,116 Q250,118 246,118" fill="none" stroke="url(#cartMetal)" stroke-width="3" />
+
+              <!-- Basket Horizontal Grid Lines -->
+              <line x1="139" y1="76" x2="255" y2="76" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.85" />
+              <line x1="143" y1="90" x2="252" y2="90" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.85" />
+              <line x1="148" y1="104" x2="250" y2="104" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.85" />
+
+              <!-- Basket Vertical Grid Lines -->
+              <line x1="156" y1="63" x2="162" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+              <line x1="174" y1="63" x2="178" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+              <line x1="192" y1="63" x2="194" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+              <line x1="210" y1="63" x2="210" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+              <line x1="228" y1="63" x2="226" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+              <line x1="244" y1="63" x2="240" y2="117" stroke="url(#cartMetal)" stroke-width="1.8" opacity="0.8" />
+
+              <!-- Cart Rear Upright Post to Handle -->
+              <line x1="135" y1="62" x2="112" y2="44" stroke="url(#cartMetal)" stroke-width="4.5" stroke-linecap="round" />
+
+              <!-- Cart Red Grip Push Handle -->
+              <circle cx="112" cy="44" r="7" fill="url(#cartHandle)" stroke="#7f1d1d" stroke-width="1.5" />
+              <rect x="106" y="38" width="12" height="12" rx="4" fill="url(#cartHandle)" stroke="#7f1d1d" stroke-width="1" />
+            </g>
+
+            <!-- SHOPPER'S ARMS & HANDS PUSHING FROM THE LEFT -->
+            <g class="shopper-pusher">
+              <!-- Upper Arm / Sleeve -->
+              <path d="M10,25 C45,28 70,35 102,42" fill="none" stroke="url(#sleeveGrad)" stroke-width="14" stroke-linecap="round" />
+              <!-- Forearm Skin -->
+              <path d="M85,38 L108,44" fill="none" stroke="url(#skinGrad)" stroke-width="10" stroke-linecap="round" />
+              <!-- Hand Gripping Handle -->
+              <ellipse cx="111" cy="44" rx="7" ry="6" fill="url(#skinGrad)" stroke="#c2410c" stroke-width="1" />
+              <!-- Thumb wrapped over bar -->
+              <path d="M108,41 Q113,38 116,42" fill="none" stroke="url(#skinGrad)" stroke-width="3" stroke-linecap="round" />
+
+              <!-- Second Arm (Background Depth) -->
+              <path d="M5,15 C40,18 65,26 98,34" fill="none" stroke="#1e3a8a" stroke-width="11" stroke-linecap="round" opacity="0.7" />
+              <ellipse cx="104" cy="36" rx="6" ry="5" fill="#fba866" opacity="0.8" />
+            </g>
+
+            <!-- SPINNING WHEELS (Animated Rotation via CSS) -->
+            <!-- Rear Wheel Group -->
+            <g class="cart-wheel rear-wheel" transform="translate(142, 148)">
+              <circle cx="0" cy="0" r="14" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
+              <circle cx="0" cy="0" r="10" fill="#64748b" />
+              <circle cx="0" cy="0" r="4" fill="#f8fafc" />
+              <!-- Spokes that visibly rotate -->
+              <line x1="-10" y1="0" x2="10" y2="0" stroke="#f8fafc" stroke-width="2" />
+              <line x1="0" y1="-10" x2="0" y2="10" stroke="#f8fafc" stroke-width="2" />
+              <line x1="-7" y1="-7" x2="7" y2="7" stroke="#f8fafc" stroke-width="1.5" />
+              <line x1="-7" y1="7" x2="7" y2="-7" stroke="#f8fafc" stroke-width="1.5" />
+            </g>
+
+            <!-- Front Wheel Group -->
+            <g class="cart-wheel front-wheel" transform="translate(244, 148)">
+              <circle cx="0" cy="0" r="14" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
+              <circle cx="0" cy="0" r="10" fill="#64748b" />
+              <circle cx="0" cy="0" r="4" fill="#f8fafc" />
+              <!-- Spokes that visibly rotate -->
+              <line x1="-10" y1="0" x2="10" y2="0" stroke="#f8fafc" stroke-width="2" />
+              <line x1="0" y1="-10" x2="0" y2="10" stroke="#f8fafc" stroke-width="2" />
+              <line x1="-7" y1="-7" x2="7" y2="7" stroke="#f8fafc" stroke-width="1.5" />
+              <line x1="-7" y1="7" x2="7" y2="-7" stroke="#f8fafc" stroke-width="1.5" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Purchase Summary Card -->
+    <div class="checkout-success-summary-card mt-3">
+      <div class="summary-top-row">
+        <div>
+          <span class="summary-label" id="checkout-summary-trip-label">Nama Transaksi</span>
+          <strong id="checkout-success-trip-title" class="summary-title">Belanja Bulan Ini</strong>
+        </div>
+        <span id="checkout-success-status-tag" class="history-status-tag safe">Dompet Aman</span>
+      </div>
+
+      <div class="summary-details-grid mt-2">
+        <div class="stat-box">
+          <span class="stat-label" id="checkout-summary-total-label">Total Belanja</span>
+          <span id="checkout-success-total-val" class="stat-val text-brand">Rp 0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label" id="checkout-summary-items-label">Jumlah Barang</span>
+          <span id="checkout-success-items-count" class="stat-val">0 Item</span>
+        </div>
+      </div>
+
+      <!-- Comparator Insight Pill -->
+      <div id="checkout-success-comp-pill" class="success-comp-pill comp-none mt-2">
+        <span class="comp-icon">-</span>
+        <span id="checkout-success-comp-text">Belum ada pembanding bulan lalu</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="checkout-success-actions mt-3">
+      <button id="btn-view-history-after-checkout" class="btn-primary w-full mb-2" type="button">
+        <i data-lucide="receipt"></i>
+        <span id="label-view-history-checkout">Lihat Riwayat Belanja</span>
+      </button>
+      <button id="btn-close-checkout-success" class="btn-secondary w-full" type="button">
+        <i data-lucide="check"></i>
+        <span id="label-close-checkout-success">Selesai & Tutup</span>
+      </button>
+    </div>
+
+  </div>
+</div>
 
       <!-- Toast Feedback Notification Element -->
       <div id="app-toast" class="app-toast hidden" role="status" aria-live="polite">
@@ -550,7 +1138,18 @@
     </div>
   </div>
 
-  <!-- Application Logic -->
+  <!-- Modular JavaScript Application Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/data/shelfProducts.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/budget.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/shelf.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/modals.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

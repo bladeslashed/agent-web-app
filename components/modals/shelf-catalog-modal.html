@@ -1,0 +1,39 @@
+<!-- MODAL / BOTTOM SHEET: SHELF PRODUCTS CATALOG POPUP (Indonesian Retail Shelf Products) -->
+<div id="shelf-catalog-modal" class="bottom-sheet-overlay hidden">
+  <div class="bottom-sheet-backdrop" id="close-shelf-backdrop"></div>
+  <div class="bottom-sheet-container shelf-catalog-container" role="dialog" aria-modal="true" aria-labelledby="shelf-modal-title">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+    <div class="sheet-header">
+      <div>
+        <h3 id="shelf-modal-title" class="sheet-title">Katalog Rak Supermarket</h3>
+        <p id="shelf-modal-subtitle" class="sheet-subtitle">Harga retail Indomaret, Alfamart, Hypermart & Super Indo</p>
+      </div>
+      <button id="close-shelf-modal-btn" class="icon-btn-close" aria-label="Tutup Katalog">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div class="sheet-body" style="padding-top:10px;">
+      <!-- Shelf Search Bar -->
+      <div class="shelf-search-bar">
+        <div class="shelf-search-icon"><i data-lucide="search"></i></div>
+        <input type="text" id="shelf-search-input" placeholder="Cari produk rak (cth: Minyak, Beras, Telur)..." aria-label="Cari produk rak">
+      </div>
+
+      <!-- Categories Scroll -->
+      <div class="shelf-categories-scroll" id="shelf-categories-bar">
+        <button type="button" class="shelf-cat-chip active" data-category="all" id="cat-all">Semua</button>
+        <button type="button" class="shelf-cat-chip" data-category="Bahan Pokok" id="cat-staples">Bahan Pokok</button>
+        <button type="button" class="shelf-cat-chip" data-category="Makanan Instan" id="cat-instant">Mie & Makanan</button>
+        <button type="button" class="shelf-cat-chip" data-category="Minuman & Susu" id="cat-drinks">Minuman & Susu</button>
+        <button type="button" class="shelf-cat-chip" data-category="Perlengkapan Mandi" id="cat-bath">Mandi & Rawat</button>
+        <button type="button" class="shelf-cat-chip" data-category="Perlengkapan Cuci" id="cat-clean">Cuci & Rumah</button>
+        <button type="button" class="shelf-cat-chip" data-category="Camilan" id="cat-snacks">Camilan</button>
+      </div>
+
+      <!-- Products List Grid -->
+      <div id="shelf-products-list" class="shelf-products-grid">
+        <!-- Dynamically populated from SHELF_PRODUCTS in js/shelf.js -->
+      </div>
+    </div>
+  </div>
+</div>
