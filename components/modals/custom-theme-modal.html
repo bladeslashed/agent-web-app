@@ -109,9 +109,26 @@
         </div>
       </div>
 
-      <!-- 3. Target Elemen Warna yang Sedang Diedit (5 Customizable Roles) -->
+      <!-- 3. Mode yang Dikonfigurasi (Dark Mode vs Light Mode) -->
       <div class="form-group mb-3">
-        <label class="form-label">Pilih Elemen yang Ingin Diubah Warnanya:</label>
+        <div class="form-label-row">
+          <label class="form-label">Konfigurasi Mode Tampilan:</label>
+          <span class="sub-hint" id="active-mode-indicator-pill">Mengedit: Mode Gelap</span>
+        </div>
+        <div class="theme-mode-segmented semantic-mode-pills" id="custom-theme-mode-pills">
+          <button type="button" id="custom-mode-dark-btn" class="theme-mode-pill semantic-mode-pill active" data-mode="dark">
+            <i data-lucide="moon"></i> <span class="pill-text">Mode Gelap (Dark)</span>
+          </button>
+          <button type="button" id="custom-mode-light-btn" class="theme-mode-pill semantic-mode-pill" data-mode="light">
+            <i data-lucide="sun"></i> <span class="pill-text">Mode Terang (Light)</span>
+          </button>
+        </div>
+        <p class="form-help-text mt-1" id="mode-configure-hint">Atur palet warna terpisah untuk mode gelap dan terang. Saat aplikasi berganti mode, warna akan otomatis menyesuaikan.</p>
+      </div>
+
+      <!-- 4. Target Elemen Warna yang Sedang Diedit (5 Customizable Roles) -->
+      <div class="form-group mb-3">
+        <label class="form-label" id="role-selector-label">Pilih Elemen yang Ingin Diubah Warnanya:</label>
         <div class="color-role-selector-grid" id="color-role-selector">
           <button type="button" class="color-role-pill active" data-role="brand">
             <span class="role-swatch-dot" id="role-dot-brand" style="background:#2DD4BF;"></span>
@@ -151,11 +168,11 @@
         </div>
       </div>
 
-      <!-- 4. 2D Color Picker Field UI (Opened via Swatch Icon) -->
+      <!-- 5. 2D Color Picker Field UI (Opened via Swatch Icon) -->
       <div class="form-group mb-3">
         <div class="form-label-row">
           <label for="custom-hex-input" class="form-label">Kode HEX &amp; Palet Warna 2D Interaktif</label>
-          <span class="sub-hint" id="current-editing-role-indicator">Mengedit: Warna Utama</span>
+          <span class="sub-hint" id="current-editing-role-indicator">Mengedit: Warna Utama (Mode Gelap)</span>
         </div>
 
         <div class="hex-picker-row">
@@ -202,23 +219,9 @@
         </div>
       </div>
 
-      <!-- 5. Mode Dasar Tema (Dark / Light Base) with Semantic Color Pills -->
-      <div class="form-group mb-3">
-        <label class="form-label">Pilih Mode Dasar Tema (Base Mode):</label>
-        <div class="theme-mode-segmented semantic-mode-pills" id="custom-theme-mode-pills">
-          <button type="button" id="custom-mode-dark-btn" class="theme-mode-pill semantic-mode-pill active" data-mode="dark">
-            <i data-lucide="moon"></i> <span class="pill-text">Mode Gelap (Dark Base)</span>
-          </button>
-          <button type="button" id="custom-mode-light-btn" class="theme-mode-pill semantic-mode-pill" data-mode="light">
-            <i data-lucide="sun"></i> <span class="pill-text">Mode Terang (Light Base)</span>
-          </button>
-        </div>
-        <p class="form-help-text mt-1">Tema kustom Anda dirancang agar otomatis menyesuaikan kontras teks secara aman saat berganti antara mode gelap dan terang.</p>
-      </div>
-
       <!-- 6. Pratinjau Interaktif Multi-Warna Langsung (Header, Menu Sidebar, & Kartu) -->
       <div class="form-group mb-4">
-        <label class="form-label">Pratinjau Tema Lengkap (Header, Menu &amp; Konten)</label>
+        <label class="form-label" id="preview-section-label">Pratinjau Tema Lengkap (Mode Terpilih)</label>
         <div class="theme-live-preview-card" id="theme-live-preview-box">
           <!-- Mini Dynamic Header with Wave Graphic -->
           <div class="preview-mini-header" id="preview-header">
@@ -241,7 +244,7 @@
                 <i data-lucide="menu"></i>
               </div>
               <div class="preview-menu-text">
-                <span class="preview-menu-title">Sidebar Menu</span>
+                <span class="preview-menu-title" id="preview-menu-title">Sidebar Menu</span>
                 <span class="preview-menu-sub" id="preview-menu-sub">Warna Menu Aktif</span>
               </div>
             </div>
@@ -267,7 +270,7 @@
       <div class="modal-actions-row">
         <button type="button" id="btn-cancel-custom-theme" class="btn-secondary flex-1">Batal</button>
         <button type="button" id="btn-save-custom-theme" class="btn-primary flex-1">
-          <i data-lucide="check"></i> <span>Simpan &amp; Terapkan</span>
+          <i data-lucide="check"></i> <span id="btn-save-custom-theme-text">Simpan &amp; Terapkan</span>
         </button>
       </div>
     </div>

@@ -43,71 +43,127 @@ const THEME_DISPLAY_NAMES = {
 };
 
 /**
- * Coordinated Multi-Color Presets (Harmonious Sets for 5 Roles: Brand, Header, Menu, Surface, Accent)
+ * Coordinated Multi-Color Presets (Harmonious Dual-Mode Sets for 5 Roles: Brand, Header, Menu, Surface, Accent)
  */
 const MULTI_COLOR_PRESETS = {
   'mint-emerald': {
     name: 'Mint Emerald',
-    baseMode: 'dark',
-    brand: '#2DD4BF',
-    header: '#0C2B22',
-    menu: '#091F18',
-    surface: '#021A15',
-    accent: '#10B981'
+    dark: {
+      brand: '#2DD4BF',
+      header: '#0C2B22',
+      menu: '#091F18',
+      surface: '#021A15',
+      accent: '#10B981'
+    },
+    light: {
+      brand: '#0D9488',
+      header: '#CCFBF1',
+      menu: '#FFFFFF',
+      surface: '#F0FDFA',
+      accent: '#059669'
+    }
   },
   'cyber-violet': {
     name: 'Cyber Violet',
-    baseMode: 'dark',
-    brand: '#A855F7',
-    header: '#240B40',
-    menu: '#18062B',
-    surface: '#0E051C',
-    accent: '#06B6D4'
+    dark: {
+      brand: '#A855F7',
+      header: '#240B40',
+      menu: '#18062B',
+      surface: '#0E051C',
+      accent: '#06B6D4'
+    },
+    light: {
+      brand: '#9333EA',
+      header: '#F3E8FF',
+      menu: '#FFFFFF',
+      surface: '#FAF5FF',
+      accent: '#0284C7'
+    }
   },
   'sunset-amber': {
     name: 'Sunset Amber',
-    baseMode: 'dark',
-    brand: '#F97316',
-    header: '#331505',
-    menu: '#240D02',
-    surface: '#170A02',
-    accent: '#F59E0B'
+    dark: {
+      brand: '#F97316',
+      header: '#331505',
+      menu: '#240D02',
+      surface: '#170A02',
+      accent: '#F59E0B'
+    },
+    light: {
+      brand: '#EA580C',
+      header: '#FFEDD5',
+      menu: '#FFFFFF',
+      surface: '#FFF7ED',
+      accent: '#D97706'
+    }
   },
   'ocean-deep': {
     name: 'Ocean Deep',
-    baseMode: 'dark',
-    brand: '#0EA5E9',
-    header: '#082C4A',
-    menu: '#051D33',
-    surface: '#031324',
-    accent: '#38BDF8'
+    dark: {
+      brand: '#0EA5E9',
+      header: '#082C4A',
+      menu: '#051D33',
+      surface: '#031324',
+      accent: '#38BDF8'
+    },
+    light: {
+      brand: '#0284C7',
+      header: '#E0F2FE',
+      menu: '#FFFFFF',
+      surface: '#F0F9FF',
+      accent: '#0369A1'
+    }
   },
   'rose-velvet': {
     name: 'Rose Velvet',
-    baseMode: 'dark',
-    brand: '#F43F5E',
-    header: '#360A18',
-    menu: '#260510',
-    surface: '#18040A',
-    accent: '#FB7185'
+    dark: {
+      brand: '#F43F5E',
+      header: '#360A18',
+      menu: '#260510',
+      surface: '#18040A',
+      accent: '#FB7185'
+    },
+    light: {
+      brand: '#E11D48',
+      header: '#FFE4E6',
+      menu: '#FFFFFF',
+      surface: '#FFF1F2',
+      accent: '#BE123C'
+    }
   },
   'neon-lime': {
     name: 'Neon Lime',
-    baseMode: 'dark',
-    brand: '#84CC16',
-    header: '#1E2C06',
-    menu: '#141F03',
-    surface: '#0D1503',
-    accent: '#A3E635'
+    dark: {
+      brand: '#84CC16',
+      header: '#1E2C06',
+      menu: '#141F03',
+      surface: '#0D1503',
+      accent: '#A3E635'
+    },
+    light: {
+      brand: '#65A30D',
+      header: '#ECFCCB',
+      menu: '#FFFFFF',
+      surface: '#F7FEE7',
+      accent: '#4D7C0F'
+    }
   },
   'clean-minimal': {
     name: 'Clean Minimal',
-    baseMode: 'light',
-    brand: '#0D9488',
-    header: '#E2E8F0',
-    menu: '#F8FAFC',
-    surface: '#FFFFFF',
-    accent: '#14B8A6'
+    dark: {
+      brand: '#0D9488',
+      header: '#1E293B',
+      menu: '#1E293B',
+      surface: '#0F172A',
+      accent: '#14B8A6'
+    },
+    light: {
+      brand: '#0D9488',
+      header: '#E2E8F0',
+      menu: '#F8FAFC',
+      surface: '#FFFFFF',
+      accent: '#0F766E'
+    }
   }
 };
 
@@ -279,71 +335,96 @@ function applyThemeToDOM(theme, mode) {
       document.head.appendChild(customStyleTag);
     }
 
-    // Normalise colors from theme object (All 5 roles)
-    const brand = customTheme.colors?.brand || customTheme.primaryColor || '#2DD4BF';
-    const header = customTheme.colors?.header || '#0C2B22';
-    const menu = customTheme.colors?.menu || '#091F18';
-    const surface = customTheme.colors?.surface || '#021A15';
-    const accent = customTheme.colors?.accent || '#10B981';
+    // Extract dark mode colors (from modes.dark, or fallback to root colors)
+    const darkColors = customTheme.modes?.dark || customTheme.colors || {
+      brand: customTheme.primaryColor || '#2DD4BF',
+      header: '#0C2B22',
+      menu: '#091F18',
+      surface: '#021A15',
+      accent: '#10B981'
+    };
 
-    const rgbBrand = hexToRgb(brand);
-    const rgbAccent = hexToRgb(accent);
-    const rgbHeader = hexToRgb(header);
-    const rgbMenu = hexToRgb(menu);
-    const rgbSurface = hexToRgb(surface);
+    // Extract light mode colors (from modes.light, or fallback to smart light derivations)
+    const lightColors = customTheme.modes?.light || {
+      brand: darkenIfTooLight(darkColors.brand),
+      header: '#CCFBF1',
+      menu: '#FFFFFF',
+      surface: '#F0FDFA',
+      accent: darkenIfTooLight(darkColors.accent)
+    };
 
-    // Light-mode contrast check
-    const lightBrand = darkenIfTooLight(brand);
-    const rgbLightBrand = hexToRgb(lightBrand);
-    const lightAccent = darkenIfTooLight(accent);
-    const rgbLightAccent = hexToRgb(lightAccent);
+    const rgbDarkBrand = hexToRgb(darkColors.brand);
+    const rgbDarkAccent = hexToRgb(darkColors.accent);
+    const rgbDarkHeader = hexToRgb(darkColors.header);
+    const rgbDarkMenu = hexToRgb(darkColors.menu);
+    const rgbDarkSurface = hexToRgb(darkColors.surface);
+
+    const rgbLightBrand = hexToRgb(lightColors.brand);
+    const rgbLightAccent = hexToRgb(lightColors.accent);
+    const rgbLightHeader = hexToRgb(lightColors.header);
+    const rgbLightMenu = hexToRgb(lightColors.menu);
+    const rgbLightSurface = hexToRgb(lightColors.surface);
+
+    // Compute surface and menu elevations for Dark Mode
+    const darkElevated = `rgba(${Math.min(255, rgbDarkSurface.r + 18)}, ${Math.min(255, rgbDarkSurface.g + 20)}, ${Math.min(255, rgbDarkSurface.b + 26)}, 0.95)`;
+    const darkHover = `rgba(${Math.min(255, rgbDarkSurface.r + 30)}, ${Math.min(255, rgbDarkSurface.g + 34)}, ${Math.min(255, rgbDarkSurface.b + 42)}, 0.95)`;
+    const darkMenuHeader = `rgba(${Math.min(255, rgbDarkMenu.r + 14)}, ${Math.min(255, rgbDarkMenu.g + 16)}, ${Math.min(255, rgbDarkMenu.b + 22)}, 0.95)`;
+    const darkMenuCard = `rgba(${Math.min(255, rgbDarkMenu.r + 20)}, ${Math.min(255, rgbDarkMenu.g + 24)}, ${Math.min(255, rgbDarkMenu.b + 32)}, 0.9)`;
+    const darkMenuHover = `rgba(${Math.min(255, rgbDarkMenu.r + 34)}, ${Math.min(255, rgbDarkMenu.g + 40)}, ${Math.min(255, rgbDarkMenu.b + 52)}, 0.95)`;
+
+    // Compute surface and menu elevations for Light Mode
+    const lightElevated = `rgba(${Math.max(0, rgbLightSurface.r - 8)}, ${Math.max(0, rgbLightSurface.g - 8)}, ${Math.max(0, rgbLightSurface.b - 8)}, 0.95)`;
+    const lightHover = `rgba(${Math.max(0, rgbLightSurface.r - 18)}, ${Math.max(0, rgbLightSurface.g - 18)}, ${Math.max(0, rgbLightSurface.b - 18)}, 0.95)`;
+    const lightMenuHeader = `rgba(${Math.max(0, rgbLightMenu.r - 8)}, ${Math.max(0, rgbLightMenu.g - 8)}, ${Math.max(0, rgbLightMenu.b - 8)}, 0.95)`;
+    const lightMenuCard = lightColors.menu;
+    const lightMenuHover = `rgba(${Math.max(0, rgbLightMenu.r - 14)}, ${Math.max(0, rgbLightMenu.g - 14)}, ${Math.max(0, rgbLightMenu.b - 14)}, 0.95)`;
 
     // Generate comprehensive rules for BOTH dark and light modes so shifting modes never breaks
     customStyleTag.innerHTML = `
       [data-theme="${customTheme.id}"][data-mode="dark"] {
-        --color-brand: ${brand};
-        --color-brand-glow: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.35);
-        --border-focus: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.6);
-        --border-subtle: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.2);
+        --color-brand: ${darkColors.brand};
+        --color-brand-glow: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.35);
+        --border-focus: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.6);
+        --border-subtle: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.2);
         --bg-body: #050a0e;
-        --bg-app: ${surface};
-        --bg-surface: ${surface};
-        --bg-surface-elevated: rgba(${Math.min(255, rgbSurface.r + 18)}, ${Math.min(255, rgbSurface.g + 20)}, ${Math.min(255, rgbSurface.b + 26)}, 0.95);
-        --bg-surface-hover: rgba(${Math.min(255, rgbSurface.r + 30)}, ${Math.min(255, rgbSurface.g + 34)}, ${Math.min(255, rgbSurface.b + 42)}, 0.95);
-        --color-header-bg: ${header};
-        --color-menu-bg: ${menu};
-        --color-menu-header-bg: rgba(${Math.min(255, rgbMenu.r + 14)}, ${Math.min(255, rgbMenu.g + 16)}, ${Math.min(255, rgbMenu.b + 22)}, 0.95);
-        --color-menu-card-bg: rgba(${Math.min(255, rgbMenu.r + 20)}, ${Math.min(255, rgbMenu.g + 24)}, ${Math.min(255, rgbMenu.b + 32)}, 0.9);
-        --color-menu-card-hover: rgba(${Math.min(255, rgbMenu.r + 34)}, ${Math.min(255, rgbMenu.g + 40)}, ${Math.min(255, rgbMenu.b + 52)}, 0.95);
-        --color-menu-border: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.25);
+        --bg-app: ${darkColors.surface};
+        --bg-surface: ${darkColors.surface};
+        --bg-surface-elevated: ${darkElevated};
+        --bg-surface-hover: ${darkHover};
+        --color-header-bg: ${darkColors.header};
+        --color-menu-bg: ${darkColors.menu};
+        --color-menu-header-bg: ${darkMenuHeader};
+        --color-menu-card-bg: ${darkMenuCard};
+        --color-menu-card-hover: ${darkMenuHover};
+        --color-menu-border: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.25);
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
-        --text-subtle: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.85);
-        --badge-emerald-text: ${accent};
-        --badge-emerald-bg: rgba(${rgbAccent.r}, ${rgbAccent.g}, ${rgbAccent.b}, 0.16);
-        --badge-emerald-border: rgba(${rgbAccent.r}, ${rgbAccent.g}, ${rgbAccent.b}, 0.35);
+        --text-subtle: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.85);
+        --badge-emerald-text: ${darkColors.accent};
+        --badge-emerald-bg: rgba(${rgbDarkAccent.r}, ${rgbDarkAccent.g}, ${rgbDarkAccent.b}, 0.16);
+        --badge-emerald-border: rgba(${rgbDarkAccent.r}, ${rgbDarkAccent.g}, ${rgbDarkAccent.b}, 0.35);
       }
 
       [data-theme="${customTheme.id}"][data-mode="light"] {
-        --color-brand: ${lightBrand};
+        --color-brand: ${lightColors.brand};
         --color-brand-glow: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.22);
         --border-focus: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.45);
         --border-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.16);
         --bg-body: #f1f5f9;
-        --bg-app: #f8fafc;
-        --bg-surface: #ffffff;
-        --bg-surface-elevated: #f8fafc;
-        --bg-surface-hover: #e2e8f0;
-        --color-header-bg: ${header};
-        --color-menu-bg: #f8fafc;
-        --color-menu-header-bg: #f1f5f9;
-        --color-menu-card-bg: #ffffff;
-        --color-menu-card-hover: #f1f5f9;
+        --bg-app: ${lightColors.surface};
+        --bg-surface: ${lightColors.surface};
+        --bg-surface-elevated: ${lightElevated};
+        --bg-surface-hover: ${lightHover};
+        --color-header-bg: ${lightColors.header};
+        --color-menu-bg: ${lightColors.menu};
+        --color-menu-header-bg: ${lightMenuHeader};
+        --color-menu-card-bg: ${lightMenuCard};
+        --color-menu-card-hover: ${lightMenuHover};
         --color-menu-border: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.2);
         --text-main: #0f172a;
         --text-muted: #475569;
         --text-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.9);
-        --badge-emerald-text: ${lightAccent};
+        --badge-emerald-text: ${lightColors.accent};
         --badge-emerald-bg: rgba(${rgbLightAccent.r}, ${rgbLightAccent.g}, ${rgbLightAccent.b}, 0.12);
         --badge-emerald-border: rgba(${rgbLightAccent.r}, ${rgbLightAccent.g}, ${rgbLightAccent.b}, 0.26);
       }
@@ -352,7 +433,7 @@ function applyThemeToDOM(theme, mode) {
     // Update browser theme color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', mode === 'dark' ? surface : '#f8fafc');
+      metaThemeColor.setAttribute('content', mode === 'dark' ? darkColors.surface : lightColors.surface);
     }
   } else {
     if (customStyleTag) customStyleTag.innerHTML = '';
@@ -478,7 +559,7 @@ function toggleThemeMode() {
 }
 
 /**
- * Render list of user-created custom themes into Settings Tab with Fixed Typography Layout
+ * Render list of user-created custom themes into Settings Tab with Fixed Typography Layout & Dual-Mode Dots
  */
 function renderCustomThemesList() {
   const container = document.getElementById('custom-themes-container');
@@ -494,37 +575,57 @@ function renderCustomThemesList() {
   section.classList.remove('hidden');
   container.innerHTML = AppState.customThemes.map(theme => {
     const isActive = AppState.theme === theme.id;
-    const colors = {
-      brand: theme.colors?.brand || theme.primaryColor || '#2DD4BF',
-      header: theme.colors?.header || '#0C2B22',
-      menu: theme.colors?.menu || '#091F18',
-      surface: theme.colors?.surface || '#021A15',
-      accent: theme.colors?.accent || '#10B981'
+    const darkColors = theme.modes?.dark || theme.colors || {
+      brand: theme.primaryColor || '#2DD4BF',
+      header: '#0C2B22',
+      menu: '#091F18',
+      surface: '#021A15',
+      accent: '#10B981'
     };
-    const baseMode = theme.baseMode || theme.mode || 'dark';
+    const lightColors = theme.modes?.light || {
+      brand: darkenIfTooLight(darkColors.brand),
+      header: '#CCFBF1',
+      menu: '#FFFFFF',
+      surface: '#F0FDFA',
+      accent: darkenIfTooLight(darkColors.accent)
+    };
 
     return `
       <div class="custom-theme-row ${isActive ? 'active' : ''}" data-theme-id="${theme.id}">
-        <div class="custom-theme-dots" style="cursor: pointer;" onclick="setTheme('${theme.id}')" title="Warna Tema (5 Elemen)">
-          <span class="ct-dot" style="background: ${colors.brand};" title="Brand"></span>
-          <span class="ct-dot" style="background: ${colors.header};" title="Header"></span>
-          <span class="ct-dot" style="background: ${colors.menu};" title="Menu Sidebar"></span>
-          <span class="ct-dot" style="background: ${colors.surface};" title="Surface"></span>
-          <span class="ct-dot" style="background: ${colors.accent};" title="Accent"></span>
+        <div class="custom-theme-dots custom-theme-dual-dots" onclick="setTheme('${theme.id}')" title="Klik untuk menerapkan tema (Mode Gelap & Terang)">
+          <div class="ct-dots-row" title="Palet Mode Gelap">
+            <span class="ct-mode-tag">D</span>
+            <span class="ct-dot" style="background: ${darkColors.brand};" title="Brand (Dark)"></span>
+            <span class="ct-dot" style="background: ${darkColors.header};" title="Header (Dark)"></span>
+            <span class="ct-dot" style="background: ${darkColors.menu};" title="Menu (Dark)"></span>
+            <span class="ct-dot" style="background: ${darkColors.surface};" title="Surface (Dark)"></span>
+            <span class="ct-dot" style="background: ${darkColors.accent};" title="Accent (Dark)"></span>
+          </div>
+          <div class="ct-dots-row" title="Palet Mode Terang">
+            <span class="ct-mode-tag">L</span>
+            <span class="ct-dot" style="background: ${lightColors.brand};" title="Brand (Light)"></span>
+            <span class="ct-dot" style="background: ${lightColors.header};" title="Header (Light)"></span>
+            <span class="ct-dot" style="background: ${lightColors.menu};" title="Menu (Light)"></span>
+            <span class="ct-dot" style="background: ${lightColors.surface};" title="Surface (Light)"></span>
+            <span class="ct-dot" style="background: ${lightColors.accent};" title="Accent (Light)"></span>
+          </div>
         </div>
         <div class="custom-theme-info" onclick="setTheme('${theme.id}')">
           <strong class="custom-theme-name">${escapeHtml(theme.name)}</strong>
           <div class="custom-theme-meta">
             <span class="custom-theme-base-badge">
-              <i data-lucide="${baseMode === 'light' ? 'sun' : 'moon'}"></i>
-              ${baseMode === 'light' ? 'Light Base' : 'Dark Base'}
+              <i data-lucide="sun-moon"></i>
+              Dual Mode
             </span>
-            <span>${colors.brand}</span>
+            <span>${darkColors.brand} / ${lightColors.brand}</span>
           </div>
         </div>
         <div class="custom-theme-actions">
           <button type="button" class="btn-sm ${isActive ? 'btn-primary' : 'btn-secondary'}" onclick="setTheme('${theme.id}')">
             ${isActive ? (AppState.lang === 'en' ? 'Active' : 'Aktif') : (AppState.lang === 'en' ? 'Apply' : 'Pakai')}
+          </button>
+          <button type="button" class="btn-card-action btn-edit-theme" onclick="editCustomTheme('${theme.id}')" title="Edit Tema Kustom">
+            <i data-lucide="pencil"></i>
           </button>
           <button type="button" class="btn-card-action btn-delete-item" onclick="deleteCustomTheme('${theme.id}')" title="Hapus Tema Kustom">
             <i data-lucide="trash-2"></i>
@@ -535,6 +636,13 @@ function renderCustomThemesList() {
   }).join('');
 
   if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Edit an existing user-created custom theme
+ */
+function editCustomTheme(id) {
+  openCustomThemeModal(id);
 }
 
 /**
@@ -563,46 +671,103 @@ function deleteCustomTheme(id) {
   }
 }
 
-// Global active creator state
+// Global active creator state supporting dual-mode (Dark & Light)
 let customCreatorState = {
+  editingThemeId: null,
   name: '',
-  baseMode: 'dark',
+  activeMode: 'dark',
   activeRole: 'brand',
   hsv: { h: 174, s: 79, v: 83 },
-  colors: {
-    brand: '#2DD4BF',
-    header: '#0C2B22',
-    menu: '#091F18',
-    surface: '#021A15',
-    accent: '#10B981'
+  modes: {
+    dark: {
+      brand: '#2DD4BF',
+      header: '#0C2B22',
+      menu: '#091F18',
+      surface: '#021A15',
+      accent: '#10B981'
+    },
+    light: {
+      brand: '#0D9488',
+      header: '#CCFBF1',
+      menu: '#FFFFFF',
+      surface: '#F0FDFA',
+      accent: '#059669'
+    }
   }
 };
 
 /**
- * Open Custom Theme Creator Modal
+ * Open Custom Theme Creator Modal (Supports both Creating and Editing)
  */
-function openCustomThemeModal() {
+function openCustomThemeModal(themeIdToEdit = null) {
   const modal = document.getElementById('custom-theme-modal');
   if (!modal) return;
 
-  // Initialize with default or current preset
-  const defaultPreset = MULTI_COLOR_PRESETS['mint-emerald'];
-  customCreatorState = {
-    name: '',
-    baseMode: defaultPreset.baseMode,
-    activeRole: 'brand',
-    hsv: hexToHsv(defaultPreset.brand),
-    colors: {
-      brand: defaultPreset.brand,
-      header: defaultPreset.header,
-      menu: defaultPreset.menu,
-      surface: defaultPreset.surface,
-      accent: defaultPreset.accent
-    }
-  };
-
+  const modalTitle = document.getElementById('custom-theme-modal-title');
+  const modalSub = document.getElementById('custom-theme-modal-sub');
+  const saveBtnText = document.getElementById('btn-save-custom-theme-text');
   const nameInput = document.getElementById('custom-theme-name-input');
-  if (nameInput) nameInput.value = '';
+
+  if (themeIdToEdit) {
+    // Edit Mode: Load existing custom theme
+    const existing = AppState.customThemes.find(t => t.id === themeIdToEdit);
+    if (!existing) return;
+
+    const darkColors = existing.modes?.dark || existing.colors || {
+      brand: existing.primaryColor || '#2DD4BF',
+      header: '#0C2B22',
+      menu: '#091F18',
+      surface: '#021A15',
+      accent: '#10B981'
+    };
+    const lightColors = existing.modes?.light || {
+      brand: darkenIfTooLight(darkColors.brand),
+      header: '#CCFBF1',
+      menu: '#FFFFFF',
+      surface: '#F0FDFA',
+      accent: darkenIfTooLight(darkColors.accent)
+    };
+
+    customCreatorState = {
+      editingThemeId: existing.id,
+      name: existing.name || '',
+      activeMode: AppState.themeMode || 'dark',
+      activeRole: 'brand',
+      hsv: hexToHsv(darkColors.brand),
+      modes: {
+        dark: { ...darkColors },
+        light: { ...lightColors }
+      }
+    };
+
+    if (modalTitle) modalTitle.textContent = AppState.lang === 'en' ? 'Edit Custom Theme' : 'Edit Tema Kustom';
+    if (modalSub) modalSub.textContent = AppState.lang === 'en'
+      ? 'Modify color palettes for both Dark and Light modes'
+      : 'Ubah nama dan palet warna untuk Mode Gelap dan Mode Terang';
+    if (saveBtnText) saveBtnText.textContent = AppState.lang === 'en' ? 'Save Changes' : 'Simpan Perubahan';
+    if (nameInput) nameInput.value = existing.name || '';
+  } else {
+    // Create Mode: Initialize with default preset
+    const defaultPreset = MULTI_COLOR_PRESETS['mint-emerald'];
+    customCreatorState = {
+      editingThemeId: null,
+      name: '',
+      activeMode: AppState.themeMode || 'dark',
+      activeRole: 'brand',
+      hsv: hexToHsv(defaultPreset.dark.brand),
+      modes: {
+        dark: { ...defaultPreset.dark },
+        light: { ...defaultPreset.light }
+      }
+    };
+
+    if (modalTitle) modalTitle.textContent = AppState.lang === 'en' ? 'Custom Theme Creator' : 'Pembuat Tema Kustom';
+    if (modalSub) modalSub.textContent = AppState.lang === 'en'
+      ? 'Customize colors for buttons, waves, sidebar, and cards'
+      : 'Atur warna tombol, ombak, menu sidebar, dan kartu sesuka Anda';
+    if (saveBtnText) saveBtnText.textContent = AppState.lang === 'en' ? 'Save & Apply' : 'Simpan & Terapkan';
+    if (nameInput) nameInput.value = '';
+  }
 
   const pickerPanel = document.getElementById('picker-2d-panel');
   if (pickerPanel) pickerPanel.classList.add('collapsed');
@@ -625,25 +790,26 @@ function closeCustomThemeModal() {
  * Update UI controls, swatches, and live preview card in Custom Theme Creator
  */
 function updateCreatorUI(syncHsv = true) {
-  const { colors, baseMode, activeRole, name } = customCreatorState;
-  const activeColor = colors[activeRole] || colors.brand;
+  const { modes, activeMode, activeRole, name } = customCreatorState;
+  const currentModeColors = modes[activeMode] || modes.dark;
+  const activeColor = currentModeColors[activeRole] || currentModeColors.brand;
 
   if (syncHsv) {
     customCreatorState.hsv = hexToHsv(activeColor);
   }
 
-  // 1. Update Role Pill Swatch Dots (All 5 Roles)
+  // 1. Update Role Pill Swatch Dots for the currently selected mode
   const dotBrand = document.getElementById('role-dot-brand');
   const dotHeader = document.getElementById('role-dot-header');
   const dotMenu = document.getElementById('role-dot-menu');
   const dotSurface = document.getElementById('role-dot-surface');
   const dotAccent = document.getElementById('role-dot-accent');
 
-  if (dotBrand) dotBrand.style.backgroundColor = colors.brand;
-  if (dotHeader) dotHeader.style.backgroundColor = colors.header;
-  if (dotMenu) dotMenu.style.backgroundColor = colors.menu;
-  if (dotSurface) dotSurface.style.backgroundColor = colors.surface;
-  if (dotAccent) dotAccent.style.backgroundColor = colors.accent;
+  if (dotBrand) dotBrand.style.backgroundColor = currentModeColors.brand;
+  if (dotHeader) dotHeader.style.backgroundColor = currentModeColors.header;
+  if (dotMenu) dotMenu.style.backgroundColor = currentModeColors.menu;
+  if (dotSurface) dotSurface.style.backgroundColor = currentModeColors.surface;
+  if (dotAccent) dotAccent.style.backgroundColor = currentModeColors.accent;
 
   // 2. Update Role Pills Active State
   const rolePills = document.querySelectorAll('.color-role-pill');
@@ -651,7 +817,21 @@ function updateCreatorUI(syncHsv = true) {
     pill.classList.toggle('active', pill.getAttribute('data-role') === activeRole);
   });
 
-  // 3. Update Label indicating what is being edited
+  // 3. Update Mode Switcher Pills & Indicators
+  const darkBtn = document.getElementById('custom-mode-dark-btn');
+  const lightBtn = document.getElementById('custom-mode-light-btn');
+  const activeModePill = document.getElementById('active-mode-indicator-pill');
+
+  if (darkBtn && lightBtn) {
+    darkBtn.classList.toggle('active', activeMode === 'dark');
+    lightBtn.classList.toggle('active', activeMode === 'light');
+  }
+
+  if (activeModePill) {
+    activeModePill.textContent = activeMode === 'dark' ? 'Mengedit: Mode Gelap' : 'Mengedit: Mode Terang';
+  }
+
+  // 4. Update Current Role Indicator Label
   const roleIndicator = document.getElementById('current-editing-role-indicator');
   const roleNames = {
     brand: 'Warna Utama (Brand)',
@@ -661,10 +841,11 @@ function updateCreatorUI(syncHsv = true) {
     accent: 'Aksen Diskon & Ikon'
   };
   if (roleIndicator) {
-    roleIndicator.textContent = `Mengedit: ${roleNames[activeRole] || 'Warna Utama'}`;
+    const modeLabel = activeMode === 'dark' ? 'Mode Gelap' : 'Mode Terang';
+    roleIndicator.textContent = `Mengedit: ${roleNames[activeRole] || 'Warna Utama'} (${modeLabel})`;
   }
 
-  // 4. Update Hex Input and Swatch Display
+  // 5. Update Hex Input and Swatch Display
   const hexInput = document.getElementById('custom-hex-input');
   const swatchDisplay = document.getElementById('custom-color-swatch-display');
 
@@ -675,7 +856,7 @@ function updateCreatorUI(syncHsv = true) {
     swatchDisplay.style.backgroundColor = activeColor;
   }
 
-  // 5. Update Interactive 2D Field & Rainbow Hue Slider
+  // 6. Update Interactive 2D Field & Rainbow Hue Slider
   const pickerField = document.getElementById('picker-2d-field');
   const pickerCursor = document.getElementById('picker-2d-cursor');
   const hueSlider = document.getElementById('picker-hue-slider');
@@ -696,24 +877,17 @@ function updateCreatorUI(syncHsv = true) {
     readoutText.textContent = `HEX: ${activeColor.toUpperCase()}`;
   }
 
-  // 6. Update Base Mode Semantic Pills (Ensures 100% visible text)
-  const darkBtn = document.getElementById('custom-mode-dark-btn');
-  const lightBtn = document.getElementById('custom-mode-light-btn');
-
-  if (darkBtn && lightBtn) {
-    darkBtn.classList.toggle('active', baseMode === 'dark');
-    lightBtn.classList.toggle('active', baseMode === 'light');
-  }
-
   // 7. Update Live Preview Box Card
   updateLivePreviewCard();
 }
 
 /**
- * Update the Live Preview Card with real multi-color properties
+ * Update the Live Preview Card with real multi-color properties for the active mode
  */
 function updateLivePreviewCard() {
-  const { colors, baseMode, name } = customCreatorState;
+  const { modes, activeMode, name } = customCreatorState;
+  const currentColors = modes[activeMode] || modes.dark;
+
   const previewBox = document.getElementById('theme-live-preview-box');
   const previewHeader = document.getElementById('preview-header');
   const previewWave1 = document.getElementById('preview-wave-1');
@@ -729,53 +903,50 @@ function updateLivePreviewCard() {
   const previewItemName = document.getElementById('preview-item-name');
 
   if (previewBox) {
-    previewBox.style.setProperty('--preview-brand', colors.brand);
-    previewBox.style.setProperty('--preview-header', colors.header);
-    previewBox.style.setProperty('--preview-menu', colors.menu);
-    previewBox.style.setProperty('--preview-surface', colors.surface);
-    previewBox.style.setProperty('--preview-accent', colors.accent);
+    previewBox.style.setProperty('--preview-brand', currentColors.brand);
+    previewBox.style.setProperty('--preview-header', currentColors.header);
+    previewBox.style.setProperty('--preview-menu', currentColors.menu);
+    previewBox.style.setProperty('--preview-surface', currentColors.surface);
+    previewBox.style.setProperty('--preview-accent', currentColors.accent);
   }
 
   if (previewHeader) {
-    previewHeader.style.backgroundColor = colors.header;
+    previewHeader.style.backgroundColor = currentColors.header;
   }
 
-  if (previewWave1) previewWave1.style.fill = colors.brand;
-  if (previewWave2) previewWave2.style.fill = colors.accent;
+  if (previewWave1) previewWave1.style.fill = currentColors.brand;
+  if (previewWave2) previewWave2.style.fill = currentColors.accent;
 
   if (previewMenuStrip) {
-    previewMenuStrip.style.backgroundColor = colors.menu;
+    previewMenuStrip.style.backgroundColor = currentColors.menu;
   }
 
   if (previewMenuIcon) {
-    previewMenuIcon.style.backgroundColor = colors.brand;
-    const lum = (0.299 * hexToRgb(colors.brand).r + 0.587 * hexToRgb(colors.brand).g + 0.114 * hexToRgb(colors.brand).b) / 255;
+    previewMenuIcon.style.backgroundColor = currentColors.brand;
+    const lum = (0.299 * hexToRgb(currentColors.brand).r + 0.587 * hexToRgb(currentColors.brand).g + 0.114 * hexToRgb(currentColors.brand).b) / 255;
     previewMenuIcon.style.color = lum > 0.55 ? '#021a15' : '#ffffff';
   }
 
   if (previewMenuSub) {
-    previewMenuSub.style.color = colors.accent;
+    previewMenuSub.style.color = currentColors.accent;
   }
 
   if (previewSurface) {
-    if (baseMode === 'dark') {
-      previewSurface.style.backgroundColor = colors.surface;
-      if (previewItemName) previewItemName.style.color = '#f8fafc';
-    } else {
-      previewSurface.style.backgroundColor = '#ffffff';
-      if (previewItemName) previewItemName.style.color = '#0f172a';
+    previewSurface.style.backgroundColor = currentColors.surface;
+    if (previewItemName) {
+      previewItemName.style.color = activeMode === 'dark' ? '#f8fafc' : '#0f172a';
     }
   }
 
-  if (previewPrice) previewPrice.style.color = colors.accent;
+  if (previewPrice) previewPrice.style.color = currentColors.accent;
   if (previewDiscount) {
-    previewDiscount.style.color = colors.accent;
-    previewDiscount.style.borderColor = colors.accent;
+    previewDiscount.style.color = currentColors.accent;
+    previewDiscount.style.borderColor = currentColors.accent;
   }
 
   if (previewBtn) {
-    previewBtn.style.backgroundColor = colors.brand;
-    const lum = (0.299 * hexToRgb(colors.brand).r + 0.587 * hexToRgb(colors.brand).g + 0.114 * hexToRgb(colors.brand).b) / 255;
+    previewBtn.style.backgroundColor = currentColors.brand;
+    const lum = (0.299 * hexToRgb(currentColors.brand).r + 0.587 * hexToRgb(currentColors.brand).g + 0.114 * hexToRgb(currentColors.brand).b) / 255;
     previewBtn.style.color = lum > 0.55 ? '#021a15' : '#ffffff';
   }
 
@@ -805,7 +976,7 @@ function initCustomThemeCreatorEvents() {
   const pickerField = document.getElementById('picker-2d-field');
   const hueSlider = document.getElementById('picker-hue-slider');
 
-  if (openBtn) openBtn.addEventListener('click', openCustomThemeModal);
+  if (openBtn) openBtn.addEventListener('click', () => openCustomThemeModal(null));
   if (closeBtn) closeBtn.addEventListener('click', closeCustomThemeModal);
   if (backdrop) backdrop.addEventListener('click', closeCustomThemeModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeCustomThemeModal);
@@ -847,7 +1018,7 @@ function initCustomThemeCreatorEvents() {
     customCreatorState.hsv.v = v;
 
     const newHex = hsvToHex(customCreatorState.hsv.h, s, v);
-    customCreatorState.colors[customCreatorState.activeRole] = newHex;
+    customCreatorState.modes[customCreatorState.activeMode][customCreatorState.activeRole] = newHex;
 
     updateCreatorUI(false);
   }
@@ -888,12 +1059,12 @@ function initCustomThemeCreatorEvents() {
       const h = parseInt(e.target.value, 10);
       customCreatorState.hsv.h = isNaN(h) ? 0 : h;
       const newHex = hsvToHex(customCreatorState.hsv.h, customCreatorState.hsv.s, customCreatorState.hsv.v);
-      customCreatorState.colors[customCreatorState.activeRole] = newHex;
+      customCreatorState.modes[customCreatorState.activeMode][customCreatorState.activeRole] = newHex;
       updateCreatorUI(false);
     });
   }
 
-  // Multi-Color Presets Click
+  // Multi-Color Presets Click: Populates BOTH Dark and Light mode palettes
   const presetCards = document.querySelectorAll('.multi-color-preset-card');
   presetCards.forEach(card => {
     card.addEventListener('click', () => {
@@ -902,14 +1073,10 @@ function initCustomThemeCreatorEvents() {
       const presetKey = card.getAttribute('data-preset');
       const preset = MULTI_COLOR_PRESETS[presetKey];
       if (preset) {
-        customCreatorState.colors = {
-          brand: preset.brand,
-          header: preset.header,
-          menu: preset.menu,
-          surface: preset.surface,
-          accent: preset.accent
+        customCreatorState.modes = {
+          dark: { ...preset.dark },
+          light: { ...preset.light }
         };
-        customCreatorState.baseMode = preset.baseMode;
         if (nameInput && (!nameInput.value || Object.values(MULTI_COLOR_PRESETS).some(p => p.name === nameInput.value))) {
           nameInput.value = preset.name;
           customCreatorState.name = preset.name;
@@ -937,7 +1104,7 @@ function initCustomThemeCreatorEvents() {
       let val = e.target.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
       if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        customCreatorState.colors[customCreatorState.activeRole] = val;
+        customCreatorState.modes[customCreatorState.activeMode][customCreatorState.activeRole] = val;
         updateCreatorUI(true);
       }
     });
@@ -947,7 +1114,7 @@ function initCustomThemeCreatorEvents() {
   if (randomBtn) {
     randomBtn.addEventListener('click', () => {
       const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-      customCreatorState.colors[customCreatorState.activeRole] = randomHex;
+      customCreatorState.modes[customCreatorState.activeMode][customCreatorState.activeRole] = randomHex;
       updateCreatorUI(true);
     });
   }
@@ -960,47 +1127,80 @@ function initCustomThemeCreatorEvents() {
     });
   }
 
-  // Base Mode Toggle (Dark vs Light)
+  // Mode Switcher (Dark Mode vs Light Mode) inside Creator Modal
   if (darkBtn) {
     darkBtn.addEventListener('click', () => {
-      customCreatorState.baseMode = 'dark';
-      updateCreatorUI(false);
+      customCreatorState.activeMode = 'dark';
+      updateCreatorUI(true);
     });
   }
 
   if (lightBtn) {
     lightBtn.addEventListener('click', () => {
-      customCreatorState.baseMode = 'light';
-      updateCreatorUI(false);
+      customCreatorState.activeMode = 'light';
+      updateCreatorUI(true);
     });
   }
 
-  // Save & Apply Custom Theme
+  // Save & Apply Custom Theme (Handles both Creating and Updating)
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
-      const finalName = customCreatorState.name || `Tema ${customCreatorState.colors.brand.toUpperCase()}`;
-      const newTheme = {
-        id: 'custom_' + Date.now(),
-        name: finalName,
-        baseMode: customCreatorState.baseMode,
-        primaryColor: customCreatorState.colors.brand,
-        colors: { ...customCreatorState.colors },
-        createdAt: Date.now()
-      };
+      const finalName = customCreatorState.name || `Tema ${customCreatorState.modes.dark.brand.toUpperCase()}`;
 
-      AppState.customThemes.push(newTheme);
-      saveCustomThemesToStorage();
-      renderCustomThemesList();
-      closeCustomThemeModal();
+      if (customCreatorState.editingThemeId) {
+        // Editing Existing Theme
+        const existingIndex = AppState.customThemes.findIndex(t => t.id === customCreatorState.editingThemeId);
+        if (existingIndex !== -1) {
+          AppState.customThemes[existingIndex].name = finalName;
+          AppState.customThemes[existingIndex].modes = {
+            dark: { ...customCreatorState.modes.dark },
+            light: { ...customCreatorState.modes.light }
+          };
+          AppState.customThemes[existingIndex].colors = { ...customCreatorState.modes.dark }; // fallback
+          AppState.customThemes[existingIndex].updatedAt = Date.now();
+        }
+        saveCustomThemesToStorage();
+        renderCustomThemesList();
+        closeCustomThemeModal();
 
-      // Immediately activate the new custom theme and set its base mode
-      setThemeMode(customCreatorState.baseMode);
-      setTheme(newTheme.id);
+        // If currently applied theme is the one edited, re-apply styles to DOM immediately
+        if (AppState.theme === customCreatorState.editingThemeId) {
+          applyThemeToDOM(AppState.theme, AppState.themeMode);
+        }
 
-      if (typeof showToast === 'function') {
-        showToast(AppState.lang === 'en'
-          ? `Custom theme "${finalName}" created & applied!`
-          : `Tema kustom "${finalName}" berhasil dibuat & diterapkan!`, 'success');
+        if (typeof showToast === 'function') {
+          showToast(AppState.lang === 'en'
+            ? `Custom theme "${finalName}" updated!`
+            : `Tema kustom "${finalName}" berhasil diperbarui!`, 'success');
+        }
+      } else {
+        // Creating New Theme
+        const newTheme = {
+          id: 'custom_' + Date.now(),
+          name: finalName,
+          baseMode: customCreatorState.activeMode,
+          primaryColor: customCreatorState.modes.dark.brand,
+          modes: {
+            dark: { ...customCreatorState.modes.dark },
+            light: { ...customCreatorState.modes.light }
+          },
+          colors: { ...customCreatorState.modes.dark }, // fallback
+          createdAt: Date.now()
+        };
+
+        AppState.customThemes.push(newTheme);
+        saveCustomThemesToStorage();
+        renderCustomThemesList();
+        closeCustomThemeModal();
+
+        // Immediately activate the new custom theme
+        setTheme(newTheme.id);
+
+        if (typeof showToast === 'function') {
+          showToast(AppState.lang === 'en'
+            ? `Custom theme "${finalName}" created & applied!`
+            : `Tema kustom "${finalName}" berhasil dibuat & diterapkan!`, 'success');
+        }
       }
     });
   }

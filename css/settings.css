@@ -444,9 +444,18 @@
 .custom-theme-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.70rem;
+  gap: 6px;
+  font-size: 0.68rem;
   color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-theme-meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .custom-theme-base-badge {
@@ -472,6 +481,48 @@
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+}
+
+.btn-edit-theme {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-theme:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  transform: scale(1.05);
+}
+
+.custom-theme-dual-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.ct-dots-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ct-mode-tag {
+  font-size: 0.60rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 4px;
+  text-transform: uppercase;
 }
 
 /* Custom Theme Bottom Trigger Button */
