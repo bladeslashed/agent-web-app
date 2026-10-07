@@ -129,6 +129,14 @@ function openHistoryDetail(trxId) {
     </div>
   `).join('');
 
+  // Edit transaction handler
+  const editBtn = document.getElementById('edit-this-history-btn');
+  if (editBtn) {
+    editBtn.onclick = () => {
+      openHistoryEditModal(trxId);
+    };
+  }
+
   // Delete transaction handler
   if (deleteBtn) {
     deleteBtn.onclick = () => {
@@ -244,3 +252,275 @@ function handleCheckoutRequest() {
     performCheckoutTransaction();
   }
 }
+
+// ====================================================================
+// HISTORY FULL EDITING CONTROLLER (Edit date, budget, name, items)
+// ====================================================================
+
+let currentEditingTrx = null;
+let editingItems = [];
+
+/**
+ * Open History Full Edit Modal
+ */
+function openHistoryEditModal(trxId) {
+  const trx = AppState.history.find(h => h.id === trxId);
+  if (!trx) return;
+
+  currentEditingTrx = trx;
+  editingItems = JSON.parse(JSON.stringify(trx.items || []));
+
+  const modal = document.getElementById('history-edit-modal');
+  const idEl = document.getElementById('edit-history-id');
+  const nameEl = document.getElementById('edit-history-name');
+  const dateEl = document.getElementById('edit-history-date');
+  const budgetEl = document.getElementById('edit-history-budget');
+
+  if (idEl) idEl.value = trx.id;
+  if (nameEl) nameEl.value = trx.monthName || '';
+  if (budgetEl) budgetEl.value = trx.budgetCap || 500000;
+
+  if (dateEl) {
+    const d = new Date(trx.timestamp || Date.now());
+    const pad = n => String(n).padStart(2, '0');
+    dateEl.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  renderHistoryEditItems();
+  updateHistoryEditSummary();
+
+  if (modal) modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Close History Full Edit Modal
+ */
+function closeHistoryEditModal() {
+  const modal = document.getElementById('history-edit-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+/**
+ * Render Itemized Editable Rows in History Edit Modal
+ */
+function renderHistoryEditItems() {
+  const container = document.getElementById('edit-history-items-container');
+  if (!container) return;
+
+  const categories = ['Bahan Pokok', 'Makanan Instan', 'Camilan', 'Bumbu & Masak', 'Perlengkapan Mandi', 'Perlengkapan Cuci', 'Minuman', 'Lainnya'];
+  const units = ['pcs', 'pack', 'kg', 'liter', 'botol', 'kaleng', 'dus', 'sachet'];
+
+  container.innerHTML = editingItems.map((item, idx) => {
+    const subtotal = item.subtotal || (item.qty * (item.finalUnitPrice || item.originalPrice || 0));
+    const saving = ((item.originalPrice || 0) - (item.finalUnitPrice || 0)) * item.qty;
+
+    return `
+      <div class="history-edit-item-row" data-idx="${idx}">
+        <div class="edit-item-top-row">
+          <input type="text" class="form-input edit-item-name-input" value="${escapeHtml(item.name || '')}" placeholder="Nama Barang" onchange="updateHistoryItemField(${idx}, 'name', this.value)">
+          <button type="button" class="edit-item-delete-btn" onclick="deleteHistoryEditItem(${idx})" title="Hapus Barang">
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+
+        <div class="edit-item-fields-grid">
+          <div>
+            <label class="form-label text-xs">Kategori</label>
+            <select class="form-select" onchange="updateHistoryItemField(${idx}, 'category', this.value)">
+              ${categories.map(cat => `<option value="${cat}" ${item.category === cat ? 'selected' : ''}>${cat}</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label text-xs">Jumlah</label>
+            <input type="number" class="form-input" min="1" value="${item.qty || 1}" onchange="updateHistoryItemField(${idx}, 'qty', this.value)">
+          </div>
+
+          <div>
+            <label class="form-label text-xs">Satuan</label>
+            <select class="form-select" onchange="updateHistoryItemField(${idx}, 'unit', this.value)">
+              ${units.map(u => `<option value="${u}" ${item.unit === u ? 'selected' : ''}>${u}</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label text-xs">Harga Satuan Asli (Rp)</label>
+            <input type="number" class="form-input" min="0" step="500" value="${item.originalPrice || 0}" onchange="updateHistoryItemField(${idx}, 'originalPrice', this.value)">
+          </div>
+
+          <div style="grid-column: span 2;">
+            <label class="form-label text-xs">Diskon (cth: 50+20 atau 20%)</label>
+            <input type="text" class="form-input" value="${escapeHtml(item.discountString || '')}" placeholder="Kosongkan jika tanpa diskon" onchange="updateHistoryItemField(${idx}, 'discountString', this.value)">
+          </div>
+        </div>
+
+        <div class="edit-item-subtotal-bar">
+          <span>Subtotal: <strong id="edit-item-subtotal-${idx}">${formatRupiah(subtotal)}</strong></span>
+          ${saving > 0 ? `<span class="badge-emerald-subtle">Hemat ${formatRupiah(saving)}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Update Individual Field of Item in History Edit Modal
+ */
+function updateHistoryItemField(idx, field, value) {
+  if (!editingItems[idx]) return;
+
+  if (field === 'qty') {
+    editingItems[idx].qty = Math.max(1, parseInt(value, 10) || 1);
+  } else if (field === 'originalPrice') {
+    editingItems[idx].originalPrice = Math.max(0, parseInt(value, 10) || 0);
+  } else if (field === 'discountString') {
+    editingItems[idx].discountString = value.trim();
+  } else {
+    editingItems[idx][field] = value;
+  }
+
+  // Recalculate discount & subtotal for this item
+  const orig = editingItems[idx].originalPrice || 0;
+  const discStr = editingItems[idx].discountString || '';
+  const calc = calculateDiscount(orig, discStr);
+
+  editingItems[idx].finalUnitPrice = calc.finalUnitPrice;
+  editingItems[idx].subtotal = calc.finalUnitPrice * editingItems[idx].qty;
+
+  renderHistoryEditItems();
+  updateHistoryEditSummary();
+}
+
+/**
+ * Delete Item from History Edit
+ */
+function deleteHistoryEditItem(idx) {
+  if (editingItems.length <= 1) {
+    showToast(AppState.lang === 'en' ? 'Transaction must contain at least 1 item' : 'Transaksi harus memiliki minimal 1 barang', 'warning');
+    return;
+  }
+  editingItems.splice(idx, 1);
+  renderHistoryEditItems();
+  updateHistoryEditSummary();
+}
+
+/**
+ * Add New Item to History Edit
+ */
+function addHistoryEditItem() {
+  editingItems.push({
+    id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    name: AppState.lang === 'en' ? 'New Item' : 'Barang Baru',
+    category: 'Bahan Pokok',
+    qty: 1,
+    unit: 'pcs',
+    originalPrice: 10000,
+    discountString: '',
+    finalUnitPrice: 10000,
+    subtotal: 10000
+  });
+  renderHistoryEditItems();
+  updateHistoryEditSummary();
+}
+
+/**
+ * Update Live Calculation Summary Card in History Edit Modal
+ */
+function updateHistoryEditSummary() {
+  const totalEl = document.getElementById('edit-history-calc-total');
+  const savingsEl = document.getElementById('edit-history-calc-savings');
+  const statusEl = document.getElementById('edit-history-calc-status');
+  const budgetInput = document.getElementById('edit-history-budget');
+
+  const budget = budgetInput ? parseInt(budgetInput.value, 10) || 500000 : 500000;
+
+  const total = editingItems.reduce((acc, it) => acc + (it.subtotal || 0), 0);
+  const totalSavings = editingItems.reduce((acc, it) => {
+    const s = ((it.originalPrice || 0) - (it.finalUnitPrice || 0)) * (it.qty || 1);
+    return acc + (s > 0 ? s : 0);
+  }, 0);
+
+  if (totalEl) totalEl.textContent = formatRupiah(total);
+  if (savingsEl) savingsEl.textContent = formatRupiah(totalSavings);
+
+  if (statusEl) {
+    const isOver = total > budget;
+    statusEl.textContent = isOver
+      ? (AppState.lang === 'en' ? `Over (+${formatRupiah(total - budget)})` : `Over (+${formatRupiah(total - budget)})`)
+      : (AppState.lang === 'en' ? 'Safe Budget' : 'Dompet Aman');
+    statusEl.className = isOver ? 'badge danger' : 'badge safe';
+  }
+}
+
+/**
+ * Save History Edit Changes
+ */
+function saveHistoryEdit() {
+  if (!currentEditingTrx) return;
+
+  const nameInput = document.getElementById('edit-history-name');
+  const dateInput = document.getElementById('edit-history-date');
+  const budgetInput = document.getElementById('edit-history-budget');
+
+  const updatedName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : currentEditingTrx.monthName;
+  const updatedBudget = budgetInput ? Math.max(0, parseInt(budgetInput.value, 10) || 0) : currentEditingTrx.budgetCap;
+
+  let updatedTimestamp = currentEditingTrx.timestamp;
+  if (dateInput && dateInput.value) {
+    const parsedDate = new Date(dateInput.value).getTime();
+    if (!isNaN(parsedDate)) updatedTimestamp = parsedDate;
+  }
+
+  const updatedTotal = editingItems.reduce((acc, it) => acc + (it.subtotal || 0), 0);
+
+  // Apply changes to existing record
+  currentEditingTrx.monthName = updatedName;
+  currentEditingTrx.timestamp = updatedTimestamp;
+  currentEditingTrx.budgetCap = updatedBudget;
+  currentEditingTrx.items = editingItems;
+  currentEditingTrx.totalSpend = updatedTotal;
+
+  // Persist to storage
+  saveHistoryToStorage();
+
+  // Silently sync to Firestore in background
+  if (currentUser && typeof syncStateToFirestore === 'function') {
+    syncStateToFirestore(false);
+  }
+
+  // Refresh UI
+  renderHistoryTab();
+  updateComparatorBadges();
+  if (typeof renderAnalyticsTab === 'function') {
+    renderAnalyticsTab();
+  }
+
+  // Update open detail modal
+  openHistoryDetail(currentEditingTrx.id);
+
+  closeHistoryEditModal();
+  showToast(AppState.lang === 'en' ? 'Shopping record updated!' : 'Catatan riwayat belanja berhasil diperbarui!', 'success');
+}
+
+/**
+ * Initialize Event Listeners for History Edit
+ */
+function initHistoryEditEvents() {
+  const closeBtn = document.getElementById('close-history-edit-btn');
+  const cancelBtn = document.getElementById('btn-cancel-history-edit');
+  const backdrop = document.getElementById('close-history-edit-backdrop');
+  const addBtn = document.getElementById('btn-add-item-history-edit');
+  const saveBtn = document.getElementById('btn-save-history-edit');
+  const budgetInput = document.getElementById('edit-history-budget');
+
+  if (closeBtn) closeBtn.addEventListener('click', closeHistoryEditModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeHistoryEditModal);
+  if (backdrop) backdrop.addEventListener('click', closeHistoryEditModal);
+  if (addBtn) addBtn.addEventListener('click', addHistoryEditItem);
+  if (saveBtn) saveBtn.addEventListener('click', saveHistoryEdit);
+  if (budgetInput) budgetInput.addEventListener('input', updateHistoryEditSummary);
+}
+

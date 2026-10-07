@@ -104,7 +104,7 @@ function renderAnalyticsTab() {
   // Render the 3 Charts
   renderCategoryPieChart(stats.categorySpend, stats.totalSpend);
   renderDiscountSavingsChart(filtered, stats.categorySavings, stats.monthlySavings);
-  renderMonthlyOgiveChart(stats.monthlySpendList);
+  renderOgiveOrHistogramChart(stats.monthlySpendList, stats.dailySpendList);
 
   if (window.lucide) lucide.createIcons();
 }
@@ -137,6 +137,7 @@ function calculateAnalyticsMetrics(transactions) {
   const categorySavings = {};
   const monthlySpendMap = new Map();
   const monthlySavingsMap = new Map();
+  const dailySpendMap = new Map();
 
   transactions.forEach(trx => {
     const spend = Number(trx.totalSpend) || 0;
@@ -155,6 +156,19 @@ function calculateAnalyticsMetrics(transactions) {
       monthlySavingsMap.set(monthKey, { key: monthKey, label: monthLabel, amount: 0 });
     }
     monthlySpendMap.get(monthKey).amount += spend;
+
+    // Group by Day Key (YYYY-MM-DD)
+    const dayKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
+    const dayLabel = dateObj.toLocaleDateString(AppState.lang === 'en' ? 'en-US' : 'id-ID', {
+      day: 'numeric',
+      month: 'short'
+    });
+
+    if (!dailySpendMap.has(dayKey)) {
+      dailySpendMap.set(dayKey, { key: dayKey, label: dayLabel, amount: 0, count: 0, timestamp: dateObj.getTime() });
+    }
+    dailySpendMap.get(dayKey).amount += spend;
+    dailySpendMap.get(dayKey).count += 1;
 
     // Process items in this transaction
     if (Array.isArray(trx.items)) {
@@ -183,6 +197,9 @@ function calculateAnalyticsMetrics(transactions) {
   const sortedMonths = Array.from(monthlySpendMap.values()).sort((a, b) => a.key.localeCompare(b.key));
   const sortedMonthlySavings = Array.from(monthlySavingsMap.values()).sort((a, b) => a.key.localeCompare(b.key));
 
+  // Sort days chronologically
+  const sortedDays = Array.from(dailySpendMap.values()).sort((a, b) => a.key.localeCompare(b.key));
+
   return {
     totalSpend,
     totalSaved,
@@ -190,6 +207,7 @@ function calculateAnalyticsMetrics(transactions) {
     categorySavings,
     monthlySpendList: sortedMonths,
     monthlySavings: sortedMonthlySavings,
+    dailySpendList: sortedDays,
     monthCount: sortedMonths.length
   };
 }
@@ -488,34 +506,60 @@ function renderDiscountSavingsChart(transactions, categorySavings, monthlySaving
 }
 
 /**
- * 3. Render Monthly Spending Ogive (Cumulative Frequency Polygon)
- * 
- * An Ogive plots cumulative money spent over successive months:
- * Month 1: S_1
- * Month 2: S_1 + S_2
- * Month 3: S_1 + S_2 + S_3
- * Showing the progressive accumulation curve of expenditure over time.
+ * 3. Render Ogive (Positive & Negative) OR Histogram Chart
+ * Supports both Monthly and Daily Granularity
  */
-function renderMonthlyOgiveChart(monthlySpendList) {
+function renderOgiveOrHistogramChart(monthlySpendList, dailySpendList) {
   const canvas = document.getElementById('ogive-chart');
   if (!canvas) return;
 
   const tokens = getChartThemeTokens();
 
-  if (!monthlySpendList || monthlySpendList.length === 0) return;
+  // Determine which data series to plot based on granularity
+  const isDaily = AppState.ogiveGranularity === 'daily';
+  const dataList = isDaily ? (dailySpendList || []) : (monthlySpendList || []);
 
-  const labels = [];
-  const cumulativeData = [];
-  const individualMonthlyData = [];
+  if (!dataList || dataList.length === 0) return;
 
-  let runningSum = 0;
+  const isHistogram = AppState.ogiveDisplayType === 'histogram';
 
-  monthlySpendList.forEach(m => {
-    labels.push(m.label);
-    individualMonthlyData.push(m.amount);
-    runningSum += m.amount;
-    cumulativeData.push(runningSum);
-  });
+  // Update card title & subtitle dynamically
+  const titleEl = document.getElementById('chart-ogive-title');
+  const subEl = document.getElementById('chart-ogive-sub');
+  const iconEl = document.getElementById('chart-ogive-icon');
+
+  if (titleEl) {
+    if (isHistogram) {
+      titleEl.textContent = isDaily
+        ? (AppState.lang === 'en' ? 'Daily Spending Histogram' : 'Histogram Pengeluaran Harian')
+        : (AppState.lang === 'en' ? 'Monthly Spending Histogram' : 'Histogram Pengeluaran Bulanan');
+    } else {
+      titleEl.textContent = isDaily
+        ? (AppState.lang === 'en' ? 'Daily Ogive Curves (Positive & Negative)' : 'Kurva Ogive Harian (Positif & Negatif)')
+        : (AppState.lang === 'en' ? 'Monthly Ogive Curves (Positive & Negative)' : 'Kurva Ogive Bulanan (Positif & Negatif)');
+    }
+  }
+
+  if (subEl) {
+    if (isHistogram) {
+      subEl.textContent = isDaily
+        ? (AppState.lang === 'en' ? 'Distribution and frequency of daily shopping amounts' : 'Distribusi frekuensi nominal belanja per hari')
+        : (AppState.lang === 'en' ? 'Distribution and frequency of monthly shopping amounts' : 'Distribusi frekuensi nominal belanja per bulan');
+    } else {
+      subEl.textContent = AppState.lang === 'en'
+        ? 'Ascending cumulative spend vs. descending remaining budget countdown'
+        : 'Akumulasi total belanja vs. countdown sisa pengeluaran periode';
+    }
+  }
+
+  if (iconEl) {
+    iconEl.setAttribute('data-lucide', isHistogram ? 'bar-chart-2' : 'trending-up');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  const labels = dataList.map(d => d.label);
+  const rawAmounts = dataList.map(d => d.amount);
+  const totalPeriodSpend = rawAmounts.reduce((a, b) => a + b, 0);
 
   if (ogiveChartInstance) {
     ogiveChartInstance.destroy();
@@ -523,117 +567,217 @@ function renderMonthlyOgiveChart(monthlySpendList) {
 
   const ctx = canvas.getContext('2d');
 
-  // Fill gradient under ogive line
-  const fillGradient = ctx.createLinearGradient(0, 0, 0, 240);
-  fillGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-  fillGradient.addColorStop(0.7, 'rgba(59, 130, 246, 0.08)');
-  fillGradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+  if (isHistogram) {
+    // ----------------------------------------------------
+    // HISTOGRAM MODE: Contiguous distribution bars
+    // ----------------------------------------------------
+    const barGradient = ctx.createLinearGradient(0, 0, 0, 220);
+    barGradient.addColorStop(0, 'rgba(45, 212, 191, 0.85)');
+    barGradient.addColorStop(1, 'rgba(13, 148, 136, 0.45)');
 
-  ogiveChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: AppState.lang === 'en' ? 'Cumulative Spend (Ogive)' : 'Akumulasi Kumulatif (Ogive)',
-          data: cumulativeData,
-          borderColor: '#3b82f6',
-          borderWidth: 3,
-          backgroundColor: fillGradient,
-          fill: true,
-          tension: 0.35,
-          pointRadius: 5,
-          pointHoverRadius: 8,
-          pointBackgroundColor: '#ffffff',
-          pointBorderColor: '#3b82f6',
-          pointBorderWidth: 2.5
-        },
-        {
-          label: AppState.lang === 'en' ? 'Monthly Spend' : 'Belanja Bulan Ini',
-          data: individualMonthlyData,
-          type: 'bar',
-          backgroundColor: 'rgba(148, 163, 184, 0.22)',
-          borderColor: 'rgba(148, 163, 184, 0.4)',
-          borderWidth: 1,
+    ogiveChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: isDaily
+            ? (AppState.lang === 'en' ? 'Daily Spend' : 'Pengeluaran Harian')
+            : (AppState.lang === 'en' ? 'Monthly Spend' : 'Pengeluaran Bulanan'),
+          data: rawAmounts,
+          backgroundColor: barGradient,
+          borderColor: '#14b8a6',
+          borderWidth: 1.5,
           borderRadius: 4,
-          maxBarThickness: 24,
-          order: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
+          categoryPercentage: 1.0,
+          barPercentage: 0.94
+        }]
       },
-      animation: {
-        duration: 800,
-        easing: 'easeOutQuart'
-      },
-      plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            color: tokens.textColor,
-            font: { family: tokens.fontFamily, size: 11, weight: '600' },
-            boxWidth: 12,
-            padding: 10
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 600, easing: 'easeOutQuart' },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: tokens.textColor,
+              font: { family: tokens.fontFamily, size: 11, weight: '700' },
+              boxWidth: 12
+            }
+          },
+          tooltip: {
+            backgroundColor: tokens.tooltipBg,
+            titleColor: tokens.tooltipText,
+            bodyColor: tokens.tooltipText,
+            callbacks: {
+              label: function(context) {
+                const val = context.raw || 0;
+                return ` ${formatRupiah(val)}`;
+              }
+            }
           }
         },
-        tooltip: {
-          backgroundColor: tokens.tooltipBg,
-          titleColor: tokens.tooltipText,
-          bodyColor: tokens.tooltipText,
-          bodyFont: { family: tokens.fontFamily, size: 12 },
-          titleFont: { family: tokens.fontFamily, size: 13, weight: 'bold' },
-          padding: 10,
-          cornerRadius: 8,
-          callbacks: {
-            label: function(context) {
-              const val = context.raw || 0;
-              if (context.datasetIndex === 0) {
-                return AppState.lang === 'en'
-                  ? ` Ogive Kumulatif: ${formatRupiah(val)}`
-                  : ` Total Kumulatif (Ogive): ${formatRupiah(val)}`;
-              } else {
-                return AppState.lang === 'en'
-                  ? ` Monthly Spend: ${formatRupiah(val)}`
-                  : ` Belanja Bulan Ini: ${formatRupiah(val)}`;
+        scales: {
+          x: {
+            grid: { color: tokens.gridColor },
+            ticks: { color: tokens.textColor, font: { family: tokens.fontFamily, size: 11 } }
+          },
+          y: {
+            grid: { color: tokens.gridColor },
+            ticks: {
+              color: tokens.textColor,
+              font: { family: tokens.fontFamily, size: 10 },
+              callback: function(val) {
+                if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Jt';
+                if (val >= 1000) return (val / 1000).toFixed(0) + 'rb';
+                return val;
               }
             }
           }
         }
-      },
-      scales: {
-        x: {
-          grid: {
-            color: tokens.gridColor
+      }
+    });
+
+  } else {
+    // ----------------------------------------------------
+    // OGIVE MODE: Positive (Ascending) & Negative (Descending)
+    // ----------------------------------------------------
+    const positiveOgive = [];
+    const negativeOgive = [];
+
+    let runningAsc = 0;
+    for (let i = 0; i < rawAmounts.length; i++) {
+      runningAsc += rawAmounts[i];
+      positiveOgive.push(runningAsc);
+
+      // Negative Ogive: Remaining cumulative sum from point i to the end
+      // N(i) = sum(rawAmounts[i ... n]) = totalPeriodSpend - positiveOgive[i-1]
+      let rem = 0;
+      for (let j = i; j < rawAmounts.length; j++) {
+        rem += rawAmounts[j];
+      }
+      negativeOgive.push(rem);
+    }
+
+    // Gradient under positive curve
+    const posGradient = ctx.createLinearGradient(0, 0, 0, 240);
+    posGradient.addColorStop(0, 'rgba(45, 212, 191, 0.35)');
+    posGradient.addColorStop(0.7, 'rgba(45, 212, 191, 0.08)');
+    posGradient.addColorStop(1, 'rgba(45, 212, 191, 0.0)');
+
+    ogiveChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: AppState.lang === 'en' ? 'Positive Ogive (Cumulative Spend)' : 'Ogive (+) Kumulatif Naik',
+            data: positiveOgive,
+            borderColor: '#10b981',
+            borderWidth: 3,
+            backgroundColor: posGradient,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4.5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#10b981',
+            pointBorderWidth: 2.5
           },
-          ticks: {
-            color: tokens.textColor,
-            font: { family: tokens.fontFamily, size: 11 }
+          {
+            label: AppState.lang === 'en' ? 'Negative Ogive (Remaining Spend)' : 'Ogive (-) Kumulatif Turun (Sisa)',
+            data: negativeOgive,
+            borderColor: '#f43f5e',
+            borderWidth: 2.5,
+            borderDash: [5, 4],
+            backgroundColor: 'transparent',
+            fill: false,
+            tension: 0.35,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#f43f5e',
+            pointBorderWidth: 2
+          },
+          {
+            label: isDaily
+              ? (AppState.lang === 'en' ? 'Daily Spend' : 'Belanja Hari Ini')
+              : (AppState.lang === 'en' ? 'Monthly Spend' : 'Belanja Bulan Ini'),
+            data: rawAmounts,
+            type: 'bar',
+            backgroundColor: 'rgba(148, 163, 184, 0.18)',
+            borderColor: 'rgba(148, 163, 184, 0.35)',
+            borderWidth: 1,
+            borderRadius: 4,
+            maxBarThickness: 20,
+            order: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        animation: { duration: 750, easing: 'easeOutQuart' },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: tokens.textColor,
+              font: { family: tokens.fontFamily, size: 10.5, weight: '600' },
+              boxWidth: 12,
+              padding: 8
+            }
+          },
+          tooltip: {
+            backgroundColor: tokens.tooltipBg,
+            titleColor: tokens.tooltipText,
+            bodyColor: tokens.tooltipText,
+            padding: 10,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                const val = context.raw || 0;
+                if (context.datasetIndex === 0) {
+                  return AppState.lang === 'en'
+                    ? ` Ogive (+) Cumulative: ${formatRupiah(val)}`
+                    : ` Ogive (+) Kumulatif Naik: ${formatRupiah(val)}`;
+                } else if (context.datasetIndex === 1) {
+                  return AppState.lang === 'en'
+                    ? ` Ogive (-) Remaining: ${formatRupiah(val)}`
+                    : ` Ogive (-) Sisa Periode: ${formatRupiah(val)}`;
+                } else {
+                  return isDaily
+                    ? ` Belanja Hari Ini: ${formatRupiah(val)}`
+                    : ` Belanja Bulan Ini: ${formatRupiah(val)}`;
+                }
+              }
+            }
           }
         },
-        y: {
-          grid: {
-            color: tokens.gridColor
+        scales: {
+          x: {
+            grid: { color: tokens.gridColor },
+            ticks: { color: tokens.textColor, font: { family: tokens.fontFamily, size: 11 } }
           },
-          ticks: {
-            color: tokens.textColor,
-            font: { family: tokens.fontFamily, size: 10 },
-            callback: function(val) {
-              if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Jt';
-              if (val >= 1000) return (val / 1000).toFixed(0) + 'rb';
-              return val;
+          y: {
+            grid: { color: tokens.gridColor },
+            ticks: {
+              color: tokens.textColor,
+              font: { family: tokens.fontFamily, size: 10 },
+              callback: function(val) {
+                if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Jt';
+                if (val >= 1000) return (val / 1000).toFixed(0) + 'rb';
+                return val;
+              }
             }
           }
         }
       }
-    }
-  });
+    });
+  }
 }
 
 /**
@@ -778,6 +922,46 @@ function initAnalyticsEvents() {
       AppState.discountChartMode = 'month';
       toggleMonth.classList.add('active');
       if (toggleCat) toggleCat.classList.remove('active');
+      renderAnalyticsTab();
+    });
+  }
+
+  // Ogive Granularity Toggles (Bulanan vs Harian)
+  const granMonthly = document.getElementById('toggle-gran-monthly');
+  const granDaily = document.getElementById('toggle-gran-daily');
+
+  if (granMonthly && granDaily) {
+    granMonthly.addEventListener('click', () => {
+      AppState.ogiveGranularity = 'monthly';
+      granMonthly.classList.add('active');
+      granDaily.classList.remove('active');
+      renderAnalyticsTab();
+    });
+
+    granDaily.addEventListener('click', () => {
+      AppState.ogiveGranularity = 'daily';
+      granDaily.classList.add('active');
+      granMonthly.classList.remove('active');
+      renderAnalyticsTab();
+    });
+  }
+
+  // Ogive vs Histogram Display Mode Toggles
+  const typeOgive = document.getElementById('toggle-type-ogive');
+  const typeHistogram = document.getElementById('toggle-type-histogram');
+
+  if (typeOgive && typeHistogram) {
+    typeOgive.addEventListener('click', () => {
+      AppState.ogiveDisplayType = 'ogive';
+      typeOgive.classList.add('active');
+      typeHistogram.classList.remove('active');
+      renderAnalyticsTab();
+    });
+
+    typeHistogram.addEventListener('click', () => {
+      AppState.ogiveDisplayType = 'histogram';
+      typeHistogram.classList.add('active');
+      typeOgive.classList.remove('active');
       renderAnalyticsTab();
     });
   }

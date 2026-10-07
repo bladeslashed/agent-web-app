@@ -356,3 +356,98 @@
   color: #ffffff;
 }
 
+/* Custom Themes Section in Settings */
+.custom-themes-section {
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 14px;
+}
+
+.custom-themes-section.hidden {
+  display: none;
+}
+
+.custom-themes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.custom-theme-row.active {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 10px var(--color-brand-glow);
+}
+
+.custom-theme-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Custom Theme Bottom Trigger Button */
+.btn-custom-theme-creator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surface-elevated);
+  border: 1.5px dashed var(--color-brand);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+}
+
+.btn-custom-theme-creator:hover {
+  background: var(--bg-surface-hover);
+  border-style: solid;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--color-brand-glow);
+}
+
+.btn-theme-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px var(--color-brand-glow);
+}
+
+.btn-theme-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-theme-content strong {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.btn-theme-content span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.btn-theme-sparkle {
+  color: var(--color-brand);
+  font-size: 1.2rem;
+  animation: pulseDot 2s infinite;
+}
+
+

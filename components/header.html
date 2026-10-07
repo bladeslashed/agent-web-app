@@ -1,34 +1,38 @@
-<!-- Top Header & Sticky Budget Safety Cap Header Component -->
-<header class="app-header">
-  <div class="header-top">
-    <div class="brand">
-      <div class="brand-icon">
-        <i data-lucide="shopping-cart"></i>
-      </div>
-      <div>
-        <h1 class="brand-title">Smart Grocery</h1>
-        <p class="brand-subtitle">Budget Safety Tracker Rantau</p>
-      </div>
+<!-- OVERHAULED DYNAMIC HEADER WITH WAVE ANIMATIONS & THREE-LINE MENU DRAWER -->
+<header class="app-header dynamic-wave-header">
+  <!-- Dynamic Animated Theme-Aware Waves Background -->
+  <div class="header-wave-bg" aria-hidden="true">
+    <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+      <defs>
+        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+      </defs>
+      <g class="parallax-waves">
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-1" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-2" />
+        <use href="#gentle-wave" x="48" y="5" class="wave-layer wave-layer-3" />
+        <use href="#gentle-wave" x="48" y="7" class="wave-layer wave-layer-4" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- Top Navigation Bar: Three Lines Icon (Left) & Mint Logo Emblem (Center) -->
+  <div class="header-top-bar">
+    <!-- Three Lines Hamburger Button (Opens Options Drawer from Left to Right) -->
+    <button id="header-menu-btn" class="header-menu-btn" aria-label="Buka Menu Pilihan" title="Menu Pilihan">
+      <span class="hamburger-line line-1"></span>
+      <span class="hamburger-line line-2"></span>
+      <span class="hamburger-line line-3"></span>
+    </button>
+
+    <!-- Center Brand Emblem with New Shopping Tracker Logo -->
+    <div class="header-brand-emblem">
+      <img src="icons/shoppingtracker.png" alt="Shopping Tracker Logo" class="header-logo-img">
+      <span class="header-title-text">Shopping Tracker</span>
     </div>
-    <div class="header-actions">
-      <!-- Dark / Light Mode Toggle Button -->
-      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang"
-        aria-label="Ganti Mode Tampilan">
-        <i data-lucide="moon" id="mode-toggle-icon"></i>
-      </button>
-      <!-- Language Toggle Button (ID / EN) -->
-      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language"
-        aria-label="Ganti Bahasa">
-        <span id="lang-indicator">EN</span>
-      </button>
-      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google"
-        aria-label="Akun Pengguna">
-        <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
-        <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
-      </button>
-      <div id="pwa-install-badge" class="pwa-badge hidden" title="Aplikasi Siap Pasang">
-        <i data-lucide="download"></i>
-      </div>
+
+    <!-- Right Header Indicator (Quick Cart Status Pulse) -->
+    <div class="header-right-action">
+      <div id="header-cart-indicator-dot" class="header-pulse-dot" title="Troli Aktif"></div>
     </div>
   </div>
 
@@ -83,3 +87,109 @@
     </div>
   </div>
 </header>
+
+<!-- SIDE OPTIONS DRAWER (Slides smoothly from Left to Right) -->
+<div id="header-drawer-overlay" class="drawer-overlay hidden" aria-hidden="true">
+  <div class="drawer-backdrop" id="header-drawer-backdrop"></div>
+  <aside id="header-drawer" class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menu Opsi Aplikasi">
+    <div class="drawer-header">
+      <div class="drawer-brand-row">
+        <img src="icons/shoppingtracker.png" alt="Shopping Tracker" class="drawer-logo">
+        <div>
+          <h3 class="drawer-brand-title">Shopping Tracker</h3>
+          <p class="drawer-brand-sub">Budget Safety Tracker</p>
+        </div>
+      </div>
+      <button id="close-drawer-btn" class="icon-btn-close" aria-label="Tutup Menu">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Section 1: Mode & Bahasa -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Preferensi & Tampilan</span>
+        
+        <!-- Mode Gelap / Terang Toggle -->
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-brand">
+              <i data-lucide="moon" id="drawer-mode-icon"></i>
+            </div>
+            <div>
+              <strong id="drawer-label-mode">Mode Gelap / Terang</strong>
+              <span class="drawer-item-desc" id="drawer-mode-state-desc">Ubah tema tampilan aplikasi</span>
+            </div>
+          </div>
+          <button id="mode-toggle-btn" class="drawer-toggle-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+            <i data-lucide="moon" id="mode-toggle-icon"></i>
+          </button>
+        </div>
+
+        <!-- Bahasa Switcher (ID / EN) -->
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-emerald">
+              <i data-lucide="languages"></i>
+            </div>
+            <div>
+              <strong id="drawer-label-lang">Bahasa Aplikasi</strong>
+              <span class="drawer-item-desc">Indonesia / English</span>
+            </div>
+          </div>
+          <button id="lang-toggle-btn" class="drawer-lang-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+            <span id="lang-indicator">EN</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 2: Akun Google & Cloud Firestore -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Akun & Sinkronisasi Cloud</span>
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <button id="auth-btn-header" class="drawer-avatar-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+              <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
+              <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
+            </button>
+            <div>
+              <strong id="drawer-auth-user-name">Akun Google</strong>
+              <span class="drawer-item-desc" id="drawer-auth-status-desc">Cloud Firestore: shop-tracked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PWA Install Badge Option -->
+        <div id="pwa-install-badge" class="drawer-item-card pwa-badge hidden" title="Aplikasi Siap Pasang">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-emerald">
+              <i data-lucide="download"></i>
+            </div>
+            <div>
+              <strong>Pasang Aplikasi PWA</strong>
+              <span class="drawer-item-desc">Gunakan offline di perangkat Anda</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="arrow-indicator"></i>
+        </div>
+      </div>
+
+      <!-- Section 3: Pintasan Navigasi & Pembuat Tema -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Pintasan Halaman</span>
+        <button type="button" class="drawer-nav-link" data-tab="tab-belanja">
+          <i data-lucide="shopping-cart"></i> <span>Troli Belanja</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-riwayat">
+          <i data-lucide="history"></i> <span>Riwayat Belanja</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-grafik">
+          <i data-lucide="pie-chart"></i> <span>Grafik & Analisis</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-anggaran">
+          <i data-lucide="palette"></i> <span>Pengaturan & Tema Warna</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+</div>

@@ -132,20 +132,32 @@
       </div>
     </div>
 
-    <!-- CHART CARD 3: Ogive - Pengeluaran Bulanan Kumulatif -->
+    <!-- CHART CARD 3: Ogive & Histogram - Pengeluaran Bulanan & Harian -->
     <div class="glass-card chart-card mt-3">
-      <div class="chart-header">
+      <div class="chart-header flex-col-sm">
         <div class="chart-title-wrap">
           <div class="icon-circle bg-brand">
-            <i data-lucide="trending-up"></i>
+            <i data-lucide="trending-up" id="chart-ogive-icon"></i>
           </div>
           <div>
-            <h3 id="chart-ogive-title">Kurva Ogive Pengeluaran Bulanan</h3>
-            <p id="chart-ogive-sub">Akumulasi pengeluaran belanja dari bulan ke bulan</p>
+            <h3 id="chart-ogive-title">Kurva Ogive Pengeluaran (Positif & Negatif)</h3>
+            <p id="chart-ogive-sub">Akumulasi pengeluaran dan countdown sisa pengeluaran</p>
           </div>
         </div>
-        <div class="ogive-badge">
-          <span>Ogive Kumulatif</span>
+
+        <!-- Controls: Granularity (Bulanan vs Harian) and Type (Ogive vs Histogram) -->
+        <div class="chart-controls-stack">
+          <!-- Toggle 1: Bulanan vs Harian -->
+          <div class="chart-toggle-group" id="toggle-ogive-granularity">
+            <button type="button" class="chart-toggle-btn active" data-granularity="monthly" id="toggle-gran-monthly">Bulanan</button>
+            <button type="button" class="chart-toggle-btn" data-granularity="daily" id="toggle-gran-daily">Harian</button>
+          </div>
+
+          <!-- Toggle 2: Ogive vs Histogram -->
+          <div class="chart-toggle-group" id="toggle-ogive-type">
+            <button type="button" class="chart-toggle-btn active" data-type="ogive" id="toggle-type-ogive">Ogive (±)</button>
+            <button type="button" class="chart-toggle-btn" data-type="histogram" id="toggle-type-histogram">Histogram</button>
+          </div>
         </div>
       </div>
 
@@ -156,8 +168,8 @@
       <div class="ogive-explainer-box">
         <div class="explainer-icon"><i data-lucide="info"></i></div>
         <div class="explainer-text">
-          <strong id="ogive-info-title">Apa itu Kurva Ogive?</strong>
-          <p id="ogive-info-desc">Grafik Ogive (frekuensi kumulatif) menunjukkan total pengeluaran uang belanja yang terus terakumulasi seiring waktu, memperlihatkan laju pengeluaran bulanan Anda.</p>
+          <strong id="ogive-info-title">Analisis Ogive & Histogram</strong>
+          <p id="ogive-info-desc">Ogive Positif (+) menampilkan akumulasi total uang belanja yang telah dikeluarkan, sedangkan Ogive Negatif (-) memperlihatkan sisa pengeluaran yang belum berjalan. Anda juga dapat beralih ke tampilan Histogram frekuensi belanja.</p>
         </div>
       </div>
     </div>

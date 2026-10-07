@@ -112,7 +112,23 @@ const I18N = {
     editItemModalTitle: 'Edit Barang Belanja',
     editItemModalSubtitle: 'Ubah rincian barang, harga, diskon, atau jumlah',
     saveChangesBtn: 'Simpan Perubahan',
-    itemUpdatedToast: 'berhasil diperbarui.'
+    itemUpdatedToast: 'berhasil diperbarui.',
+    customThemesTitle: 'Tema Kustom Buatan Anda',
+    customThemeBtn: 'Buat Tema Kustom Baru',
+    customThemeModalTitle: 'Pembuat Tema Kustom',
+    customThemeModalSub: 'Pilih warna grid atau masukkan kode HEX',
+    drawerModeTitle: 'Mode Gelap / Terang',
+    drawerLangTitle: 'Bahasa Aplikasi',
+    drawerNavCart: 'Troli Belanja',
+    drawerNavHist: 'Riwayat Belanja',
+    drawerNavGraph: 'Grafik & Analisis',
+    drawerNavSettings: 'Pengaturan & Tema',
+    ogiveGranularityDaily: 'Harian',
+    ogiveGranularityMonthly: 'Bulanan',
+    ogiveTypeOgive: 'Ogive',
+    ogiveTypeHistogram: 'Histogram',
+    historyEditTitle: 'Edit Catatan Belanja',
+    historyEditSub: 'Ubah judul, waktu transaksi, batas anggaran, dan rincian barang'
   },
   en: {
     langCode: 'ID', // Clicking toggles back to Indonesian
@@ -221,7 +237,23 @@ const I18N = {
     editItemModalTitle: 'Edit Grocery Item',
     editItemModalSubtitle: 'Modify item details, price, discount or quantity',
     saveChangesBtn: 'Save Changes',
-    itemUpdatedToast: 'updated successfully.'
+    itemUpdatedToast: 'updated successfully.',
+    customThemesTitle: 'Your Custom Themes',
+    customThemeBtn: 'Create New Custom Theme',
+    customThemeModalTitle: 'Custom Theme Creator',
+    customThemeModalSub: 'Pick from color grid or enter custom HEX code',
+    drawerModeTitle: 'Dark / Light Mode',
+    drawerLangTitle: 'App Language',
+    drawerNavCart: 'Shopping Cart',
+    drawerNavHist: 'Shopping History',
+    drawerNavGraph: 'Charts & Analytics',
+    drawerNavSettings: 'Settings & Themes',
+    ogiveGranularityDaily: 'Daily',
+    ogiveGranularityMonthly: 'Monthly',
+    ogiveTypeOgive: 'Ogive',
+    ogiveTypeHistogram: 'Histogram',
+    historyEditTitle: 'Edit Shopping Record',
+    historyEditSub: 'Modify title, timestamp, budget limit, and itemized entries'
   }
 };
 
@@ -438,6 +470,38 @@ function applyLanguage(lang) {
   if (labelModeLightText) labelModeLightText.textContent = t.modeLightText;
   const labelPaletteSelector = document.getElementById('label-palette-selector');
   if (labelPaletteSelector) labelPaletteSelector.textContent = t.paletteSelectorLabel;
+
+  // Drawer labels
+  const drawerModeLabel = document.getElementById('drawer-label-mode');
+  if (drawerModeLabel) drawerModeLabel.textContent = t.drawerModeTitle;
+  const drawerLangLabel = document.getElementById('drawer-label-lang');
+  if (drawerLangLabel) drawerLangLabel.textContent = t.drawerLangTitle;
+
+  // Custom Theme Creator
+  const customThemesTitle = document.getElementById('custom-themes-title');
+  if (customThemesTitle) customThemesTitle.textContent = t.customThemesTitle;
+  const btnCustomTheme = document.getElementById('label-btn-custom-theme');
+  if (btnCustomTheme) btnCustomTheme.textContent = t.customThemeBtn;
+  const customModalTitle = document.getElementById('custom-theme-modal-title');
+  if (customModalTitle) customModalTitle.textContent = t.customThemeModalTitle;
+  const customModalSub = document.getElementById('custom-theme-modal-sub');
+  if (customModalSub) customModalSub.textContent = t.customThemeModalSub;
+
+  // Ogive & Histogram Controls
+  const btnOgiveDaily = document.getElementById('btn-ogive-daily');
+  if (btnOgiveDaily) btnOgiveDaily.textContent = t.ogiveGranularityDaily;
+  const btnOgiveMonthly = document.getElementById('btn-ogive-monthly');
+  if (btnOgiveMonthly) btnOgiveMonthly.textContent = t.ogiveGranularityMonthly;
+  const btnDisplayOgive = document.getElementById('btn-display-ogive');
+  if (btnDisplayOgive) btnDisplayOgive.textContent = t.ogiveTypeOgive;
+  const btnDisplayHistogram = document.getElementById('btn-display-histogram');
+  if (btnDisplayHistogram) btnDisplayHistogram.textContent = t.ogiveTypeHistogram;
+
+  // History Edit Modal
+  const historyEditModalTitle = document.getElementById('history-edit-modal-title');
+  if (historyEditModalTitle) historyEditModalTitle.textContent = t.historyEditTitle;
+  const historyEditModalSub = document.getElementById('history-edit-modal-sub');
+  if (historyEditModalSub) historyEditModalSub.textContent = t.historyEditSub;
 
   // Refresh dynamic UI views
   if (typeof updateBudgetSafetyUI === 'function') updateBudgetSafetyUI();

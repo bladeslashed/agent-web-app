@@ -42,37 +42,41 @@
     <div class="mobile-device">
       
       <!-- COMPONENT: HEADER & STICKY BUDGET SAFETY CAP (components/header.html) -->
-      <!-- Top Header & Sticky Budget Safety Cap Header Component -->
-<header class="app-header">
-  <div class="header-top">
-    <div class="brand">
-      <div class="brand-icon">
-        <i data-lucide="shopping-cart"></i>
-      </div>
-      <div>
-        <h1 class="brand-title">Smart Grocery</h1>
-        <p class="brand-subtitle">Budget Safety Tracker Rantau</p>
-      </div>
+      <!-- OVERHAULED DYNAMIC HEADER WITH WAVE ANIMATIONS & THREE-LINE MENU DRAWER -->
+<header class="app-header dynamic-wave-header">
+  <!-- Dynamic Animated Theme-Aware Waves Background -->
+  <div class="header-wave-bg" aria-hidden="true">
+    <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+      <defs>
+        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+      </defs>
+      <g class="parallax-waves">
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-1" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-2" />
+        <use href="#gentle-wave" x="48" y="5" class="wave-layer wave-layer-3" />
+        <use href="#gentle-wave" x="48" y="7" class="wave-layer wave-layer-4" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- Top Navigation Bar: Three Lines Icon (Left) & Mint Logo Emblem (Center) -->
+  <div class="header-top-bar">
+    <!-- Three Lines Hamburger Button (Opens Options Drawer from Left to Right) -->
+    <button id="header-menu-btn" class="header-menu-btn" aria-label="Buka Menu Pilihan" title="Menu Pilihan">
+      <span class="hamburger-line line-1"></span>
+      <span class="hamburger-line line-2"></span>
+      <span class="hamburger-line line-3"></span>
+    </button>
+
+    <!-- Center Brand Emblem with New Shopping Tracker Logo -->
+    <div class="header-brand-emblem">
+      <img src="icons/shoppingtracker.png" alt="Shopping Tracker Logo" class="header-logo-img">
+      <span class="header-title-text">Shopping Tracker</span>
     </div>
-    <div class="header-actions">
-      <!-- Dark / Light Mode Toggle Button -->
-      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang"
-        aria-label="Ganti Mode Tampilan">
-        <i data-lucide="moon" id="mode-toggle-icon"></i>
-      </button>
-      <!-- Language Toggle Button (ID / EN) -->
-      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language"
-        aria-label="Ganti Bahasa">
-        <span id="lang-indicator">EN</span>
-      </button>
-      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google"
-        aria-label="Akun Pengguna">
-        <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
-        <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
-      </button>
-      <div id="pwa-install-badge" class="pwa-badge hidden" title="Aplikasi Siap Pasang">
-        <i data-lucide="download"></i>
-      </div>
+
+    <!-- Right Header Indicator (Quick Cart Status Pulse) -->
+    <div class="header-right-action">
+      <div id="header-cart-indicator-dot" class="header-pulse-dot" title="Troli Aktif"></div>
     </div>
   </div>
 
@@ -127,6 +131,112 @@
     </div>
   </div>
 </header>
+
+<!-- SIDE OPTIONS DRAWER (Slides smoothly from Left to Right) -->
+<div id="header-drawer-overlay" class="drawer-overlay hidden" aria-hidden="true">
+  <div class="drawer-backdrop" id="header-drawer-backdrop"></div>
+  <aside id="header-drawer" class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menu Opsi Aplikasi">
+    <div class="drawer-header">
+      <div class="drawer-brand-row">
+        <img src="icons/shoppingtracker.png" alt="Shopping Tracker" class="drawer-logo">
+        <div>
+          <h3 class="drawer-brand-title">Shopping Tracker</h3>
+          <p class="drawer-brand-sub">Budget Safety Tracker</p>
+        </div>
+      </div>
+      <button id="close-drawer-btn" class="icon-btn-close" aria-label="Tutup Menu">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Section 1: Mode & Bahasa -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Preferensi & Tampilan</span>
+        
+        <!-- Mode Gelap / Terang Toggle -->
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-brand">
+              <i data-lucide="moon" id="drawer-mode-icon"></i>
+            </div>
+            <div>
+              <strong id="drawer-label-mode">Mode Gelap / Terang</strong>
+              <span class="drawer-item-desc" id="drawer-mode-state-desc">Ubah tema tampilan aplikasi</span>
+            </div>
+          </div>
+          <button id="mode-toggle-btn" class="drawer-toggle-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+            <i data-lucide="moon" id="mode-toggle-icon"></i>
+          </button>
+        </div>
+
+        <!-- Bahasa Switcher (ID / EN) -->
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-emerald">
+              <i data-lucide="languages"></i>
+            </div>
+            <div>
+              <strong id="drawer-label-lang">Bahasa Aplikasi</strong>
+              <span class="drawer-item-desc">Indonesia / English</span>
+            </div>
+          </div>
+          <button id="lang-toggle-btn" class="drawer-lang-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+            <span id="lang-indicator">EN</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 2: Akun Google & Cloud Firestore -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Akun & Sinkronisasi Cloud</span>
+        <div class="drawer-item-card">
+          <div class="drawer-item-left">
+            <button id="auth-btn-header" class="drawer-avatar-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+              <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
+              <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
+            </button>
+            <div>
+              <strong id="drawer-auth-user-name">Akun Google</strong>
+              <span class="drawer-item-desc" id="drawer-auth-status-desc">Cloud Firestore: shop-tracked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PWA Install Badge Option -->
+        <div id="pwa-install-badge" class="drawer-item-card pwa-badge hidden" title="Aplikasi Siap Pasang">
+          <div class="drawer-item-left">
+            <div class="drawer-icon-box bg-emerald">
+              <i data-lucide="download"></i>
+            </div>
+            <div>
+              <strong>Pasang Aplikasi PWA</strong>
+              <span class="drawer-item-desc">Gunakan offline di perangkat Anda</span>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="arrow-indicator"></i>
+        </div>
+      </div>
+
+      <!-- Section 3: Pintasan Navigasi & Pembuat Tema -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Pintasan Halaman</span>
+        <button type="button" class="drawer-nav-link" data-tab="tab-belanja">
+          <i data-lucide="shopping-cart"></i> <span>Troli Belanja</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-riwayat">
+          <i data-lucide="history"></i> <span>Riwayat Belanja</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-grafik">
+          <i data-lucide="pie-chart"></i> <span>Grafik & Analisis</span>
+        </button>
+        <button type="button" class="drawer-nav-link" data-tab="tab-anggaran">
+          <i data-lucide="palette"></i> <span>Pengaturan & Tema Warna</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+</div>
 
       <!-- Main Scrollable Content Area -->
       <main class="app-content">
@@ -404,20 +514,32 @@
       </div>
     </div>
 
-    <!-- CHART CARD 3: Ogive - Pengeluaran Bulanan Kumulatif -->
+    <!-- CHART CARD 3: Ogive & Histogram - Pengeluaran Bulanan & Harian -->
     <div class="glass-card chart-card mt-3">
-      <div class="chart-header">
+      <div class="chart-header flex-col-sm">
         <div class="chart-title-wrap">
           <div class="icon-circle bg-brand">
-            <i data-lucide="trending-up"></i>
+            <i data-lucide="trending-up" id="chart-ogive-icon"></i>
           </div>
           <div>
-            <h3 id="chart-ogive-title">Kurva Ogive Pengeluaran Bulanan</h3>
-            <p id="chart-ogive-sub">Akumulasi pengeluaran belanja dari bulan ke bulan</p>
+            <h3 id="chart-ogive-title">Kurva Ogive Pengeluaran (Positif & Negatif)</h3>
+            <p id="chart-ogive-sub">Akumulasi pengeluaran dan countdown sisa pengeluaran</p>
           </div>
         </div>
-        <div class="ogive-badge">
-          <span>Ogive Kumulatif</span>
+
+        <!-- Controls: Granularity (Bulanan vs Harian) and Type (Ogive vs Histogram) -->
+        <div class="chart-controls-stack">
+          <!-- Toggle 1: Bulanan vs Harian -->
+          <div class="chart-toggle-group" id="toggle-ogive-granularity">
+            <button type="button" class="chart-toggle-btn active" data-granularity="monthly" id="toggle-gran-monthly">Bulanan</button>
+            <button type="button" class="chart-toggle-btn" data-granularity="daily" id="toggle-gran-daily">Harian</button>
+          </div>
+
+          <!-- Toggle 2: Ogive vs Histogram -->
+          <div class="chart-toggle-group" id="toggle-ogive-type">
+            <button type="button" class="chart-toggle-btn active" data-type="ogive" id="toggle-type-ogive">Ogive (±)</button>
+            <button type="button" class="chart-toggle-btn" data-type="histogram" id="toggle-type-histogram">Histogram</button>
+          </div>
         </div>
       </div>
 
@@ -428,8 +550,8 @@
       <div class="ogive-explainer-box">
         <div class="explainer-icon"><i data-lucide="info"></i></div>
         <div class="explainer-text">
-          <strong id="ogive-info-title">Apa itu Kurva Ogive?</strong>
-          <p id="ogive-info-desc">Grafik Ogive (frekuensi kumulatif) menunjukkan total pengeluaran uang belanja yang terus terakumulasi seiring waktu, memperlihatkan laju pengeluaran bulanan Anda.</p>
+          <strong id="ogive-info-title">Analisis Ogive & Histogram</strong>
+          <p id="ogive-info-desc">Ogive Positif (+) menampilkan akumulasi total uang belanja yang telah dikeluarkan, sedangkan Ogive Negatif (-) memperlihatkan sisa pengeluaran yang belum berjalan. Anda juga dapat beralih ke tampilan Histogram frekuensi belanja.</p>
         </div>
       </div>
     </div>
@@ -603,7 +725,21 @@
           <div class="swatch-check"><i data-lucide="check"></i></div>
         </button>
 
-        <!-- 2. Emerald Supermarket Green -->
+        <!-- 2. Mint Green (Shopping Tracker) -->
+        <button type="button" class="theme-swatch-card" data-theme="mint" title="Mint Green (Shopping Tracker)">
+          <div class="swatch-preview-dots">
+            <span class="swatch-dot" style="background: #064e43;"></span>
+            <span class="swatch-dot" style="background: #2dd4bf;"></span>
+            <span class="swatch-dot" style="background: #021a15;"></span>
+          </div>
+          <div class="swatch-info">
+            <strong class="swatch-name">Mint Tracker</strong>
+            <span class="swatch-desc">Shopping Tracker</span>
+          </div>
+          <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+
+        <!-- 3. Emerald Supermarket Green -->
         <button type="button" class="theme-swatch-card" data-theme="emerald" title="Emerald Supermarket Green">
           <div class="swatch-preview-dots">
             <span class="swatch-dot" style="background: #064e3b;"></span>
@@ -617,7 +753,7 @@
           <div class="swatch-check"><i data-lucide="check"></i></div>
         </button>
 
-        <!-- 3. Sunset Tangerine Amber -->
+        <!-- 4. Sunset Tangerine Amber -->
         <button type="button" class="theme-swatch-card" data-theme="sunset" title="Sunset Tangerine Amber">
           <div class="swatch-preview-dots">
             <span class="swatch-dot" style="background: #451a03;"></span>
@@ -631,7 +767,7 @@
           <div class="swatch-check"><i data-lucide="check"></i></div>
         </button>
 
-        <!-- 4. Cyberpunk Violet Purple -->
+        <!-- 5. Cyberpunk Violet Purple -->
         <button type="button" class="theme-swatch-card" data-theme="violet" title="Cyberpunk Violet Purple">
           <div class="swatch-preview-dots">
             <span class="swatch-dot" style="background: #3b0764;"></span>
@@ -645,7 +781,7 @@
           <div class="swatch-check"><i data-lucide="check"></i></div>
         </button>
 
-        <!-- 5. Rose Berry Coral -->
+        <!-- 6. Rose Berry Coral -->
         <button type="button" class="theme-swatch-card" data-theme="rose" title="Rose Berry Coral">
           <div class="swatch-preview-dots">
             <span class="swatch-dot" style="background: #4c0519;"></span>
@@ -657,6 +793,26 @@
             <span class="swatch-desc">Vibrant Crimson</span>
           </div>
           <div class="swatch-check"><i data-lucide="check"></i></div>
+        </button>
+      </div>
+
+      <!-- Container Tema Kustom Buatan Pengguna -->
+      <div id="custom-themes-section" class="custom-themes-section mt-3">
+        <label class="form-label" id="label-custom-themes-section">Tema Kustom Tersimpan</label>
+        <div id="custom-themes-container" class="custom-themes-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Tombol Pembuat Tema Kustom di Bagian Paling Bawah Pilihan Tema -->
+      <div class="custom-theme-bottom-action mt-3">
+        <button type="button" id="open-custom-theme-btn" class="btn-custom-theme-creator w-full">
+          <div class="btn-theme-icon bg-brand"><i data-lucide="palette"></i></div>
+          <div class="btn-theme-content">
+            <strong id="label-custom-theme-btn-title">Buat Tema Kustom Sendiri</strong>
+            <span id="label-custom-theme-btn-sub">Pilih warna grid atau masukkan kode HEX di pop up window</span>
+          </div>
+          <i data-lucide="sparkles" class="btn-theme-sparkle"></i>
         </button>
       </div>
     </div>
@@ -911,8 +1067,11 @@
 
       <!-- Action Footer -->
       <div class="history-detail-actions mt-3">
+        <button id="edit-this-history-btn" class="btn-primary w-full mb-2">
+          <i data-lucide="edit-3"></i> <span>Edit Catatan Belanja Ini</span>
+        </button>
         <button id="delete-this-history-btn" class="btn-outline-danger w-full">
-          <i data-lucide="trash-2"></i> Hapus Catatan Riwayat Ini
+          <i data-lucide="trash-2"></i> <span>Hapus Catatan Riwayat Ini</span>
         </button>
       </div>
     </div>
@@ -1323,6 +1482,211 @@
       </button>
     </div>
 
+  </div>
+</div>
+
+      <!-- Custom Theme Creator Modal (components/modals/custom-theme-modal.html) -->
+      <!-- MODAL: PEMBUAT TEMA KUSTOM (CUSTOM THEME CREATOR) -->
+<div id="custom-theme-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="custom-theme-modal-title">
+  <div class="bottom-sheet-backdrop" id="close-custom-theme-backdrop"></div>
+  <div class="bottom-sheet-container custom-theme-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-brand">
+          <i data-lucide="palette"></i>
+        </div>
+        <div>
+          <h3 id="custom-theme-modal-title" class="sheet-title">Buat Tema Kustom</h3>
+          <p class="sheet-subtitle">Rancang tema warna sesuai preferensi visual Anda</p>
+        </div>
+      </div>
+      <button id="close-custom-theme-btn" class="icon-btn-close" aria-label="Tutup pembuat tema">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body custom-theme-body">
+      <!-- 1. Nama Tema Input -->
+      <div class="form-group mb-3">
+        <label for="custom-theme-name-input" class="form-label">Nama Tema</label>
+        <div class="input-with-icon">
+          <i data-lucide="tag" class="input-icon"></i>
+          <input type="text" id="custom-theme-name-input" class="form-input" placeholder="Contoh: Mint Segar, Cyber Lime..." maxlength="30">
+        </div>
+      </div>
+
+      <!-- 2. Color Grid Picker (Palet Warna Grid Pilihan) -->
+      <div class="form-group mb-3">
+        <label class="form-label">Pilih Warna Utama dari Grid (1-Klik)</label>
+        <div class="color-grid-picker" id="color-grid-picker">
+          <button type="button" class="color-grid-cell active" data-color="#2dd4bf" style="--cell-color: #2dd4bf;" title="Mint Green"></button>
+          <button type="button" class="color-grid-cell" data-color="#10b981" style="--cell-color: #10b981;" title="Emerald Green"></button>
+          <button type="button" class="color-grid-cell" data-color="#14b8a6" style="--cell-color: #14b8a6;" title="Teal"></button>
+          <button type="button" class="color-grid-cell" data-color="#06b6d4" style="--cell-color: #06b6d4;" title="Cyan"></button>
+          <button type="button" class="color-grid-cell" data-color="#0ea5e9" style="--cell-color: #0ea5e9;" title="Sky Blue"></button>
+          <button type="button" class="color-grid-cell" data-color="#3b82f6" style="--cell-color: #3b82f6;" title="Royal Blue"></button>
+          <button type="button" class="color-grid-cell" data-color="#6366f1" style="--cell-color: #6366f1;" title="Indigo"></button>
+          <button type="button" class="color-grid-cell" data-color="#8b5cf6" style="--cell-color: #8b5cf6;" title="Violet Purple"></button>
+          <button type="button" class="color-grid-cell" data-color="#a855f7" style="--cell-color: #a855f7;" title="Purple"></button>
+          <button type="button" class="color-grid-cell" data-color="#d946ef" style="--cell-color: #d946ef;" title="Fuchsia"></button>
+          <button type="button" class="color-grid-cell" data-color="#ec4899" style="--cell-color: #ec4899;" title="Pink"></button>
+          <button type="button" class="color-grid-cell" data-color="#f43f5e" style="--cell-color: #f43f5e;" title="Rose Red"></button>
+          <button type="button" class="color-grid-cell" data-color="#f97316" style="--cell-color: #f97316;" title="Orange"></button>
+          <button type="button" class="color-grid-cell" data-color="#f59e0b" style="--cell-color: #f59e0b;" title="Amber"></button>
+          <button type="button" class="color-grid-cell" data-color="#84cc16" style="--cell-color: #84cc16;" title="Lime"></button>
+          <button type="button" class="color-grid-cell" data-color="#64748b" style="--cell-color: #64748b;" title="Slate Steel"></button>
+        </div>
+      </div>
+
+      <!-- 3. Hex Code Input & Color Wheel Picker -->
+      <div class="form-group mb-3">
+        <label for="custom-hex-input" class="form-label">Atau Masukkan Kode HEX / Color Picker</label>
+        <div class="hex-picker-row">
+          <div class="color-swatch-picker-wrap">
+            <input type="color" id="custom-color-picker-input" value="#2dd4bf" class="color-native-input" title="Buka color wheel">
+            <div class="color-swatch-display" id="custom-color-swatch-display" style="background-color: #2dd4bf;"></div>
+          </div>
+          <div class="input-with-prefix flex-1">
+            <span class="input-prefix">HEX</span>
+            <input type="text" id="custom-hex-input" class="form-input hex-code-input" value="#2DD4BF" placeholder="#2DD4BF" maxlength="7" spellcheck="false">
+          </div>
+          <button type="button" id="btn-randomize-color" class="btn-icon-subtle" title="Acak Warna / Random Color">
+            <i data-lucide="shuffle"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Mode Dasar (Dark / Light) -->
+      <div class="form-group mb-3">
+        <label class="form-label">Tampilan Dasar</label>
+        <div class="segmented-control">
+          <button type="button" id="custom-mode-dark-btn" class="seg-btn active" data-mode="dark">
+            <i data-lucide="moon"></i> Mode Gelap
+          </button>
+          <button type="button" id="custom-mode-light-btn" class="seg-btn" data-mode="light">
+            <i data-lucide="sun"></i> Mode Terang
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. Pratinjau Langsung (Live Real-Time Theme Preview) -->
+      <div class="form-group mb-4">
+        <label class="form-label">Pratinjau Tema Langsung</label>
+        <div class="theme-live-preview-card" id="theme-live-preview-box">
+          <div class="preview-mini-header" id="preview-header">
+            <div class="preview-wave-graphic"></div>
+            <div class="preview-header-content">
+              <span class="preview-badge" id="preview-badge-pill">Batas: Rp 500.000</span>
+              <strong class="preview-title" id="preview-theme-title">Smart Grocery</strong>
+            </div>
+          </div>
+          <div class="preview-mini-body">
+            <div class="preview-item-row">
+              <span class="preview-item-name">Beras Ramos 5kg</span>
+              <span class="preview-price-tag" id="preview-price-tag">Rp 67.500</span>
+            </div>
+            <button type="button" class="preview-btn-sample" id="preview-btn-sample">
+              <span>Selesaikan Belanja</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="button" id="btn-cancel-custom-theme" class="btn-secondary flex-1">Batal</button>
+        <button type="button" id="btn-save-custom-theme" class="btn-primary flex-1">
+          <i data-lucide="check"></i> <span>Simpan & Terapkan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- History Full Edit Modal (components/modals/history-edit-modal.html) -->
+      <!-- MODAL: EDIT RIWAYAT TRANSAKSI LENGKAP -->
+<div id="history-edit-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="history-edit-modal-title">
+  <div class="bottom-sheet-backdrop" id="close-history-edit-backdrop"></div>
+  <div class="bottom-sheet-container history-edit-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-amber">
+          <i data-lucide="edit-3"></i>
+        </div>
+        <div>
+          <h3 id="history-edit-modal-title" class="sheet-title">Edit Riwayat Belanja</h3>
+          <p class="sheet-subtitle">Ubah tanggal, batas anggaran, dan rincian belanjaan</p>
+        </div>
+      </div>
+      <button id="close-history-edit-btn" class="icon-btn-close" aria-label="Tutup edit riwayat">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body history-edit-body">
+      <!-- Hidden Transaction ID -->
+      <input type="hidden" id="edit-history-id">
+
+      <!-- Form General Details -->
+      <div class="history-edit-meta-grid mb-3">
+        <div class="form-group">
+          <label for="edit-history-name" class="form-label">Nama / Judul Catatan</label>
+          <input type="text" id="edit-history-name" class="form-input" placeholder="Contoh: Belanja Bulanan Superindo">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-history-date" class="form-label">Waktu Transaksi</label>
+          <input type="datetime-local" id="edit-history-date" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-history-budget" class="form-label">Batas Anggaran Saat Itu (Rp)</label>
+          <input type="number" id="edit-history-budget" class="form-input" min="0" step="5000">
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div class="history-edit-items-section mb-3">
+        <div class="history-edit-items-header">
+          <h4 class="subheading">Daftar Barang Belanjaan:</h4>
+          <button type="button" id="btn-add-item-history-edit" class="btn-sm btn-outline-brand">
+            <i data-lucide="plus"></i> Tambah Barang
+          </button>
+        </div>
+
+        <div id="edit-history-items-container" class="history-edit-items-list mt-2">
+          <!-- Dynamic Editable Item Rows injected here -->
+        </div>
+      </div>
+
+      <!-- Live Calculation Card -->
+      <div class="history-edit-summary-card mb-3">
+        <div class="calc-row">
+          <span>Total Belanja:</span>
+          <strong id="edit-history-calc-total" class="highlight-val">Rp 0</strong>
+        </div>
+        <div class="calc-row highlight-discount">
+          <span>Total Hemat Diskon:</span>
+          <span id="edit-history-calc-savings">Rp 0</span>
+        </div>
+        <div class="calc-row">
+          <span>Status Dompet:</span>
+          <span id="edit-history-calc-status" class="badge safe">Aman</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="button" id="btn-cancel-history-edit" class="btn-secondary flex-1">Batal</button>
+        <button type="button" id="btn-save-history-edit" class="btn-primary flex-1">
+          <i data-lucide="check-circle-2"></i> <span>Simpan Perubahan</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

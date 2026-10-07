@@ -236,7 +236,27 @@
   height: 240px;
 }
 
-/* Toggle Group for Bar Chart */
+/* Controls Stack for Ogive & Histogram */
+.chart-controls-stack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .chart-header.flex-col-sm {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .chart-controls-stack {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* Toggle Group for Bar Chart & Ogive */
 .chart-toggle-group {
   display: inline-flex;
   background: var(--bg-surface-elevated);

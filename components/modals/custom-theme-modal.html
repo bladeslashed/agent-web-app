@@ -1,0 +1,118 @@
+<!-- MODAL: PEMBUAT TEMA KUSTOM (CUSTOM THEME CREATOR) -->
+<div id="custom-theme-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="custom-theme-modal-title">
+  <div class="bottom-sheet-backdrop" id="close-custom-theme-backdrop"></div>
+  <div class="bottom-sheet-container custom-theme-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-brand">
+          <i data-lucide="palette"></i>
+        </div>
+        <div>
+          <h3 id="custom-theme-modal-title" class="sheet-title">Buat Tema Kustom</h3>
+          <p class="sheet-subtitle">Rancang tema warna sesuai preferensi visual Anda</p>
+        </div>
+      </div>
+      <button id="close-custom-theme-btn" class="icon-btn-close" aria-label="Tutup pembuat tema">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body custom-theme-body">
+      <!-- 1. Nama Tema Input -->
+      <div class="form-group mb-3">
+        <label for="custom-theme-name-input" class="form-label">Nama Tema</label>
+        <div class="input-with-icon">
+          <i data-lucide="tag" class="input-icon"></i>
+          <input type="text" id="custom-theme-name-input" class="form-input" placeholder="Contoh: Mint Segar, Cyber Lime..." maxlength="30">
+        </div>
+      </div>
+
+      <!-- 2. Color Grid Picker (Palet Warna Grid Pilihan) -->
+      <div class="form-group mb-3">
+        <label class="form-label">Pilih Warna Utama dari Grid (1-Klik)</label>
+        <div class="color-grid-picker" id="color-grid-picker">
+          <button type="button" class="color-grid-cell active" data-color="#2dd4bf" style="--cell-color: #2dd4bf;" title="Mint Green"></button>
+          <button type="button" class="color-grid-cell" data-color="#10b981" style="--cell-color: #10b981;" title="Emerald Green"></button>
+          <button type="button" class="color-grid-cell" data-color="#14b8a6" style="--cell-color: #14b8a6;" title="Teal"></button>
+          <button type="button" class="color-grid-cell" data-color="#06b6d4" style="--cell-color: #06b6d4;" title="Cyan"></button>
+          <button type="button" class="color-grid-cell" data-color="#0ea5e9" style="--cell-color: #0ea5e9;" title="Sky Blue"></button>
+          <button type="button" class="color-grid-cell" data-color="#3b82f6" style="--cell-color: #3b82f6;" title="Royal Blue"></button>
+          <button type="button" class="color-grid-cell" data-color="#6366f1" style="--cell-color: #6366f1;" title="Indigo"></button>
+          <button type="button" class="color-grid-cell" data-color="#8b5cf6" style="--cell-color: #8b5cf6;" title="Violet Purple"></button>
+          <button type="button" class="color-grid-cell" data-color="#a855f7" style="--cell-color: #a855f7;" title="Purple"></button>
+          <button type="button" class="color-grid-cell" data-color="#d946ef" style="--cell-color: #d946ef;" title="Fuchsia"></button>
+          <button type="button" class="color-grid-cell" data-color="#ec4899" style="--cell-color: #ec4899;" title="Pink"></button>
+          <button type="button" class="color-grid-cell" data-color="#f43f5e" style="--cell-color: #f43f5e;" title="Rose Red"></button>
+          <button type="button" class="color-grid-cell" data-color="#f97316" style="--cell-color: #f97316;" title="Orange"></button>
+          <button type="button" class="color-grid-cell" data-color="#f59e0b" style="--cell-color: #f59e0b;" title="Amber"></button>
+          <button type="button" class="color-grid-cell" data-color="#84cc16" style="--cell-color: #84cc16;" title="Lime"></button>
+          <button type="button" class="color-grid-cell" data-color="#64748b" style="--cell-color: #64748b;" title="Slate Steel"></button>
+        </div>
+      </div>
+
+      <!-- 3. Hex Code Input & Color Wheel Picker -->
+      <div class="form-group mb-3">
+        <label for="custom-hex-input" class="form-label">Atau Masukkan Kode HEX / Color Picker</label>
+        <div class="hex-picker-row">
+          <div class="color-swatch-picker-wrap">
+            <input type="color" id="custom-color-picker-input" value="#2dd4bf" class="color-native-input" title="Buka color wheel">
+            <div class="color-swatch-display" id="custom-color-swatch-display" style="background-color: #2dd4bf;"></div>
+          </div>
+          <div class="input-with-prefix flex-1">
+            <span class="input-prefix">HEX</span>
+            <input type="text" id="custom-hex-input" class="form-input hex-code-input" value="#2DD4BF" placeholder="#2DD4BF" maxlength="7" spellcheck="false">
+          </div>
+          <button type="button" id="btn-randomize-color" class="btn-icon-subtle" title="Acak Warna / Random Color">
+            <i data-lucide="shuffle"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Mode Dasar (Dark / Light) -->
+      <div class="form-group mb-3">
+        <label class="form-label">Tampilan Dasar</label>
+        <div class="segmented-control">
+          <button type="button" id="custom-mode-dark-btn" class="seg-btn active" data-mode="dark">
+            <i data-lucide="moon"></i> Mode Gelap
+          </button>
+          <button type="button" id="custom-mode-light-btn" class="seg-btn" data-mode="light">
+            <i data-lucide="sun"></i> Mode Terang
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. Pratinjau Langsung (Live Real-Time Theme Preview) -->
+      <div class="form-group mb-4">
+        <label class="form-label">Pratinjau Tema Langsung</label>
+        <div class="theme-live-preview-card" id="theme-live-preview-box">
+          <div class="preview-mini-header" id="preview-header">
+            <div class="preview-wave-graphic"></div>
+            <div class="preview-header-content">
+              <span class="preview-badge" id="preview-badge-pill">Batas: Rp 500.000</span>
+              <strong class="preview-title" id="preview-theme-title">Smart Grocery</strong>
+            </div>
+          </div>
+          <div class="preview-mini-body">
+            <div class="preview-item-row">
+              <span class="preview-item-name">Beras Ramos 5kg</span>
+              <span class="preview-price-tag" id="preview-price-tag">Rp 67.500</span>
+            </div>
+            <button type="button" class="preview-btn-sample" id="preview-btn-sample">
+              <span>Selesaikan Belanja</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="button" id="btn-cancel-custom-theme" class="btn-secondary flex-1">Batal</button>
+        <button type="button" id="btn-save-custom-theme" class="btn-primary flex-1">
+          <i data-lucide="check"></i> <span>Simpan & Terapkan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

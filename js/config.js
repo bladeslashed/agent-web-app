@@ -32,7 +32,8 @@ const STORAGE_KEYS = {
   HISTORY: 'smart_grocery_history',
   LANG: 'smart_grocery_lang',
   THEME: 'smart_grocery_theme',
-  MODE: 'smart_grocery_mode'
+  MODE: 'smart_grocery_mode',
+  CUSTOM_THEMES: 'smart_grocery_custom_themes'
 };
 
 const AppState = {
@@ -43,11 +44,15 @@ const AppState = {
   deferredInstallPrompt: null,
   lastLocalUpdate: Date.now(),
   lang: localStorage.getItem('smart_grocery_lang') || 'id',
-  theme: localStorage.getItem('smart_grocery_theme') || 'midnight',
+  theme: localStorage.getItem('smart_grocery_theme') || 'mint',
   themeMode: localStorage.getItem('smart_grocery_mode') || 'dark',
   pendingCheckout: false,
   shelfCategoryFilter: 'all',
   shelfSearchQuery: '',
   analyticsPeriod: 'all',
-  discountChartMode: 'category'
+  discountChartMode: 'category',
+  ogiveGranularity: 'monthly',
+  ogiveDisplayType: 'ogive',
+  customThemes: []
 };
+

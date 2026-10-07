@@ -616,5 +616,55 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initAnalyticsEvents === 'function') {
     initAnalyticsEvents();
   }
+
+  // 26. Options Drawer (Slides smoothly from Left toward Right)
+  const headerMenuBtn = document.getElementById('header-menu-btn');
+  const drawerOverlay = document.getElementById('header-drawer-overlay');
+  const closeDrawerBtn = document.getElementById('close-drawer-btn');
+  const drawerBackdrop = document.getElementById('header-drawer-backdrop');
+
+  function openDrawer() {
+    if (!drawerOverlay) return;
+    drawerOverlay.classList.remove('hidden');
+    // Force browser reflow to ensure smooth sliding transition
+    void drawerOverlay.offsetWidth;
+    drawerOverlay.classList.add('active');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function closeDrawer() {
+    if (!drawerOverlay) return;
+    drawerOverlay.classList.remove('active');
+    setTimeout(() => {
+      if (!drawerOverlay.classList.contains('active')) {
+        drawerOverlay.classList.add('hidden');
+      }
+    }, 350);
+  }
+
+  if (headerMenuBtn) headerMenuBtn.addEventListener('click', openDrawer);
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+  if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+
+  // Drawer Navigation Links (Quick Tab Switching)
+  const drawerNavLinks = document.querySelectorAll('.drawer-nav-link');
+  drawerNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const targetTab = link.getAttribute('data-tab');
+      if (targetTab) {
+        const tabBtn = document.getElementById(`nav-${targetTab}`);
+        if (tabBtn) {
+          tabBtn.click();
+        }
+      }
+      closeDrawer();
+    });
+  });
+
+  // 27. Initialize History Edit Modal Events
+  if (typeof initHistoryEditEvents === 'function') {
+    initHistoryEditEvents();
+  }
 });
+
 

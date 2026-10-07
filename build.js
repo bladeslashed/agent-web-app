@@ -31,6 +31,8 @@ function buildIndexHtml() {
   const authModalHtml = readComponent('components/modals/auth-modal.html');
   const shelfCatalogModalHtml = readComponent('components/modals/shelf-catalog-modal.html');
   const checkoutSuccessModalHtml = readComponent('components/modals/checkout-success-modal.html');
+  const customThemeModalHtml = readComponent('components/modals/custom-theme-modal.html');
+  const historyEditModalHtml = readComponent('components/modals/history-edit-modal.html');
 
   const compiledHtml = `<!DOCTYPE html>
 <html lang="id">
@@ -113,6 +115,12 @@ function buildIndexHtml() {
 
       <!-- Animated Shopping Cart Checkout Success Popup (components/modals/checkout-success-modal.html) -->
       ${checkoutSuccessModalHtml}
+
+      <!-- Custom Theme Creator Modal (components/modals/custom-theme-modal.html) -->
+      ${customThemeModalHtml}
+
+      <!-- History Full Edit Modal (components/modals/history-edit-modal.html) -->
+      ${historyEditModalHtml}
 
       <!-- Toast Feedback Notification Element -->
       <div id="app-toast" class="app-toast hidden" role="status" aria-live="polite">

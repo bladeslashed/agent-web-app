@@ -1,0 +1,83 @@
+<!-- MODAL: EDIT RIWAYAT TRANSAKSI LENGKAP -->
+<div id="history-edit-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="history-edit-modal-title">
+  <div class="bottom-sheet-backdrop" id="close-history-edit-backdrop"></div>
+  <div class="bottom-sheet-container history-edit-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-amber">
+          <i data-lucide="edit-3"></i>
+        </div>
+        <div>
+          <h3 id="history-edit-modal-title" class="sheet-title">Edit Riwayat Belanja</h3>
+          <p class="sheet-subtitle">Ubah tanggal, batas anggaran, dan rincian belanjaan</p>
+        </div>
+      </div>
+      <button id="close-history-edit-btn" class="icon-btn-close" aria-label="Tutup edit riwayat">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body history-edit-body">
+      <!-- Hidden Transaction ID -->
+      <input type="hidden" id="edit-history-id">
+
+      <!-- Form General Details -->
+      <div class="history-edit-meta-grid mb-3">
+        <div class="form-group">
+          <label for="edit-history-name" class="form-label">Nama / Judul Catatan</label>
+          <input type="text" id="edit-history-name" class="form-input" placeholder="Contoh: Belanja Bulanan Superindo">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-history-date" class="form-label">Waktu Transaksi</label>
+          <input type="datetime-local" id="edit-history-date" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label for="edit-history-budget" class="form-label">Batas Anggaran Saat Itu (Rp)</label>
+          <input type="number" id="edit-history-budget" class="form-input" min="0" step="5000">
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div class="history-edit-items-section mb-3">
+        <div class="history-edit-items-header">
+          <h4 class="subheading">Daftar Barang Belanjaan:</h4>
+          <button type="button" id="btn-add-item-history-edit" class="btn-sm btn-outline-brand">
+            <i data-lucide="plus"></i> Tambah Barang
+          </button>
+        </div>
+
+        <div id="edit-history-items-container" class="history-edit-items-list mt-2">
+          <!-- Dynamic Editable Item Rows injected here -->
+        </div>
+      </div>
+
+      <!-- Live Calculation Card -->
+      <div class="history-edit-summary-card mb-3">
+        <div class="calc-row">
+          <span>Total Belanja:</span>
+          <strong id="edit-history-calc-total" class="highlight-val">Rp 0</strong>
+        </div>
+        <div class="calc-row highlight-discount">
+          <span>Total Hemat Diskon:</span>
+          <span id="edit-history-calc-savings">Rp 0</span>
+        </div>
+        <div class="calc-row">
+          <span>Status Dompet:</span>
+          <span id="edit-history-calc-status" class="badge safe">Aman</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="modal-actions-row">
+        <button type="button" id="btn-cancel-history-edit" class="btn-secondary flex-1">Batal</button>
+        <button type="button" id="btn-save-history-edit" class="btn-primary flex-1">
+          <i data-lucide="check-circle-2"></i> <span>Simpan Perubahan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
