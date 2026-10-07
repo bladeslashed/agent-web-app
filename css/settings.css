@@ -376,8 +376,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 10px 12px;
   background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -444,48 +444,79 @@
 .custom-theme-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-size: 0.68rem;
   color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.custom-theme-meta span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .custom-theme-base-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 1px 6px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 2px 7px;
   border-radius: var(--radius-full);
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .custom-theme-base-badge i {
   width: 11px;
   height: 11px;
+  flex-shrink: 0;
+}
+
+.badge-dot-divider {
+  opacity: 0.45;
+  font-size: 0.60rem;
+  flex-shrink: 0;
+}
+
+.badge-color-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+}
+
+.badge-mode-text {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-color-text {
+  font-family: monospace;
+  font-size: 0.64rem;
+  letter-spacing: -0.02em;
 }
 
 .custom-theme-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
+.custom-theme-actions .btn-sm {
+  padding: 5px 9px;
+  font-size: 0.72rem;
+  min-height: 28px;
+}
+
 .btn-edit-theme {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-sm);
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);

@@ -371,6 +371,9 @@ function applyThemeToDOM(theme, mode) {
     const darkMenuHeader = `rgba(${Math.min(255, rgbDarkMenu.r + 14)}, ${Math.min(255, rgbDarkMenu.g + 16)}, ${Math.min(255, rgbDarkMenu.b + 22)}, 0.95)`;
     const darkMenuCard = `rgba(${Math.min(255, rgbDarkMenu.r + 20)}, ${Math.min(255, rgbDarkMenu.g + 24)}, ${Math.min(255, rgbDarkMenu.b + 32)}, 0.9)`;
     const darkMenuHover = `rgba(${Math.min(255, rgbDarkMenu.r + 34)}, ${Math.min(255, rgbDarkMenu.g + 40)}, ${Math.min(255, rgbDarkMenu.b + 52)}, 0.95)`;
+    const darkNav = `rgba(${rgbDarkMenu.r}, ${rgbDarkMenu.g}, ${rgbDarkMenu.b}, 0.95)`;
+    const darkGlass = `rgba(${rgbDarkSurface.r}, ${rgbDarkSurface.g}, ${rgbDarkSurface.b}, 0.90)`;
+    const darkGlassCard = `rgba(${Math.min(255, rgbDarkSurface.r + 14)}, ${Math.min(255, rgbDarkSurface.g + 16)}, ${Math.min(255, rgbDarkSurface.b + 22)}, 0.75)`;
 
     // Compute surface and menu elevations for Light Mode
     const lightElevated = `rgba(${Math.max(0, rgbLightSurface.r - 8)}, ${Math.max(0, rgbLightSurface.g - 8)}, ${Math.max(0, rgbLightSurface.b - 8)}, 0.95)`;
@@ -378,6 +381,9 @@ function applyThemeToDOM(theme, mode) {
     const lightMenuHeader = `rgba(${Math.max(0, rgbLightMenu.r - 8)}, ${Math.max(0, rgbLightMenu.g - 8)}, ${Math.max(0, rgbLightMenu.b - 8)}, 0.95)`;
     const lightMenuCard = lightColors.menu;
     const lightMenuHover = `rgba(${Math.max(0, rgbLightMenu.r - 14)}, ${Math.max(0, rgbLightMenu.g - 14)}, ${Math.max(0, rgbLightMenu.b - 14)}, 0.95)`;
+    const lightNav = `rgba(${rgbLightMenu.r}, ${rgbLightMenu.g}, ${rgbLightMenu.b}, 0.96)`;
+    const lightGlass = `rgba(${rgbLightSurface.r}, ${rgbLightSurface.g}, ${rgbLightSurface.b}, 0.92)`;
+    const lightGlassCard = `rgba(${Math.min(255, Math.max(rgbLightSurface.r, 240))}, ${Math.min(255, Math.max(rgbLightSurface.g, 240))}, ${Math.min(255, Math.max(rgbLightSurface.b, 240))}, 0.85)`;
 
     // Generate comprehensive rules for BOTH dark and light modes so shifting modes never breaks
     customStyleTag.innerHTML = `
@@ -391,6 +397,10 @@ function applyThemeToDOM(theme, mode) {
         --bg-surface: ${darkColors.surface};
         --bg-surface-elevated: ${darkElevated};
         --bg-surface-hover: ${darkHover};
+        --bg-glass: ${darkGlass};
+        --bg-glass-card: ${darkGlassCard};
+        --bg-nav: ${darkNav};
+        --bg-footer: ${darkColors.surface};
         --color-header-bg: ${darkColors.header};
         --color-menu-bg: ${darkColors.menu};
         --color-menu-header-bg: ${darkMenuHeader};
@@ -415,6 +425,10 @@ function applyThemeToDOM(theme, mode) {
         --bg-surface: ${lightColors.surface};
         --bg-surface-elevated: ${lightElevated};
         --bg-surface-hover: ${lightHover};
+        --bg-glass: ${lightGlass};
+        --bg-glass-card: ${lightGlassCard};
+        --bg-nav: ${lightNav};
+        --bg-footer: ${lightColors.surface};
         --color-header-bg: ${lightColors.header};
         --color-menu-bg: ${lightColors.menu};
         --color-menu-header-bg: ${lightMenuHeader};
@@ -481,12 +495,8 @@ function updateThemeUI(theme, mode) {
     card.classList.toggle('active', cardTheme === theme);
   });
 
-  // 4. Update Custom Theme Cards Active State
-  const customCards = document.querySelectorAll('.custom-theme-row');
-  customCards.forEach(card => {
-    const cardId = card.getAttribute('data-theme-id');
-    card.classList.toggle('active', cardId === theme);
-  });
+  // 4. Update Custom Theme Cards Active State & Pill Labels
+  renderCustomThemesList();
 
   if (window.lucide) {
     lucide.createIcons();
@@ -590,6 +600,14 @@ function renderCustomThemesList() {
       accent: darkenIfTooLight(darkColors.accent)
     };
 
+    const activeBrandColor = (AppState.themeMode === 'light' ? lightColors.brand : darkColors.brand) || darkColors.brand;
+    const isDual = Boolean(theme.modes?.dark && theme.modes?.light) || (!theme.baseMode && !theme.mode);
+    const modeLabel = isDual ? 'Dual' : (theme.baseMode === 'light' ? 'Light' : 'Dark');
+    const modeIcon = isDual ? 'sun-moon' : (theme.baseMode === 'light' ? 'sun' : 'moon');
+    const tooltipText = isDual
+      ? `Dual Mode (Gelap: ${darkColors.brand} | Terang: ${lightColors.brand})`
+      : `${modeLabel} Mode (${activeBrandColor})`;
+
     return `
       <div class="custom-theme-row ${isActive ? 'active' : ''}" data-theme-id="${theme.id}">
         <div class="custom-theme-dots custom-theme-dual-dots" onclick="setTheme('${theme.id}')" title="Klik untuk menerapkan tema (Mode Gelap & Terang)">
@@ -613,11 +631,13 @@ function renderCustomThemesList() {
         <div class="custom-theme-info" onclick="setTheme('${theme.id}')">
           <strong class="custom-theme-name">${escapeHtml(theme.name)}</strong>
           <div class="custom-theme-meta">
-            <span class="custom-theme-base-badge">
-              <i data-lucide="sun-moon"></i>
-              Dual Mode
+            <span class="custom-theme-base-badge" title="${tooltipText}">
+              <i data-lucide="${modeIcon}"></i>
+              <span class="badge-mode-text">${modeLabel}</span>
+              <span class="badge-dot-divider">•</span>
+              <span class="badge-color-dot" style="background: ${activeBrandColor};"></span>
+              <span class="badge-color-text">${activeBrandColor}</span>
             </span>
-            <span>${darkColors.brand} / ${lightColors.brand}</span>
           </div>
         </div>
         <div class="custom-theme-actions">

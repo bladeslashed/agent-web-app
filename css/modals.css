@@ -868,13 +868,28 @@
 .form-label-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-bottom: 6px;
 }
 
 .sub-hint {
   font-size: 0.70rem;
   color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sub-hint-pill {
+  padding: 2px 8px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  color: var(--color-brand);
+  white-space: nowrap;
 }
 
 .multi-color-presets-scroll {
@@ -1552,5 +1567,60 @@
   color: var(--color-brand);
   font-weight: 800;
 }
+
+/* Modal Bottom Action Buttons Row - Equal Sizing for Save & Cancel */
+.modal-actions-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+}
+
+.modal-actions-row > button,
+.modal-actions-row > .btn-primary,
+.modal-actions-row > .btn-secondary {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+  font-size: 0.90rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--radius-md) !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.modal-actions-row > .btn-primary {
+  border: 1px solid transparent !important;
+}
+
+.modal-actions-row > .btn-secondary {
+  border: 1px solid var(--border-subtle) !important;
+}
+
+.modal-actions-row > button i,
+.modal-actions-row > .btn-primary i,
+.modal-actions-row > .btn-secondary i {
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-actions-row > button span,
+.modal-actions-row > .btn-primary span,
+.modal-actions-row > .btn-secondary span {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
 
 
