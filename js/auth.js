@@ -17,11 +17,11 @@ function initFirebase() {
       firebaseAuth = firebase.auth();
       firestoreDb = firebase.firestore();
 
-      // Configure Firestore settings: auto-detect long polling prevents streaming disconnects
+      // Configure Firestore settings before any operations
       try {
         firestoreDb.settings({
           experimentalAutoDetectLongPolling: true,
-          merge: true
+          ignoreUndefinedProperties: true
         });
       } catch (settingsErr) {
         console.warn('Firestore settings notice:', settingsErr);
@@ -50,6 +50,13 @@ function initFirebase() {
         });
       } catch (persistErr) {
         console.warn('Firestore enablePersistence notice:', persistErr);
+      }
+
+      // Check for redirect sign-in results (PWA / Mobile / Redirect login fallback)
+      if (firebaseAuth.getRedirectResult) {
+        firebaseAuth.getRedirectResult().catch((redirectErr) => {
+          console.warn('Redirect sign-in notice:', redirectErr);
+        });
       }
 
       // Listen for auth state changes
@@ -247,8 +254,9 @@ function bindFirestoreSync(user) {
   firestoreUnsubscribe = userDocRef.onSnapshot((docSnapshot) => {
     if (isRemoteSyncInProgress) return;
 
-    if (docSnapshot.exists) {
-      const data = docSnapshot.data();
+    const exists = typeof docSnapshot.exists === 'function' ? docSnapshot.exists() : Boolean(docSnapshot.exists);
+    if (exists) {
+      const data = docSnapshot.data() || {};
       let hasCartChanged = false;
       let hasHistoryChanged = false;
       let hasBudgetChanged = false;
@@ -379,6 +387,29 @@ function handleFirestoreError(err, isImmediate = false) {
 }
 
 /**
+ * Deep sanitize object to strip any undefined values and prevent Firestore rejection
+ */
+function sanitizeFirestoreData(data) {
+  if (data === null || data === undefined) return null;
+  if (Array.isArray(data)) return data.map(sanitizeFirestoreData);
+  if (typeof data === 'object') {
+    // Preserve Firestore FieldValue tokens like serverTimestamp
+    if (typeof firebase !== 'undefined' && firebase.firestore && firebase.firestore.FieldValue) {
+      if (data instanceof firebase.firestore.FieldValue) return data;
+    }
+    const clean = {};
+    for (const key of Object.keys(data)) {
+      const val = data[key];
+      if (val !== undefined) {
+        clean[key] = sanitizeFirestoreData(val);
+      }
+    }
+    return clean;
+  }
+  return data;
+}
+
+/**
  * Push local application state to Cloud Firestore
  */
 async function syncStateToFirestore(immediate = false) {
@@ -394,20 +425,22 @@ async function syncStateToFirestore(immediate = false) {
     updateCloudStatusBadge('syncing', AppState.lang === 'en' ? 'Saving to Cloud...' : 'Menyimpan ke Cloud...');
 
     const userDocRef = firestoreDb.collection('users').doc(currentUser.uid);
-    const payload = {
+    const rawPayload = {
       uid: currentUser.uid,
-      email: currentUser.email,
+      email: currentUser.email || '',
       displayName: currentUser.displayName || 'Pengguna Google',
       photoURL: currentUser.photoURL || '',
-      cart: AppState.cart,
-      budgetCap: AppState.budgetCap,
-      history: AppState.history,
-      activeBaselineId: AppState.activeBaselineId,
+      cart: AppState.cart || [],
+      budgetCap: typeof AppState.budgetCap === 'number' ? AppState.budgetCap : 500000,
+      history: AppState.history || [],
+      activeBaselineId: AppState.activeBaselineId || null,
       lastUpdated: Date.now(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    await userDocRef.set(payload, { merge: true });
+    const cleanPayload = sanitizeFirestoreData(rawPayload);
+
+    await userDocRef.set(cleanPayload, { merge: true });
     AppState.lastLocalUpdate = Date.now();
     updateCloudStatusBadge('synced', AppState.lang === 'en' ? 'Auto-synced' : 'Tersinkronisasi Otomatis');
     if (immediate) {
