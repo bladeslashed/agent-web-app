@@ -320,7 +320,10 @@ function updateBudgetSafetyUI() {
 
       if (footerSavedBadge) {
         if (totalSavings > 0) {
-          footerSavedBadge.textContent = `Hemat ${formatRupiah(totalSavings)}`;
+          const prefix = AppState.lang === 'en' ? 'Saved' : 'Hemat';
+          const savedStr = `${prefix} ${formatRupiah(totalSavings)}`;
+          footerSavedBadge.textContent = savedStr;
+          footerSavedBadge.title = savedStr;
           footerSavedBadge.classList.remove('hidden');
         } else {
           footerSavedBadge.classList.add('hidden');

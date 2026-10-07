@@ -57,8 +57,10 @@ function renderCartItems() {
   container.innerHTML = AppState.cart.map(item => {
     // Discount badges
     const hasDiscount = item.discountString && item.discountString.length > 0;
+    const formattedDiscount = hasDiscount ? escapeHtml(item.discountString).replace(/\+/g, ' + ') : '';
+    const savingsAmount = hasDiscount ? formatRupiah(item.originalPrice - item.finalUnitPrice) : '';
     const discountPill = hasDiscount 
-      ? `<span class="discount-badge-pill">Diskon ${item.discountString} (Hemat ${formatRupiah((item.originalPrice - item.finalUnitPrice))})</span>`
+      ? `<span class="discount-badge-pill" title="Diskon ${escapeHtml(item.discountString)} (Hemat ${savingsAmount})">Diskon ${formattedDiscount} (Hemat ${savingsAmount})</span>`
       : '';
     const struckPrice = hasDiscount 
       ? `<span class="price-original-struck">${formatRupiah(item.originalPrice)}</span>` 
