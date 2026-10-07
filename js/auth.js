@@ -17,6 +17,41 @@ function initFirebase() {
       firebaseAuth = firebase.auth();
       firestoreDb = firebase.firestore();
 
+      // Configure Firestore settings: auto-detect long polling prevents streaming disconnects
+      try {
+        firestoreDb.settings({
+          experimentalAutoDetectLongPolling: true,
+          merge: true
+        });
+      } catch (settingsErr) {
+        console.warn('Firestore settings notice:', settingsErr);
+      }
+
+      // Check for local Firestore emulator support (e.g. ?emulator=true or localhost development)
+      const urlParams = new URLSearchParams(window.location.search);
+      const useEmulator = urlParams.get('emulator') === 'true' || localStorage.getItem('use_firestore_emulator') === 'true';
+      if (useEmulator && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+        try {
+          firestoreDb.useEmulator('localhost', 8080);
+          console.info('Connected to local Firestore emulator at localhost:8080');
+        } catch (emErr) {
+          console.warn('Could not connect to Firestore emulator:', emErr);
+        }
+      }
+
+      // Enable offline persistence: caches data in IndexedDB so connection issues do not block the app
+      try {
+        firestoreDb.enablePersistence({ synchronizeTabs: true }).catch((persistErr) => {
+          if (persistErr.code === 'failed-precondition') {
+            console.warn('Firestore persistence notice: multiple tabs open');
+          } else if (persistErr.code === 'unimplemented') {
+            console.warn('Firestore persistence not supported in this browser');
+          }
+        });
+      } catch (persistErr) {
+        console.warn('Firestore enablePersistence notice:', persistErr);
+      }
+
       // Listen for auth state changes
       firebaseAuth.onAuthStateChanged(handleAuthStateChanged);
     } else {
@@ -271,7 +306,7 @@ function bindFirestoreSync(user) {
     }
   }, (err) => {
     console.warn('Firestore snapshot error:', err);
-    updateCloudStatusBadge('error', AppState.lang === 'en' ? 'Connection Issue' : 'Koneksi Firestore Terkendala');
+    handleFirestoreError(err, false);
   });
 }
 
@@ -281,6 +316,66 @@ function scheduleCloudSync() {
   clearTimeout(cloudSyncTimer);
   updateCloudStatusBadge('syncing', AppState.lang === 'en' ? 'Saving...' : 'Menyimpan...');
   cloudSyncTimer = setTimeout(() => syncStateToFirestore(false), 800);
+}
+
+/**
+ * Handle and Diagnose Firestore Connection or Operational Errors
+ */
+function handleFirestoreError(err, isImmediate = false) {
+  console.warn('Firestore error diagnosed:', err);
+  const errCode = (err && err.code) ? err.code : '';
+  const errMsg = (err && err.message) ? err.message : String(err || '');
+
+  let statusShort = AppState.lang === 'en' ? 'Connection Issue' : 'Koneksi Terkendala';
+  let guidanceText = '';
+
+  // 1. Backend Unreachable / Network / WebChannel Stream Drop / Offline
+  if (errCode === 'unavailable' ||
+      errMsg.includes('backend') ||
+      errMsg.includes('offline') ||
+      errMsg.includes('network') ||
+      errMsg.includes('Failed to get document') ||
+      errMsg.includes('Could not reach')) {
+    statusShort = AppState.lang === 'en' ? 'Offline / Unreachable' : 'Offline / Server Tak Terjangkau';
+    guidanceText = AppState.lang === 'en'
+      ? 'Could not connect to Cloud Firestore backend. Switched to offline mode — your groceries and budget are safely saved in local storage.'
+      : 'Gagal terhubung ke Cloud Firestore backend. Beralih ke mode offline — data troli dan anggaran tetap aman tersimpan di perangkat lokal.';
+  }
+  // 2. Database Not Provisioned / 404 in Google Cloud Console
+  else if (errCode === 'not-found' || errMsg.includes('NOT_FOUND') || errMsg.includes('404')) {
+    statusShort = AppState.lang === 'en' ? 'Database Not Found' : 'Database Belum Dibuat';
+    guidanceText = AppState.lang === 'en'
+      ? `Cloud Firestore database does not exist for project "${FIREBASE_CONFIG.projectId}". Please visit Firebase Console > Build > Firestore Database to create it.`
+      : `Database Cloud Firestore belum dibuat untuk project "${FIREBASE_CONFIG.projectId}". Silakan buka Firebase Console > Build > Firestore Database lalu klik "Buat Database".`;
+  }
+  // 3. Security Rules Blocked Access
+  else if (errCode === 'permission-denied') {
+    statusShort = AppState.lang === 'en' ? 'Access Denied' : 'Izin Akses Ditolak';
+    guidanceText = AppState.lang === 'en'
+      ? 'Firestore security rules rejected this request. Please deploy firestore.rules using `npm run deploy`.'
+      : 'Aturan keamanan Firestore menolak akses. Silakan deploy firestore.rules dengan `npm run deploy`.';
+  }
+  // 4. General / Other Errors
+  else {
+    statusShort = AppState.lang === 'en' ? 'Firestore Error' : 'Kendala Firestore';
+    guidanceText = errMsg || (AppState.lang === 'en' ? 'Failed to connect to Cloud Firestore.' : 'Gagal terhubung ke Cloud Firestore.');
+  }
+
+  updateCloudStatusBadge('error', statusShort);
+
+  if (isImmediate && guidanceText) {
+    showToast(guidanceText, 'error');
+  }
+
+  // Update Auth Modal promo box if visible to inform user
+  const authPromoDesc = document.getElementById('auth-promo-desc');
+  if (authPromoDesc && guidanceText) {
+    authPromoDesc.innerHTML = `<span style="color: var(--badge-rose-text); font-weight: 700;">⚠️ ${statusShort}:</span> ${guidanceText}`;
+  }
+
+  // Reveal offline fallback button so user is never locked out
+  const offlineBtn = document.getElementById('btn-save-offline-anyway');
+  if (offlineBtn) offlineBtn.classList.remove('hidden');
 }
 
 /**
@@ -320,10 +415,7 @@ async function syncStateToFirestore(immediate = false) {
     }
   } catch (error) {
     console.error('Error syncing to Firestore:', error);
-    updateCloudStatusBadge('error', AppState.lang === 'en' ? 'Sync Failed' : 'Gagal Sinkronisasi');
-    if (immediate) {
-      showToast(AppState.lang === 'en' ? 'Failed to sync to Cloud Firestore.' : 'Gagal sinkronisasi ke Cloud Firestore.', 'error');
-    }
+    handleFirestoreError(error, immediate);
   } finally {
     isRemoteSyncInProgress = false;
   }
@@ -334,20 +426,41 @@ function updateCloudStatusBadge(state, message) {
   const tabSyncText = document.getElementById('tab-sync-text');
   const tabSyncTime = document.getElementById('tab-sync-time');
   const modalSyncTime = document.getElementById('modal-sync-time');
+  const tabDbBadge = document.getElementById('tab-db-badge');
 
   const nowTime = new Date().toLocaleTimeString(AppState.lang === 'en' ? 'en-US' : 'id-ID', { hour: '2-digit', minute: '2-digit' });
 
   if (headerIndicator) {
     if (state === 'syncing') {
       headerIndicator.className = 'auth-sync-dot syncing';
+      headerIndicator.title = AppState.lang === 'en' ? 'Saving to Cloud...' : 'Menyimpan ke Cloud...';
     } else if (state === 'synced') {
       headerIndicator.className = 'auth-sync-dot online';
+      headerIndicator.title = currentUser ? `Tersambung: ${currentUser.email}` : 'Tersinkronisasi';
+    } else if (state === 'error') {
+      headerIndicator.className = 'auth-sync-dot error';
+      headerIndicator.title = `Koneksi Firestore: ${message}`;
     } else {
       headerIndicator.className = 'auth-sync-dot';
+      headerIndicator.title = AppState.lang === 'en' ? 'Offline (Local)' : 'Offline / Belum Login';
     }
   }
 
-  if (tabSyncText) tabSyncText.textContent = message;
+  if (tabDbBadge) {
+    tabDbBadge.className = `badge-db-status ${state}`;
+    tabDbBadge.innerHTML = `<span class="db-dot"></span> Firestore: ${FIREBASE_CONFIG.projectId} (${message})`;
+  }
+
+  if (tabSyncText) tabSyncText.textContent = `Status: ${message}`;
   if (tabSyncTime) tabSyncTime.textContent = `${AppState.lang === 'en' ? 'At' : 'Pukul'} ${nowTime}`;
-  if (modalSyncTime) modalSyncTime.textContent = `${message} (${nowTime})`;
+  if (modalSyncTime) {
+    modalSyncTime.textContent = `${message} (${nowTime})`;
+    if (state === 'error') {
+      modalSyncTime.className = 'val text-rose';
+    } else if (state === 'synced') {
+      modalSyncTime.className = 'val text-emerald';
+    } else {
+      modalSyncTime.className = 'val';
+    }
+  }
 }

@@ -58,6 +58,31 @@
   border: 1px solid var(--badge-blue-border);
   padding: 2px 7px;
   border-radius: var(--radius-full);
+  transition: all 0.2s ease;
+}
+.badge-db-status.error {
+  color: var(--badge-rose-text);
+  background: var(--badge-rose-bg);
+  border-color: var(--badge-rose-border);
+}
+.badge-db-status.error .db-dot {
+  background: var(--badge-rose-text);
+}
+.badge-db-status.synced {
+  color: var(--badge-emerald-text);
+  background: var(--badge-emerald-bg);
+  border-color: var(--badge-emerald-border);
+}
+.badge-db-status.synced .db-dot {
+  background: var(--badge-emerald-text);
+}
+.badge-db-status.offline {
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-subtle);
+}
+.badge-db-status.offline .db-dot {
+  background: var(--text-muted);
 }
 .db-dot {
   width: 6px;

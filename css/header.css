@@ -119,6 +119,10 @@
   background: #3b82f6;
   animation: pulseSync 1s infinite;
 }
+.auth-sync-dot.error {
+  background: #f43f5e;
+  box-shadow: 0 0 6px rgba(244, 63, 94, 0.6);
+}
 
 @keyframes pulseSync {
   0% { transform: scale(0.9); opacity: 0.6; }

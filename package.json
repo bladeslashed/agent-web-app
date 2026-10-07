@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Smart Grocery & Budget Safety Tracker - Mobile PWA for Supermarket Shoppers & Students",
   "scripts": {
+    "start": "serve -p 5000 .",
     "build": "node build.js",
-    "deploy": "firebase deploy --only hosting,firestore"
+    "deploy": "firebase deploy --only hosting,firestore",
+    "emulators": "firebase emulators:start --only firestore"
   },
   "keywords": [
     "pwa",

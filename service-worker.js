@@ -70,7 +70,9 @@ self.addEventListener('fetch', (event) => {
   // Direct network bypass for Firebase Auth, Google APIs, and Firestore
   if (url.hostname.includes('googleapis.com') || 
       url.hostname.includes('google.com') || 
-      url.hostname.includes('firebaseio.com')) {
+      url.hostname.includes('gstatic.com') || 
+      url.hostname.includes('firebaseio.com') || 
+      url.hostname.includes('firebaseapp.com')) {
     return;
   }
 
