@@ -9,7 +9,7 @@
  * 4. sunset (Tangerine Amber)
  * 5. violet (Cyberpunk Lavender)
  * 6. rose (Berry Coral)
- * + Unlimited User-Created Custom Themes with Color Grid & Hex Code options!
+ * + Advanced User-Created Custom Themes with 2D Color Grid, Multi-Color Roles & Base Mode!
  */
 
 const THEME_META_COLORS = {
@@ -29,6 +29,84 @@ const THEME_DISPLAY_NAMES = {
   violet: 'Cyberpunk Violet',
   rose: 'Rose Berry'
 };
+
+/**
+ * Coordinated Multi-Color Presets (Harmonious Sets for 4 Roles)
+ */
+const MULTI_COLOR_PRESETS = {
+  'mint-emerald': {
+    name: 'Mint Emerald',
+    baseMode: 'dark',
+    brand: '#2DD4BF',
+    header: '#0C2B22',
+    surface: '#021A15',
+    accent: '#10B981'
+  },
+  'cyber-violet': {
+    name: 'Cyber Violet',
+    baseMode: 'dark',
+    brand: '#A855F7',
+    header: '#240B40',
+    surface: '#0E051C',
+    accent: '#06B6D4'
+  },
+  'sunset-amber': {
+    name: 'Sunset Amber',
+    baseMode: 'dark',
+    brand: '#F97316',
+    header: '#331505',
+    surface: '#170A02',
+    accent: '#F59E0B'
+  },
+  'ocean-deep': {
+    name: 'Ocean Deep',
+    baseMode: 'dark',
+    brand: '#0EA5E9',
+    header: '#082C4A',
+    surface: '#031324',
+    accent: '#38BDF8'
+  },
+  'rose-velvet': {
+    name: 'Rose Velvet',
+    baseMode: 'dark',
+    brand: '#F43F5E',
+    header: '#360A18',
+    surface: '#18040A',
+    accent: '#FB7185'
+  },
+  'neon-lime': {
+    name: 'Neon Lime',
+    baseMode: 'dark',
+    brand: '#84CC16',
+    header: '#1E2C06',
+    surface: '#0D1503',
+    accent: '#A3E635'
+  },
+  'clean-minimal': {
+    name: 'Clean Minimal',
+    baseMode: 'light',
+    brand: '#0D9488',
+    header: '#CBD5E1',
+    surface: '#FFFFFF',
+    accent: '#14B8A6'
+  }
+};
+
+/**
+ * Curated 2D Color Matrix: 12 Spectrum Hues x 5 Depth Rows (60 Colors)
+ */
+const CHROMATIC_GRID_2D = [
+  // Row 0: Soft Pastel / Tint
+  ['#FECDD3', '#FED7AA', '#FEF08A', '#D9F99D', '#A7F3D0', '#99F6E4', '#BAE6FD', '#BFDBFE', '#C7D2FE', '#DDD6FE', '#F5D0FE', '#E2E8F0'],
+  // Row 1: Neon / Electric Bright
+  ['#FB7185', '#FB923C', '#FACC15', '#A3E635', '#34D399', '#2DD4BF', '#38BDF8', '#60A5FA', '#818CF8', '#A78BFA', '#E879F9', '#94A3B8'],
+  // Row 2: Pure Vibrant Chroma (Base)
+  ['#E11D48', '#EA580C', '#CA8A04', '#65A30D', '#059669', '#0D9488', '#0284C7', '#2563EB', '#4F46E5', '#7C3AED', '#C026D3', '#64748B'],
+  // Row 3: Deep Jewel Tone
+  ['#9F1239', '#9A3412', '#854D0E', '#3F6212', '#065F46', '#115E59', '#075985', '#1E40AF', '#3730A3', '#5B21B6', '#86198F', '#334155'],
+  // Row 4: Midnight / Deep Carbon Tone
+  ['#4C0519', '#431407', '#451A03', '#1A2E05', '#022C22', '#042F2E', '#082F49', '#172554', '#1E1B4B', '#2E1065', '#4A044E', '#0F172A']
+];
 
 /**
  * Initialize theme and mode on page load
@@ -77,7 +155,7 @@ function saveCustomThemesToStorage() {
  * Convert Hex color to RGB object
  */
 function hexToRgb(hex) {
-  let c = hex.replace('#', '');
+  let c = (hex || '#2DD4BF').replace('#', '');
   if (c.length === 3) {
     c = c.split('').map(x => x + x).join('');
   }
@@ -88,6 +166,21 @@ function hexToRgb(hex) {
     g: (num >> 8) & 255,
     b: num & 255
   };
+}
+
+/**
+ * Darken color if too light to maintain high-contrast on light background
+ */
+function darkenIfTooLight(hex) {
+  const rgb = hexToRgb(hex);
+  const lum = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+  if (lum > 0.55) {
+    const r = Math.max(0, Math.floor(rgb.r * 0.65));
+    const g = Math.max(0, Math.floor(rgb.g * 0.65));
+    const b = Math.max(0, Math.floor(rgb.b * 0.65));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+  return hex;
 }
 
 /**
@@ -107,53 +200,70 @@ function applyThemeToDOM(theme, mode) {
       customStyleTag.id = 'custom-theme-dynamic-styles';
       document.head.appendChild(customStyleTag);
     }
-    const rgb = hexToRgb(customTheme.primaryColor);
-    const hex = customTheme.primaryColor;
 
-    if (mode === 'dark') {
-      customStyleTag.innerHTML = `
-        [data-theme="${customTheme.id}"][data-mode="dark"] {
-          --color-brand: ${hex};
-          --color-brand-glow: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35);
-          --border-focus: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6);
-          --border-subtle: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.2);
-          --bg-body: #060a0f;
-          --bg-app: #0a0f17;
-          --bg-surface: #0f1724;
-          --bg-surface-elevated: #162032;
-          --bg-surface-hover: #1e2c44;
-          --text-main: #f8fafc;
-          --text-muted: #94a3b8;
-          --text-subtle: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.85);
-        }
-      `;
-    } else {
-      customStyleTag.innerHTML = `
-        [data-theme="${customTheme.id}"][data-mode="light"] {
-          --color-brand: ${hex};
-          --color-brand-glow: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25);
-          --border-focus: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5);
-          --border-subtle: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.16);
-          --bg-body: #f1f5f9;
-          --bg-app: #f8fafc;
-          --bg-surface: #ffffff;
-          --bg-surface-elevated: #f8fafc;
-          --bg-surface-hover: #e2e8f0;
-          --text-main: #0f172a;
-          --text-muted: #475569;
-          --text-subtle: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.9);
-        }
-      `;
-    }
+    // Normalise colors from theme object
+    const brand = customTheme.colors?.brand || customTheme.primaryColor || '#2DD4BF';
+    const header = customTheme.colors?.header || '#0C2B22';
+    const surface = customTheme.colors?.surface || '#021A15';
+    const accent = customTheme.colors?.accent || '#10B981';
+
+    const rgbBrand = hexToRgb(brand);
+    const rgbAccent = hexToRgb(accent);
+    const rgbHeader = hexToRgb(header);
+    const rgbSurface = hexToRgb(surface);
+
+    // Light-mode contrast check
+    const lightBrand = darkenIfTooLight(brand);
+    const rgbLightBrand = hexToRgb(lightBrand);
+    const lightAccent = darkenIfTooLight(accent);
+    const rgbLightAccent = hexToRgb(lightAccent);
+
+    // Generate comprehensive rules for BOTH dark and light modes so shifting modes never breaks
+    customStyleTag.innerHTML = `
+      [data-theme="${customTheme.id}"][data-mode="dark"] {
+        --color-brand: ${brand};
+        --color-brand-glow: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.35);
+        --border-focus: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.6);
+        --border-subtle: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.2);
+        --bg-body: #050a0e;
+        --bg-app: ${surface};
+        --bg-surface: ${surface};
+        --bg-surface-elevated: rgba(${Math.min(255, rgbSurface.r + 18)}, ${Math.min(255, rgbSurface.g + 20)}, ${Math.min(255, rgbSurface.b + 26)}, 0.95);
+        --bg-surface-hover: rgba(${Math.min(255, rgbSurface.r + 30)}, ${Math.min(255, rgbSurface.g + 34)}, ${Math.min(255, rgbSurface.b + 42)}, 0.95);
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --text-subtle: rgba(${rgbBrand.r}, ${rgbBrand.g}, ${rgbBrand.b}, 0.85);
+        --badge-emerald-text: ${accent};
+        --badge-emerald-bg: rgba(${rgbAccent.r}, ${rgbAccent.g}, ${rgbAccent.b}, 0.16);
+        --badge-emerald-border: rgba(${rgbAccent.r}, ${rgbAccent.g}, ${rgbAccent.b}, 0.35);
+      }
+
+      [data-theme="${customTheme.id}"][data-mode="light"] {
+        --color-brand: ${lightBrand};
+        --color-brand-glow: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.22);
+        --border-focus: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.45);
+        --border-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.16);
+        --bg-body: #f1f5f9;
+        --bg-app: #f8fafc;
+        --bg-surface: #ffffff;
+        --bg-surface-elevated: #f8fafc;
+        --bg-surface-hover: #e2e8f0;
+        --text-main: #0f172a;
+        --text-muted: #475569;
+        --text-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.9);
+        --badge-emerald-text: ${lightAccent};
+        --badge-emerald-bg: rgba(${rgbLightAccent.r}, ${rgbLightAccent.g}, ${rgbLightAccent.b}, 0.12);
+        --badge-emerald-border: rgba(${rgbLightAccent.r}, ${rgbLightAccent.g}, ${rgbLightAccent.b}, 0.26);
+      }
+    `;
 
     // Update browser theme color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', mode === 'dark' ? '#0a0f17' : '#f8fafc');
+      metaThemeColor.setAttribute('content', mode === 'dark' ? surface : '#f8fafc');
     }
   } else {
     if (customStyleTag) customStyleTag.innerHTML = '';
-    // Update mobile browser address bar theme color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor && THEME_META_COLORS[theme] && THEME_META_COLORS[theme][mode]) {
       metaThemeColor.setAttribute('content', THEME_META_COLORS[theme][mode]);
@@ -276,7 +386,7 @@ function toggleThemeMode() {
 }
 
 /**
- * Render list of user-created custom themes into Settings Tab
+ * Render list of user-created custom themes into Settings Tab with Fixed Typography Layout
  */
 function renderCustomThemesList() {
   const container = document.getElementById('custom-themes-container');
@@ -292,14 +402,31 @@ function renderCustomThemesList() {
   section.classList.remove('hidden');
   container.innerHTML = AppState.customThemes.map(theme => {
     const isActive = AppState.theme === theme.id;
+    const colors = {
+      brand: theme.colors?.brand || theme.primaryColor || '#2DD4BF',
+      header: theme.colors?.header || '#0C2B22',
+      surface: theme.colors?.surface || '#021A15',
+      accent: theme.colors?.accent || '#10B981'
+    };
+    const baseMode = theme.baseMode || theme.mode || 'dark';
+
     return `
       <div class="custom-theme-row ${isActive ? 'active' : ''}" data-theme-id="${theme.id}">
-        <div class="swatch-preview-dots" style="cursor: pointer;" onclick="setTheme('${theme.id}')">
-          <span class="swatch-dot" style="background: ${theme.primaryColor};"></span>
+        <div class="custom-theme-dots" style="cursor: pointer;" onclick="setTheme('${theme.id}')" title="Warna Tema">
+          <span class="ct-dot" style="background: ${colors.brand};"></span>
+          <span class="ct-dot" style="background: ${colors.header};"></span>
+          <span class="ct-dot" style="background: ${colors.surface};"></span>
+          <span class="ct-dot" style="background: ${colors.accent};"></span>
         </div>
-        <div class="swatch-info" style="cursor: pointer;" onclick="setTheme('${theme.id}')">
-          <strong class="swatch-name">${escapeHtml(theme.name)}</strong>
-          <span class="swatch-desc">${theme.primaryColor} • ${theme.mode === 'light' ? 'Light Base' : 'Dark Base'}</span>
+        <div class="custom-theme-info" onclick="setTheme('${theme.id}')">
+          <strong class="custom-theme-name">${escapeHtml(theme.name)}</strong>
+          <div class="custom-theme-meta">
+            <span class="custom-theme-base-badge">
+              <i data-lucide="${baseMode === 'light' ? 'sun' : 'moon'}"></i>
+              ${baseMode === 'light' ? 'Light Base' : 'Dark Base'}
+            </span>
+            <span>${colors.brand}</span>
+          </div>
         </div>
         <div class="custom-theme-actions">
           <button type="button" class="btn-sm ${isActive ? 'btn-primary' : 'btn-secondary'}" onclick="setTheme('${theme.id}')">
@@ -342,6 +469,19 @@ function deleteCustomTheme(id) {
   }
 }
 
+// Global active creator state
+let customCreatorState = {
+  name: '',
+  baseMode: 'dark',
+  activeRole: 'brand',
+  colors: {
+    brand: '#2DD4BF',
+    header: '#0C2B22',
+    surface: '#021A15',
+    accent: '#10B981'
+  }
+};
+
 /**
  * Open Custom Theme Creator Modal
  */
@@ -349,16 +489,19 @@ function openCustomThemeModal() {
   const modal = document.getElementById('custom-theme-modal');
   if (!modal) return;
 
-  // Reset inputs
+  // Initialize with default or current preset
+  const defaultPreset = MULTI_COLOR_PRESETS['mint-emerald'];
+  customCreatorState = {
+    name: '',
+    baseMode: defaultPreset.baseMode,
+    activeRole: 'brand',
+    colors: { ...defaultPreset }
+  };
+
   const nameInput = document.getElementById('custom-theme-name-input');
-  const hexInput = document.getElementById('custom-hex-input');
-  const colorPicker = document.getElementById('custom-color-picker-input');
-
   if (nameInput) nameInput.value = '';
-  if (hexInput) hexInput.value = '#2DD4BF';
-  if (colorPicker) colorPicker.value = '#2dd4bf';
 
-  updateCustomThemePreview('#2dd4bf', 'dark', 'Tema Kustom Baru');
+  updateCreatorUI();
   modal.classList.remove('hidden');
 
   if (window.lucide) lucide.createIcons();
@@ -373,33 +516,124 @@ function closeCustomThemeModal() {
 }
 
 /**
- * Update Live Preview inside Custom Theme Creator
+ * Update UI controls, swatches, and live preview card in Custom Theme Creator
  */
-function updateCustomThemePreview(color, mode, name) {
-  const previewBox = document.getElementById('theme-live-preview-box');
-  const previewHeader = document.getElementById('preview-header');
-  const previewBtn = document.getElementById('preview-btn-sample');
-  const previewPrice = document.getElementById('preview-price-tag');
-  const previewTitle = document.getElementById('preview-theme-title');
+function updateCreatorUI() {
+  const { colors, baseMode, activeRole, name } = customCreatorState;
+  const activeColor = colors[activeRole] || colors.brand;
+
+  // 1. Update Role Pill Swatch Dots
+  const dotBrand = document.getElementById('role-dot-brand');
+  const dotHeader = document.getElementById('role-dot-header');
+  const dotSurface = document.getElementById('role-dot-surface');
+  const dotAccent = document.getElementById('role-dot-accent');
+
+  if (dotBrand) dotBrand.style.backgroundColor = colors.brand;
+  if (dotHeader) dotHeader.style.backgroundColor = colors.header;
+  if (dotSurface) dotSurface.style.backgroundColor = colors.surface;
+  if (dotAccent) dotAccent.style.backgroundColor = colors.accent;
+
+  // 2. Update Role Pills Active State
+  const rolePills = document.querySelectorAll('.color-role-pill');
+  rolePills.forEach(pill => {
+    pill.classList.toggle('active', pill.getAttribute('data-role') === activeRole);
+  });
+
+  // 3. Update Label indicating what is being edited
+  const roleLabel = document.getElementById('current-editing-role-label');
+  if (roleLabel) {
+    const roleNames = {
+      brand: 'Warna Utama (Brand)',
+      header: 'Header & Gelombang',
+      surface: 'Kartu & Latar (Surface)',
+      accent: 'Aksen Diskon & Hemat'
+    };
+    roleLabel.textContent = `Palet Grid Warna 2D (Pilih untuk ${roleNames[activeRole] || 'Warna Utama'})`;
+  }
+
+  // 4. Update Hex Input and Native Picker
+  const hexInput = document.getElementById('custom-hex-input');
+  const colorPicker = document.getElementById('custom-color-picker-input');
   const swatchDisplay = document.getElementById('custom-color-swatch-display');
 
+  if (hexInput) hexInput.value = activeColor.toUpperCase();
+  if (colorPicker) colorPicker.value = activeColor;
+  if (swatchDisplay) swatchDisplay.style.backgroundColor = activeColor;
+
+  // 5. Update 2D Grid Cells Active State
+  const gridCells = document.querySelectorAll('.grid-2d-cell');
+  gridCells.forEach(cell => {
+    const cellColor = (cell.getAttribute('data-color') || '').toLowerCase();
+    cell.classList.toggle('active', cellColor === activeColor.toLowerCase());
+  });
+
+  // 6. Update Base Mode Semantic Pills (Ensures 100% visible text)
+  const darkBtn = document.getElementById('custom-mode-dark-btn');
+  const lightBtn = document.getElementById('custom-mode-light-btn');
+
+  if (darkBtn && lightBtn) {
+    darkBtn.classList.toggle('active', baseMode === 'dark');
+    lightBtn.classList.toggle('active', baseMode === 'light');
+  }
+
+  // 7. Update Live Preview Box Card
+  updateLivePreviewCard();
+}
+
+/**
+ * Update the Live Preview Card with real multi-color properties
+ */
+function updateLivePreviewCard() {
+  const { colors, baseMode, name } = customCreatorState;
+  const previewBox = document.getElementById('theme-live-preview-box');
+  const previewHeader = document.getElementById('preview-header');
+  const previewSurface = document.getElementById('preview-surface-card');
+  const previewWave1 = document.getElementById('preview-wave-1');
+  const previewWave2 = document.getElementById('preview-wave-2');
+  const previewPrice = document.getElementById('preview-price-tag');
+  const previewDiscount = document.getElementById('preview-discount-badge');
+  const previewBtn = document.getElementById('preview-btn-sample');
+  const previewTitle = document.getElementById('preview-theme-title');
+  const previewItemName = document.getElementById('preview-item-name');
+
   if (previewBox) {
-    previewBox.style.setProperty('--preview-brand', color);
+    previewBox.style.setProperty('--preview-brand', colors.brand);
+    previewBox.style.setProperty('--preview-header', colors.header);
+    previewBox.style.setProperty('--preview-surface', colors.surface);
+    previewBox.style.setProperty('--preview-accent', colors.accent);
   }
+
   if (previewHeader) {
-    previewHeader.style.backgroundColor = color;
+    previewHeader.style.backgroundColor = colors.header;
   }
+
+  if (previewWave1) previewWave1.style.fill = colors.brand;
+  if (previewWave2) previewWave2.style.fill = colors.accent;
+
+  if (previewSurface) {
+    if (baseMode === 'dark') {
+      previewSurface.style.backgroundColor = colors.surface;
+      if (previewItemName) previewItemName.style.color = '#f8fafc';
+    } else {
+      previewSurface.style.backgroundColor = '#ffffff';
+      if (previewItemName) previewItemName.style.color = '#0f172a';
+    }
+  }
+
+  if (previewPrice) previewPrice.style.color = colors.accent;
+  if (previewDiscount) {
+    previewDiscount.style.color = colors.accent;
+    previewDiscount.style.borderColor = colors.accent;
+  }
+
   if (previewBtn) {
-    previewBtn.style.backgroundColor = color;
+    previewBtn.style.backgroundColor = colors.brand;
+    const lum = (0.299 * hexToRgb(colors.brand).r + 0.587 * hexToRgb(colors.brand).g + 0.114 * hexToRgb(colors.brand).b) / 255;
+    previewBtn.style.color = lum > 0.55 ? '#021a15' : '#ffffff';
   }
-  if (previewPrice) {
-    previewPrice.style.color = color;
-  }
-  if (previewTitle && name) {
-    previewTitle.textContent = name;
-  }
-  if (swatchDisplay) {
-    swatchDisplay.style.backgroundColor = color;
+
+  if (previewTitle) {
+    previewTitle.textContent = name || 'Smart Grocery';
   }
 }
 
@@ -418,98 +652,141 @@ function initCustomThemeCreatorEvents() {
   const randomBtn = document.getElementById('btn-randomize-color');
   const darkBtn = document.getElementById('custom-mode-dark-btn');
   const lightBtn = document.getElementById('custom-mode-light-btn');
-
-  let currentCustomColor = '#2dd4bf';
-  let currentCustomMode = 'dark';
+  const gridContainer = document.getElementById('grid-2d-matrix');
 
   if (openBtn) openBtn.addEventListener('click', openCustomThemeModal);
   if (closeBtn) closeBtn.addEventListener('click', closeCustomThemeModal);
   if (backdrop) backdrop.addEventListener('click', closeCustomThemeModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeCustomThemeModal);
 
-  // Color Grid Cells Selection
-  const gridCells = document.querySelectorAll('.color-grid-cell');
-  gridCells.forEach(cell => {
-    cell.addEventListener('click', () => {
-      gridCells.forEach(c => c.classList.remove('active'));
-      cell.classList.add('active');
-      const color = cell.getAttribute('data-color');
-      currentCustomColor = color;
-      if (hexInput) hexInput.value = color.toUpperCase();
-      if (colorPicker) colorPicker.value = color;
-      updateCustomThemePreview(color, currentCustomMode, nameInput ? nameInput.value || 'Smart Grocery' : 'Smart Grocery');
+  // 1. Populate 2D Chromatic Grid Matrix (12 Hues x 5 Depth Rows)
+  if (gridContainer && gridContainer.children.length === 0) {
+    let cellsHtml = '';
+    CHROMATIC_GRID_2D.forEach((row, rowIndex) => {
+      row.forEach((hexColor, colIndex) => {
+        cellsHtml += `
+          <button type="button" class="grid-2d-cell" 
+            data-color="${hexColor}" 
+            style="--cell-color: ${hexColor};" 
+            title="Kedalaman ${rowIndex + 1}, Spektrum ${colIndex + 1}: ${hexColor}">
+          </button>
+        `;
+      });
     });
-  });
+    gridContainer.innerHTML = cellsHtml;
 
-  // Native Color Picker input
-  if (colorPicker) {
-    colorPicker.addEventListener('input', (e) => {
-      const color = e.target.value;
-      currentCustomColor = color;
-      if (hexInput) hexInput.value = color.toUpperCase();
-      gridCells.forEach(c => c.classList.toggle('active', c.getAttribute('data-color').toLowerCase() === color.toLowerCase()));
-      updateCustomThemePreview(color, currentCustomMode, nameInput ? nameInput.value || 'Smart Grocery' : 'Smart Grocery');
+    // Delegate cell clicks
+    gridContainer.addEventListener('click', (e) => {
+      const cell = e.target.closest('.grid-2d-cell');
+      if (!cell) return;
+      const color = cell.getAttribute('data-color');
+      if (color) {
+        customCreatorState.colors[customCreatorState.activeRole] = color;
+        updateCreatorUI();
+      }
     });
   }
 
-  // Hex Text input
+  // 2. Multi-Color Presets Click
+  const presetCards = document.querySelectorAll('.multi-color-preset-card');
+  presetCards.forEach(card => {
+    card.addEventListener('click', () => {
+      presetCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const presetKey = card.getAttribute('data-preset');
+      const preset = MULTI_COLOR_PRESETS[presetKey];
+      if (preset) {
+        customCreatorState.colors = {
+          brand: preset.brand,
+          header: preset.header,
+          surface: preset.surface,
+          accent: preset.accent
+        };
+        customCreatorState.baseMode = preset.baseMode;
+        if (nameInput && (!nameInput.value || Object.values(MULTI_COLOR_PRESETS).some(p => p.name === nameInput.value))) {
+          nameInput.value = preset.name;
+          customCreatorState.name = preset.name;
+        }
+        updateCreatorUI();
+      }
+    });
+  });
+
+  // 3. Color Role Pill Selector
+  const rolePills = document.querySelectorAll('.color-role-pill');
+  rolePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const role = pill.getAttribute('data-role');
+      if (role) {
+        customCreatorState.activeRole = role;
+        updateCreatorUI();
+      }
+    });
+  });
+
+  // 4. Native Color Picker input
+  if (colorPicker) {
+    colorPicker.addEventListener('input', (e) => {
+      const color = e.target.value;
+      customCreatorState.colors[customCreatorState.activeRole] = color;
+      updateCreatorUI();
+    });
+  }
+
+  // 5. Hex Text input
   if (hexInput) {
     hexInput.addEventListener('input', (e) => {
       let val = e.target.value.trim();
       if (!val.startsWith('#')) val = '#' + val;
       if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        currentCustomColor = val;
-        if (colorPicker) colorPicker.value = val;
-        gridCells.forEach(c => c.classList.toggle('active', c.getAttribute('data-color').toLowerCase() === val.toLowerCase()));
-        updateCustomThemePreview(val, currentCustomMode, nameInput ? nameInput.value || 'Smart Grocery' : 'Smart Grocery');
+        customCreatorState.colors[customCreatorState.activeRole] = val;
+        updateCreatorUI();
       }
     });
   }
 
-  // Randomize Color Button
+  // 6. Randomize Color Button
   if (randomBtn) {
     randomBtn.addEventListener('click', () => {
       const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-      currentCustomColor = randomHex;
-      if (hexInput) hexInput.value = randomHex.toUpperCase();
-      if (colorPicker) colorPicker.value = randomHex;
-      updateCustomThemePreview(randomHex, currentCustomMode, nameInput ? nameInput.value || 'Smart Grocery' : 'Smart Grocery');
+      customCreatorState.colors[customCreatorState.activeRole] = randomHex;
+      updateCreatorUI();
     });
   }
 
-  // Name input live update
+  // 7. Name input live update
   if (nameInput) {
     nameInput.addEventListener('input', (e) => {
-      updateCustomThemePreview(currentCustomColor, currentCustomMode, e.target.value || 'Smart Grocery');
+      customCreatorState.name = e.target.value.trim();
+      updateLivePreviewCard();
     });
   }
 
-  // Base Mode Toggle
-  if (darkBtn && lightBtn) {
+  // 8. Base Mode Toggle (Dark vs Light)
+  if (darkBtn) {
     darkBtn.addEventListener('click', () => {
-      darkBtn.classList.add('active');
-      lightBtn.classList.remove('active');
-      currentCustomMode = 'dark';
-      updateCustomThemePreview(currentCustomColor, 'dark', nameInput ? nameInput.value : '');
-    });
-
-    lightBtn.addEventListener('click', () => {
-      lightBtn.classList.add('active');
-      darkBtn.classList.remove('active');
-      currentCustomMode = 'light';
-      updateCustomThemePreview(currentCustomColor, 'light', nameInput ? nameInput.value : '');
+      customCreatorState.baseMode = 'dark';
+      updateCreatorUI();
     });
   }
 
-  // Save Custom Theme
+  if (lightBtn) {
+    lightBtn.addEventListener('click', () => {
+      customCreatorState.baseMode = 'light';
+      updateCreatorUI();
+    });
+  }
+
+  // 9. Save & Apply Custom Theme
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
-      const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : `Tema ${currentCustomColor.toUpperCase()}`;
+      const finalName = customCreatorState.name || `Tema ${customCreatorState.colors.brand.toUpperCase()}`;
       const newTheme = {
         id: 'custom_' + Date.now(),
-        name: name,
-        primaryColor: currentCustomColor,
-        mode: currentCustomMode,
+        name: finalName,
+        baseMode: customCreatorState.baseMode,
+        primaryColor: customCreatorState.colors.brand,
+        colors: { ...customCreatorState.colors },
         createdAt: Date.now()
       };
 
@@ -518,12 +795,14 @@ function initCustomThemeCreatorEvents() {
       renderCustomThemesList();
       closeCustomThemeModal();
 
-      // Immediately activate the new custom theme
-      setThemeMode(currentCustomMode);
+      // Immediately activate the new custom theme and set its base mode
+      setThemeMode(customCreatorState.baseMode);
       setTheme(newTheme.id);
 
       if (typeof showToast === 'function') {
-        showToast(AppState.lang === 'en' ? `Custom theme "${name}" created & applied!` : `Tema kustom "${name}" berhasil dibuat & diterapkan!`, 'success');
+        showToast(AppState.lang === 'en'
+          ? `Custom theme "${finalName}" created & applied!`
+          : `Tema kustom "${finalName}" berhasil dibuat & diterapkan!`, 'success');
       }
     });
   }

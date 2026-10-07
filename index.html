@@ -51,15 +51,15 @@
         <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
       </defs>
       <g class="parallax-waves">
-        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-1" />
-        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-2" />
-        <use href="#gentle-wave" x="48" y="5" class="wave-layer wave-layer-3" />
-        <use href="#gentle-wave" x="48" y="7" class="wave-layer wave-layer-4" />
+        <!-- 3 Layers in Separate Independent Cycles: Farthest (Fastest), Middle, Closest/Brightest (Slowest) -->
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-farthest" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-middle" />
+        <use href="#gentle-wave" x="48" y="6" class="wave-layer wave-layer-closest" />
       </g>
     </svg>
   </div>
 
-  <!-- Top Navigation Bar: Three Lines Icon (Left) & Mint Logo Emblem (Center) -->
+  <!-- Top Navigation Bar: Three Lines Icon (Left) & Centered Title (No Icon, No Dot) -->
   <div class="header-top-bar">
     <!-- Three Lines Hamburger Button (Opens Options Drawer from Left to Right) -->
     <button id="header-menu-btn" class="header-menu-btn" aria-label="Buka Menu Pilihan" title="Menu Pilihan">
@@ -68,16 +68,13 @@
       <span class="hamburger-line line-3"></span>
     </button>
 
-    <!-- Center Brand Emblem with New Shopping Tracker Logo -->
-    <div class="header-brand-emblem">
-      <img src="icons/shoppingtracker.png" alt="Shopping Tracker Logo" class="header-logo-img">
-      <span class="header-title-text">Shopping Tracker</span>
+    <!-- Center Brand Title (No Icon) -->
+    <div class="header-brand-center">
+      <h1 class="header-title-text">Smart Grocery &amp; Budget Safety Tracker</h1>
     </div>
 
-    <!-- Right Header Indicator (Quick Cart Status Pulse) -->
-    <div class="header-right-action">
-      <div id="header-cart-indicator-dot" class="header-pulse-dot" title="Troli Aktif"></div>
-    </div>
+    <!-- Right Header Spacer to Perfectly Balance Hamburger Button -->
+    <div class="header-spacer-right" aria-hidden="true"></div>
   </div>
 
   <!-- Sticky Budget Safety Cap Card (Always Visible on Cart Tab) -->
@@ -1486,7 +1483,7 @@
 </div>
 
       <!-- Custom Theme Creator Modal (components/modals/custom-theme-modal.html) -->
-      <!-- MODAL: PEMBUAT TEMA KUSTOM (CUSTOM THEME CREATOR) -->
+      <!-- MODAL: PEMBUAT TEMA KUSTOM CANGGIH (MULTI-COLOR 2D GRID & BASE MODE SELECTOR) -->
 <div id="custom-theme-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="custom-theme-modal-title">
   <div class="bottom-sheet-backdrop" id="close-custom-theme-backdrop"></div>
   <div class="bottom-sheet-container custom-theme-sheet-container">
@@ -1498,8 +1495,8 @@
           <i data-lucide="palette"></i>
         </div>
         <div>
-          <h3 id="custom-theme-modal-title" class="sheet-title">Buat Tema Kustom</h3>
-          <p class="sheet-subtitle">Rancang tema warna sesuai preferensi visual Anda</p>
+          <h3 id="custom-theme-modal-title" class="sheet-title">Pembuat Tema Kustom</h3>
+          <p id="custom-theme-modal-sub" class="sheet-subtitle">Pilih warna grid 2D, preset multi-warna, dan atur mode dasar</p>
         </div>
       </div>
       <button id="close-custom-theme-btn" class="icon-btn-close" aria-label="Tutup pembuat tema">
@@ -1510,39 +1507,138 @@
     <div class="sheet-body custom-theme-body">
       <!-- 1. Nama Tema Input -->
       <div class="form-group mb-3">
-        <label for="custom-theme-name-input" class="form-label">Nama Tema</label>
+        <label for="custom-theme-name-input" class="form-label">Nama Tema Kustom</label>
         <div class="input-with-icon">
           <i data-lucide="tag" class="input-icon"></i>
-          <input type="text" id="custom-theme-name-input" class="form-input" placeholder="Contoh: Mint Segar, Cyber Lime..." maxlength="30">
+          <input type="text" id="custom-theme-name-input" class="form-input" placeholder="Contoh: Mint Emerald, Cyber Neon..." maxlength="30">
         </div>
       </div>
 
-      <!-- 2. Color Grid Picker (Palet Warna Grid Pilihan) -->
+      <!-- 2. Preset Multi-Warna Harmonis (1-Klik untuk Mengubah Semua Elemen) -->
       <div class="form-group mb-3">
-        <label class="form-label">Pilih Warna Utama dari Grid (1-Klik)</label>
-        <div class="color-grid-picker" id="color-grid-picker">
-          <button type="button" class="color-grid-cell active" data-color="#2dd4bf" style="--cell-color: #2dd4bf;" title="Mint Green"></button>
-          <button type="button" class="color-grid-cell" data-color="#10b981" style="--cell-color: #10b981;" title="Emerald Green"></button>
-          <button type="button" class="color-grid-cell" data-color="#14b8a6" style="--cell-color: #14b8a6;" title="Teal"></button>
-          <button type="button" class="color-grid-cell" data-color="#06b6d4" style="--cell-color: #06b6d4;" title="Cyan"></button>
-          <button type="button" class="color-grid-cell" data-color="#0ea5e9" style="--cell-color: #0ea5e9;" title="Sky Blue"></button>
-          <button type="button" class="color-grid-cell" data-color="#3b82f6" style="--cell-color: #3b82f6;" title="Royal Blue"></button>
-          <button type="button" class="color-grid-cell" data-color="#6366f1" style="--cell-color: #6366f1;" title="Indigo"></button>
-          <button type="button" class="color-grid-cell" data-color="#8b5cf6" style="--cell-color: #8b5cf6;" title="Violet Purple"></button>
-          <button type="button" class="color-grid-cell" data-color="#a855f7" style="--cell-color: #a855f7;" title="Purple"></button>
-          <button type="button" class="color-grid-cell" data-color="#d946ef" style="--cell-color: #d946ef;" title="Fuchsia"></button>
-          <button type="button" class="color-grid-cell" data-color="#ec4899" style="--cell-color: #ec4899;" title="Pink"></button>
-          <button type="button" class="color-grid-cell" data-color="#f43f5e" style="--cell-color: #f43f5e;" title="Rose Red"></button>
-          <button type="button" class="color-grid-cell" data-color="#f97316" style="--cell-color: #f97316;" title="Orange"></button>
-          <button type="button" class="color-grid-cell" data-color="#f59e0b" style="--cell-color: #f59e0b;" title="Amber"></button>
-          <button type="button" class="color-grid-cell" data-color="#84cc16" style="--cell-color: #84cc16;" title="Lime"></button>
-          <button type="button" class="color-grid-cell" data-color="#64748b" style="--cell-color: #64748b;" title="Slate Steel"></button>
+        <div class="form-label-row">
+          <label class="form-label">Preset Multi-Warna (1-Klik Ubah Semuanya)</label>
+          <span class="sub-hint">Pilihan kombinasi harmonis</span>
+        </div>
+        <div class="multi-color-presets-scroll" id="multi-color-presets-row">
+          <button type="button" class="multi-color-preset-card active" data-preset="mint-emerald" title="Mint Emerald">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#2DD4BF;"></span>
+              <span class="p-dot" style="background:#0C2B22;"></span>
+              <span class="p-dot" style="background:#021A15;"></span>
+              <span class="p-dot" style="background:#10B981;"></span>
+            </div>
+            <span class="preset-name">Mint Emerald</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="cyber-violet" title="Cyber Violet">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#A855F7;"></span>
+              <span class="p-dot" style="background:#240B40;"></span>
+              <span class="p-dot" style="background:#0E051C;"></span>
+              <span class="p-dot" style="background:#06B6D4;"></span>
+            </div>
+            <span class="preset-name">Cyber Violet</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="sunset-amber" title="Sunset Amber">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#F97316;"></span>
+              <span class="p-dot" style="background:#331505;"></span>
+              <span class="p-dot" style="background:#170A02;"></span>
+              <span class="p-dot" style="background:#F59E0B;"></span>
+            </div>
+            <span class="preset-name">Sunset Amber</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="ocean-deep" title="Ocean Deep">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#0EA5E9;"></span>
+              <span class="p-dot" style="background:#082C4A;"></span>
+              <span class="p-dot" style="background:#031324;"></span>
+              <span class="p-dot" style="background:#38BDF8;"></span>
+            </div>
+            <span class="preset-name">Ocean Deep</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="rose-velvet" title="Rose Velvet">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#F43F5E;"></span>
+              <span class="p-dot" style="background:#360A18;"></span>
+              <span class="p-dot" style="background:#18040A;"></span>
+              <span class="p-dot" style="background:#FB7185;"></span>
+            </div>
+            <span class="preset-name">Rose Velvet</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="neon-lime" title="Neon Lime">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#84CC16;"></span>
+              <span class="p-dot" style="background:#1E2C06;"></span>
+              <span class="p-dot" style="background:#0D1503;"></span>
+              <span class="p-dot" style="background:#A3E635;"></span>
+            </div>
+            <span class="preset-name">Neon Lime</span>
+          </button>
+          <button type="button" class="multi-color-preset-card" data-preset="clean-minimal" title="Clean Minimal">
+            <div class="preset-dots-cluster">
+              <span class="p-dot" style="background:#0D9488;"></span>
+              <span class="p-dot" style="background:#CBD5E1;"></span>
+              <span class="p-dot" style="background:#FFFFFF;"></span>
+              <span class="p-dot" style="background:#14B8A6;"></span>
+            </div>
+            <span class="preset-name">Clean Minimal</span>
+          </button>
         </div>
       </div>
 
-      <!-- 3. Hex Code Input & Color Wheel Picker -->
+      <!-- 3. Target Elemen Warna yang Sedang Diedit (Color Role Selector) -->
       <div class="form-group mb-3">
-        <label for="custom-hex-input" class="form-label">Atau Masukkan Kode HEX / Color Picker</label>
+        <label class="form-label">Pilih Elemen yang Ingin Diubah Warnanya:</label>
+        <div class="color-role-selector-grid" id="color-role-selector">
+          <button type="button" class="color-role-pill active" data-role="brand">
+            <span class="role-swatch-dot" id="role-dot-brand" style="background:#2DD4BF;"></span>
+            <div class="role-pill-info">
+              <strong class="role-pill-title">Warna Utama (Brand)</strong>
+              <span class="role-pill-sub">Tombol, bar saldo &amp; aksen</span>
+            </div>
+          </button>
+          <button type="button" class="color-role-pill" data-role="header">
+            <span class="role-swatch-dot" id="role-dot-header" style="background:#0C2B22;"></span>
+            <div class="role-pill-info">
+              <strong class="role-pill-title">Header &amp; Gelombang</strong>
+              <span class="role-pill-sub">Warna ombak &amp; bar atas</span>
+            </div>
+          </button>
+          <button type="button" class="color-role-pill" data-role="surface">
+            <span class="role-swatch-dot" id="role-dot-surface" style="background:#021A15;"></span>
+            <div class="role-pill-info">
+              <strong class="role-pill-title">Kartu &amp; Latar (Surface)</strong>
+              <span class="role-pill-sub">Dasar kartu &amp; modal</span>
+            </div>
+          </button>
+          <button type="button" class="color-role-pill" data-role="accent">
+            <span class="role-swatch-dot" id="role-dot-accent" style="background:#10B981;"></span>
+            <div class="role-pill-info">
+              <strong class="role-pill-title">Aksen Diskon &amp; Hemat</strong>
+              <span class="role-pill-sub">Badge diskon &amp; hemat</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. 2D Color Picking Grid (Hue x Shade Matrix) -->
+      <div class="form-group mb-3">
+        <div class="form-label-row">
+          <label class="form-label" id="current-editing-role-label">Palet Grid Warna 2D (Pilih untuk Warna Utama)</label>
+          <span class="sub-hint">12 Spektrum × 5 Kedalaman</span>
+        </div>
+        
+        <div class="grid-2d-container">
+          <div class="grid-2d-matrix" id="grid-2d-matrix">
+            <!-- Dynamically populated 2D cells (12 Hues x 5 Depth Rows) -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Hex Code Input & Native Color Wheel Fine-Tuning -->
+      <div class="form-group mb-3">
+        <label for="custom-hex-input" class="form-label">Kode HEX &amp; Color Picker Halus</label>
         <div class="hex-picker-row">
           <div class="color-swatch-picker-wrap">
             <input type="color" id="custom-color-picker-input" value="#2dd4bf" class="color-native-input" title="Buka color wheel">
@@ -1558,33 +1654,45 @@
         </div>
       </div>
 
-      <!-- 4. Mode Dasar (Dark / Light) -->
+      <!-- 6. Mode Dasar Tema (Dark / Light Base) with Semantic Color Pills -->
       <div class="form-group mb-3">
-        <label class="form-label">Tampilan Dasar</label>
-        <div class="segmented-control">
-          <button type="button" id="custom-mode-dark-btn" class="seg-btn active" data-mode="dark">
-            <i data-lucide="moon"></i> Mode Gelap
+        <label class="form-label">Pilih Mode Dasar Tema (Base Mode):</label>
+        <div class="theme-mode-segmented semantic-mode-pills" id="custom-theme-mode-pills">
+          <button type="button" id="custom-mode-dark-btn" class="theme-mode-pill semantic-mode-pill active" data-mode="dark">
+            <i data-lucide="moon"></i> <span class="pill-text">Mode Gelap (Dark Base)</span>
           </button>
-          <button type="button" id="custom-mode-light-btn" class="seg-btn" data-mode="light">
-            <i data-lucide="sun"></i> Mode Terang
+          <button type="button" id="custom-mode-light-btn" class="theme-mode-pill semantic-mode-pill" data-mode="light">
+            <i data-lucide="sun"></i> <span class="pill-text">Mode Terang (Light Base)</span>
           </button>
         </div>
+        <p class="form-help-text mt-1">Tema kustom Anda dirancang agar otomatis menyesuaikan kontras secara aman saat berganti antara mode gelap dan terang.</p>
       </div>
 
-      <!-- 5. Pratinjau Langsung (Live Real-Time Theme Preview) -->
+      <!-- 7. Pratinjau Interaktif Multi-Warna Langsung (Live Real-Time Theme Preview) -->
       <div class="form-group mb-4">
-        <label class="form-label">Pratinjau Tema Langsung</label>
+        <label class="form-label">Pratinjau Nyata Tema Kustom</label>
         <div class="theme-live-preview-card" id="theme-live-preview-box">
+          <!-- Mini Dynamic Header with Wave Graphic -->
           <div class="preview-mini-header" id="preview-header">
-            <div class="preview-wave-graphic"></div>
+            <div class="preview-mini-waves" id="preview-mini-waves">
+              <svg viewBox="0 24 150 28" preserveAspectRatio="none" class="preview-wave-svg">
+                <path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" class="preview-wave-path-1" id="preview-wave-1"></path>
+                <path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" class="preview-wave-path-2" id="preview-wave-2"></path>
+              </svg>
+            </div>
             <div class="preview-header-content">
               <span class="preview-badge" id="preview-badge-pill">Batas: Rp 500.000</span>
               <strong class="preview-title" id="preview-theme-title">Smart Grocery</strong>
             </div>
           </div>
-          <div class="preview-mini-body">
+
+          <!-- Mini Surface Body -->
+          <div class="preview-mini-body" id="preview-surface-card">
             <div class="preview-item-row">
-              <span class="preview-item-name">Beras Ramos 5kg</span>
+              <div class="preview-item-info">
+                <span class="preview-item-name" id="preview-item-name">Beras Ramos 5kg</span>
+                <span class="preview-discount-badge" id="preview-discount-badge">Hemat Rp 5.000</span>
+              </div>
               <span class="preview-price-tag" id="preview-price-tag">Rp 67.500</span>
             </div>
             <button type="button" class="preview-btn-sample" id="preview-btn-sample">
@@ -1598,7 +1706,7 @@
       <div class="modal-actions-row">
         <button type="button" id="btn-cancel-custom-theme" class="btn-secondary flex-1">Batal</button>
         <button type="button" id="btn-save-custom-theme" class="btn-primary flex-1">
-          <i data-lucide="check"></i> <span>Simpan & Terapkan</span>
+          <i data-lucide="check"></i> <span>Simpan &amp; Terapkan</span>
         </button>
       </div>
     </div>

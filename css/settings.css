@@ -376,22 +376,102 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 10px 14px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-theme-row:hover {
+  border-color: var(--border-focus);
+  background: var(--bg-surface-hover);
 }
 
 .custom-theme-row.active {
   border-color: var(--color-brand);
-  box-shadow: 0 0 10px var(--color-brand-glow);
+  background: var(--bg-surface-hover);
+  box-shadow: 0 0 12px var(--color-brand-glow);
+}
+
+.custom-theme-dots {
+  display: flex;
+  align-items: center;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+.ct-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-surface-elevated);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  margin-left: -5px;
+}
+
+.ct-dot:first-child {
+  margin-left: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 4;
+}
+
+.ct-dot:nth-child(2) { z-index: 3; }
+.ct-dot:nth-child(3) { z-index: 2; }
+.ct-dot:nth-child(4) { z-index: 1; }
+
+.custom-theme-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.custom-theme-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.custom-theme-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.70rem;
+  color: var(--text-muted);
+}
+
+.custom-theme-base-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.custom-theme-base-badge i {
+  width: 11px;
+  height: 11px;
 }
 
 .custom-theme-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 /* Custom Theme Bottom Trigger Button */

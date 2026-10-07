@@ -7,15 +7,15 @@
         <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
       </defs>
       <g class="parallax-waves">
-        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-1" />
-        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-2" />
-        <use href="#gentle-wave" x="48" y="5" class="wave-layer wave-layer-3" />
-        <use href="#gentle-wave" x="48" y="7" class="wave-layer wave-layer-4" />
+        <!-- 3 Layers in Separate Independent Cycles: Farthest (Fastest), Middle, Closest/Brightest (Slowest) -->
+        <use href="#gentle-wave" x="48" y="0" class="wave-layer wave-layer-farthest" />
+        <use href="#gentle-wave" x="48" y="3" class="wave-layer wave-layer-middle" />
+        <use href="#gentle-wave" x="48" y="6" class="wave-layer wave-layer-closest" />
       </g>
     </svg>
   </div>
 
-  <!-- Top Navigation Bar: Three Lines Icon (Left) & Mint Logo Emblem (Center) -->
+  <!-- Top Navigation Bar: Three Lines Icon (Left) & Centered Title (No Icon, No Dot) -->
   <div class="header-top-bar">
     <!-- Three Lines Hamburger Button (Opens Options Drawer from Left to Right) -->
     <button id="header-menu-btn" class="header-menu-btn" aria-label="Buka Menu Pilihan" title="Menu Pilihan">
@@ -24,16 +24,13 @@
       <span class="hamburger-line line-3"></span>
     </button>
 
-    <!-- Center Brand Emblem with New Shopping Tracker Logo -->
-    <div class="header-brand-emblem">
-      <img src="icons/shoppingtracker.png" alt="Shopping Tracker Logo" class="header-logo-img">
-      <span class="header-title-text">Shopping Tracker</span>
+    <!-- Center Brand Title (No Icon) -->
+    <div class="header-brand-center">
+      <h1 class="header-title-text">Smart Grocery &amp; Budget Safety Tracker</h1>
     </div>
 
-    <!-- Right Header Indicator (Quick Cart Status Pulse) -->
-    <div class="header-right-action">
-      <div id="header-cart-indicator-dot" class="header-pulse-dot" title="Troli Aktif"></div>
-    </div>
+    <!-- Right Header Spacer to Perfectly Balance Hamburger Button -->
+    <div class="header-spacer-right" aria-hidden="true"></div>
   </div>
 
   <!-- Sticky Budget Safety Cap Card (Always Visible on Cart Tab) -->

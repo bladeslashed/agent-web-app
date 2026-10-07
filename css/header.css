@@ -38,47 +38,61 @@
   display: block;
 }
 
-.parallax-waves > use {
-  animation: moveWaves 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
-}
-
-.wave-layer-1 {
-  fill: var(--color-brand-glow);
-  opacity: 0.25;
-  animation-delay: -2s;
-  animation-duration: 9s;
-}
-
-.wave-layer-2 {
+/* 3 Separate Wave Layers & Independent Cycles (Farthest Fastest, Closest Slowest) */
+.wave-layer-farthest {
   fill: var(--color-brand);
-  opacity: 0.15;
-  animation-delay: -3s;
-  animation-duration: 12s;
+  opacity: 0.16;
+  animation: waveCycleFarthest 6.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-.wave-layer-3 {
+.wave-layer-middle {
   fill: var(--color-brand-glow);
-  opacity: 0.35;
-  animation-delay: -4s;
-  animation-duration: 15s;
+  opacity: 0.30;
+  animation: waveCycleMiddle 13s cubic-bezier(0.4, 0.1, 0.5, 0.9) infinite;
 }
 
-.wave-layer-4 {
+.wave-layer-closest {
   fill: var(--color-brand);
-  opacity: 0.2;
-  animation-delay: -5s;
-  animation-duration: 20s;
+  opacity: 0.58;
+  animation: waveCycleClosest 22s cubic-bezier(0.35, 0.2, 0.25, 0.95) infinite;
 }
 
-@keyframes moveWaves {
+/* Layer 1: Farthest - Fastest Cycle (6.5s) */
+@keyframes waveCycleFarthest {
   0% {
-    transform: translate3d(-90px, 0, 0);
+    transform: translate3d(-95px, 0, 0);
   }
   50% {
     transform: translate3d(85px, 0, 0);
   }
   100% {
-    transform: translate3d(-90px, 0, 0);
+    transform: translate3d(-95px, 0, 0);
+  }
+}
+
+/* Layer 2: Middle - Medium Cycle (13s, reverse direction) */
+@keyframes waveCycleMiddle {
+  0% {
+    transform: translate3d(70px, 0, 0);
+  }
+  50% {
+    transform: translate3d(-80px, 0, 0);
+  }
+  100% {
+    transform: translate3d(70px, 0, 0);
+  }
+}
+
+/* Layer 3: Closest / Brightest - Slowest Cycle (22s) */
+@keyframes waveCycleClosest {
+  0% {
+    transform: translate3d(-80px, 0, 0);
+  }
+  50% {
+    transform: translate3d(95px, 0, 0);
+  }
+  100% {
+    transform: translate3d(-80px, 0, 0);
   }
 }
 
@@ -133,70 +147,48 @@
   margin-left: 11px;
 }
 
-/* Center Brand Emblem with Logo */
-.header-brand-emblem {
+/* Centered Brand Title Layout (No Icon, Balanced by Spacer) */
+.header-brand-center {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  cursor: default;
-  user-select: none;
-}
-
-.header-logo-img {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  object-fit: cover;
-  box-shadow: 0 2px 8px var(--color-brand-glow);
-  animation: logoFloat 4s ease-in-out infinite;
-}
-
-@keyframes logoFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
+  justify-content: center;
+  text-align: center;
+  padding: 0 8px;
+  min-width: 0;
 }
 
 .header-title-text {
-  font-size: 1.05rem;
+  font-size: 0.94rem;
   font-weight: 800;
   color: var(--text-main);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin: 0;
+  padding: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Header Pulse Dot Indicator */
-.header-right-action {
+@media (max-width: 420px) {
+  .header-title-text {
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .header-title-text {
+    font-size: 0.76rem;
+  }
+}
+
+/* Header Right Spacer (Matches 40px Hamburger to Perfectly Center Title) */
+.header-spacer-right {
   width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.header-pulse-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-brand);
-  box-shadow: 0 0 10px var(--color-brand);
-  animation: pulseDot 2.2s infinite;
-}
-
-@keyframes pulseDot {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.85);
-    opacity: 0.5;
-  }
+  height: 40px;
+  flex-shrink: 0;
 }
 
 /* ====================================================================
