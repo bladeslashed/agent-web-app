@@ -143,7 +143,7 @@
       <!-- Section 2: Akun Google & Cloud Firestore -->
       <div class="drawer-section">
         <span class="drawer-section-title">Akun & Sinkronisasi Cloud</span>
-        <div class="drawer-item-card">
+        <div class="drawer-item-card drawer-profile-clickable" id="drawer-auth-profile-card" title="Klik untuk Buka Akun Google & Cloud" role="button" tabindex="0">
           <div class="drawer-item-left">
             <button id="auth-btn-header" class="drawer-avatar-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
               <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
@@ -154,6 +154,7 @@
               <span class="drawer-item-desc" id="drawer-auth-status-desc">Cloud Firestore: shop-tracked</span>
             </div>
           </div>
+          <i data-lucide="chevron-right" class="arrow-indicator"></i>
         </div>
 
         <!-- PWA Install Badge Option -->

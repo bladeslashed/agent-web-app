@@ -1,0 +1,54 @@
+<!-- MODAL / BOTTOM SHEET: RINCIAN TRANSAKSI & PRODUK ANALISIS GRAFIK -->
+<div id="analytics-breakdown-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="analytics-breakdown-title">
+  <div class="bottom-sheet-backdrop" id="close-analytics-breakdown-backdrop"></div>
+  <div class="bottom-sheet-container breakdown-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-brand" id="analytics-breakdown-icon-wrap">
+          <i data-lucide="layers" id="analytics-breakdown-icon"></i>
+        </div>
+        <div>
+          <h3 id="analytics-breakdown-title" class="sheet-title">Rincian Transaksi &amp; Produk</h3>
+          <p id="analytics-breakdown-subtitle" class="sheet-subtitle">Daftar transaksi dan produk yang berkontribusi</p>
+        </div>
+      </div>
+      <button id="close-analytics-breakdown-btn" class="icon-btn-close" aria-label="Tutup Rincian">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <!-- Quick Stats Chips & Live Search Bar -->
+    <div class="breakdown-header-tools">
+      <div class="breakdown-summary-chips">
+        <div class="breakdown-chip" id="breakdown-chip-total">
+          <span class="chip-label" id="label-breakdown-total">Total Nilai:</span>
+          <strong class="chip-val text-brand" id="breakdown-stat-total">Rp 0</strong>
+        </div>
+        <div class="breakdown-chip" id="breakdown-chip-saved">
+          <span class="chip-label" id="label-breakdown-saved">Total Hemat:</span>
+          <strong class="chip-val text-emerald" id="breakdown-stat-saved">Rp 0</strong>
+        </div>
+        <div class="breakdown-chip" id="breakdown-chip-count">
+          <span class="chip-label" id="label-breakdown-count">Produk / Trx:</span>
+          <strong class="chip-val" id="breakdown-stat-count">0 / 0</strong>
+        </div>
+      </div>
+
+      <div class="breakdown-search-wrap mt-2">
+        <div class="input-with-icon">
+          <i data-lucide="search" class="input-icon"></i>
+          <input type="text" id="analytics-breakdown-search-input" class="form-input" placeholder="Cari nama barang atau supermarket..." autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet Body: Scrollable Breakdown Cards -->
+    <div class="sheet-body breakdown-sheet-body">
+      <div id="analytics-breakdown-content" class="breakdown-items-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+</div>

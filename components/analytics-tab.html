@@ -29,9 +29,9 @@
     </div>
   </div>
 
-  <!-- Key Metrics Summary Cards Grid -->
+  <!-- Key Metrics Summary Cards Grid (Clickable to show breakdown) -->
   <div class="analytics-summary-grid">
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-total-spend" title="Klik untuk melihat rincian seluruh produk & transaksi" role="button" tabindex="0">
       <div class="stat-card-icon bg-brand">
         <i data-lucide="credit-card"></i>
       </div>
@@ -39,10 +39,11 @@
         <span class="stat-card-label" id="label-stat-total-spend">Total Belanja</span>
         <strong class="stat-card-val text-brand" id="stat-analytics-total-spend">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-trx-count">0 Transaksi</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Produk</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-total-saved" title="Klik untuk melihat rincian produk yang mendapat diskon" role="button" tabindex="0">
       <div class="stat-card-icon bg-emerald">
         <i data-lucide="tag"></i>
       </div>
@@ -50,10 +51,11 @@
         <span class="stat-card-label" id="label-stat-total-saved">Total Hemat Diskon</span>
         <strong class="stat-card-val text-emerald" id="stat-analytics-total-saved">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-savings-percent">0% hemat</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Diskon</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-top-cat" title="Klik untuk melihat rincian produk di kategori terbesar" role="button" tabindex="0">
       <div class="stat-card-icon bg-amber">
         <i data-lucide="pie-chart"></i>
       </div>
@@ -61,10 +63,11 @@
         <span class="stat-card-label" id="label-stat-top-cat">Kategori Terbesar</span>
         <strong class="stat-card-val text-amber" id="stat-analytics-top-cat">-</strong>
         <span class="stat-card-sub" id="stat-analytics-top-cat-val">Rp 0</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Kategori</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-avg-month" title="Klik untuk melihat rincian belanja per bulan" role="button" tabindex="0">
       <div class="stat-card-icon bg-indigo">
         <i data-lucide="trending-up"></i>
       </div>
@@ -72,6 +75,7 @@
         <span class="stat-card-label" id="label-stat-avg-month">Rata-rata / Bulan</span>
         <strong class="stat-card-val text-indigo" id="stat-analytics-avg-month">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-month-count">0 Bulan</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Bulanan</span>
       </div>
     </div>
   </div>

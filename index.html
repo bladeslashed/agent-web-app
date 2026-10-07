@@ -187,7 +187,7 @@
       <!-- Section 2: Akun Google & Cloud Firestore -->
       <div class="drawer-section">
         <span class="drawer-section-title">Akun & Sinkronisasi Cloud</span>
-        <div class="drawer-item-card">
+        <div class="drawer-item-card drawer-profile-clickable" id="drawer-auth-profile-card" title="Klik untuk Buka Akun Google & Cloud" role="button" tabindex="0">
           <div class="drawer-item-left">
             <button id="auth-btn-header" class="drawer-avatar-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
               <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
@@ -198,6 +198,7 @@
               <span class="drawer-item-desc" id="drawer-auth-status-desc">Cloud Firestore: shop-tracked</span>
             </div>
           </div>
+          <i data-lucide="chevron-right" class="arrow-indicator"></i>
         </div>
 
         <!-- PWA Install Badge Option -->
@@ -408,9 +409,9 @@
     </div>
   </div>
 
-  <!-- Key Metrics Summary Cards Grid -->
+  <!-- Key Metrics Summary Cards Grid (Clickable to show breakdown) -->
   <div class="analytics-summary-grid">
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-total-spend" title="Klik untuk melihat rincian seluruh produk & transaksi" role="button" tabindex="0">
       <div class="stat-card-icon bg-brand">
         <i data-lucide="credit-card"></i>
       </div>
@@ -418,10 +419,11 @@
         <span class="stat-card-label" id="label-stat-total-spend">Total Belanja</span>
         <strong class="stat-card-val text-brand" id="stat-analytics-total-spend">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-trx-count">0 Transaksi</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Produk</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-total-saved" title="Klik untuk melihat rincian produk yang mendapat diskon" role="button" tabindex="0">
       <div class="stat-card-icon bg-emerald">
         <i data-lucide="tag"></i>
       </div>
@@ -429,10 +431,11 @@
         <span class="stat-card-label" id="label-stat-total-saved">Total Hemat Diskon</span>
         <strong class="stat-card-val text-emerald" id="stat-analytics-total-saved">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-savings-percent">0% hemat</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Diskon</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-top-cat" title="Klik untuk melihat rincian produk di kategori terbesar" role="button" tabindex="0">
       <div class="stat-card-icon bg-amber">
         <i data-lucide="pie-chart"></i>
       </div>
@@ -440,10 +443,11 @@
         <span class="stat-card-label" id="label-stat-top-cat">Kategori Terbesar</span>
         <strong class="stat-card-val text-amber" id="stat-analytics-top-cat">-</strong>
         <span class="stat-card-sub" id="stat-analytics-top-cat-val">Rp 0</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Kategori</span>
       </div>
     </div>
 
-    <div class="analytics-stat-card">
+    <div class="analytics-stat-card clickable" id="stat-card-avg-month" title="Klik untuk melihat rincian belanja per bulan" role="button" tabindex="0">
       <div class="stat-card-icon bg-indigo">
         <i data-lucide="trending-up"></i>
       </div>
@@ -451,6 +455,7 @@
         <span class="stat-card-label" id="label-stat-avg-month">Rata-rata / Bulan</span>
         <strong class="stat-card-val text-indigo" id="stat-analytics-avg-month">Rp 0</strong>
         <span class="stat-card-sub" id="stat-analytics-month-count">0 Bulan</span>
+        <span class="stat-card-tap-hint"><i data-lucide="layers"></i> Rincian Bulanan</span>
       </div>
     </div>
   </div>
@@ -1926,6 +1931,62 @@
         <button type="button" id="btn-save-history-edit" class="btn-primary flex-1">
           <i data-lucide="check-circle-2"></i> <span>Simpan Perubahan</span>
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Analytics Breakdown Modal (components/modals/analytics-breakdown-modal.html) -->
+      <!-- MODAL / BOTTOM SHEET: RINCIAN TRANSAKSI & PRODUK ANALISIS GRAFIK -->
+<div id="analytics-breakdown-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="analytics-breakdown-title">
+  <div class="bottom-sheet-backdrop" id="close-analytics-breakdown-backdrop"></div>
+  <div class="bottom-sheet-container breakdown-sheet-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-brand" id="analytics-breakdown-icon-wrap">
+          <i data-lucide="layers" id="analytics-breakdown-icon"></i>
+        </div>
+        <div>
+          <h3 id="analytics-breakdown-title" class="sheet-title">Rincian Transaksi &amp; Produk</h3>
+          <p id="analytics-breakdown-subtitle" class="sheet-subtitle">Daftar transaksi dan produk yang berkontribusi</p>
+        </div>
+      </div>
+      <button id="close-analytics-breakdown-btn" class="icon-btn-close" aria-label="Tutup Rincian">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <!-- Quick Stats Chips & Live Search Bar -->
+    <div class="breakdown-header-tools">
+      <div class="breakdown-summary-chips">
+        <div class="breakdown-chip" id="breakdown-chip-total">
+          <span class="chip-label" id="label-breakdown-total">Total Nilai:</span>
+          <strong class="chip-val text-brand" id="breakdown-stat-total">Rp 0</strong>
+        </div>
+        <div class="breakdown-chip" id="breakdown-chip-saved">
+          <span class="chip-label" id="label-breakdown-saved">Total Hemat:</span>
+          <strong class="chip-val text-emerald" id="breakdown-stat-saved">Rp 0</strong>
+        </div>
+        <div class="breakdown-chip" id="breakdown-chip-count">
+          <span class="chip-label" id="label-breakdown-count">Produk / Trx:</span>
+          <strong class="chip-val" id="breakdown-stat-count">0 / 0</strong>
+        </div>
+      </div>
+
+      <div class="breakdown-search-wrap mt-2">
+        <div class="input-with-icon">
+          <i data-lucide="search" class="input-icon"></i>
+          <input type="text" id="analytics-breakdown-search-input" class="form-input" placeholder="Cari nama barang atau supermarket..." autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sheet Body: Scrollable Breakdown Cards -->
+    <div class="sheet-body breakdown-sheet-body">
+      <div id="analytics-breakdown-content" class="breakdown-items-list">
+        <!-- Rendered dynamically -->
       </div>
     </div>
   </div>

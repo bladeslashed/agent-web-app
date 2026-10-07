@@ -33,6 +33,7 @@ function buildIndexHtml() {
   const checkoutSuccessModalHtml = readComponent('components/modals/checkout-success-modal.html');
   const customThemeModalHtml = readComponent('components/modals/custom-theme-modal.html');
   const historyEditModalHtml = readComponent('components/modals/history-edit-modal.html');
+  const analyticsBreakdownModalHtml = readComponent('components/modals/analytics-breakdown-modal.html');
 
   const compiledHtml = `<!DOCTYPE html>
 <html lang="id">
@@ -121,6 +122,9 @@ function buildIndexHtml() {
 
       <!-- History Full Edit Modal (components/modals/history-edit-modal.html) -->
       ${historyEditModalHtml}
+
+      <!-- Analytics Breakdown Modal (components/modals/analytics-breakdown-modal.html) -->
+      ${analyticsBreakdownModalHtml}
 
       <!-- Toast Feedback Notification Element -->
       <div id="app-toast" class="app-toast hidden" role="status" aria-live="polite">

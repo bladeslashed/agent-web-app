@@ -353,6 +353,20 @@ function renderCategoryPieChart(categorySpend, totalSpend) {
             }
           }
         }
+      },
+      onClick: (event, elements) => {
+        if (elements && elements.length > 0) {
+          const index = elements[0].index;
+          const cat = labels[index];
+          if (cat) {
+            openAnalyticsBreakdown({ type: 'category', value: cat });
+          }
+        }
+      },
+      onHover: (event, elements) => {
+        if (event.native && event.native.target) {
+          event.native.target.style.cursor = elements && elements.length ? 'pointer' : 'default';
+        }
       }
     }
   });
@@ -374,7 +388,7 @@ function renderCategoryBreakdownList(categories, categorySpend, totalSpend) {
     const colorInfo = CATEGORY_COLORS[cat] || DEFAULT_CAT_COLOR;
 
     return `
-      <div class="cat-breakdown-row">
+      <div class="cat-breakdown-row" onclick="openAnalyticsBreakdown({ type: 'category', value: '${escapeHtml(cat)}' })" title="Klik untuk melihat rincian produk kategori ${escapeHtml(cat)}">
         <div class="cat-breakdown-left">
           <span class="cat-color-dot" style="background-color: ${colorInfo.bg}"></span>
           <span>${colorInfo.icon} ${cat}</span>
@@ -382,6 +396,7 @@ function renderCategoryBreakdownList(categories, categorySpend, totalSpend) {
         <div class="cat-breakdown-right">
           <span class="cat-breakdown-amt">${formatRupiah(val)}</span>
           <span class="cat-breakdown-pct">${pct}%</span>
+          <i data-lucide="chevron-right" class="cat-breakdown-arrow"></i>
         </div>
       </div>
     `;
@@ -400,9 +415,10 @@ function renderDiscountSavingsChart(transactions, categorySavings, monthlySaving
 
   let labels = [];
   let data = [];
+  let cats = [];
 
   if (mode === 'category') {
-    const cats = Object.keys(categorySavings);
+    cats = Object.keys(categorySavings);
     if (cats.length === 0) {
       labels = [AppState.lang === 'en' ? 'No Discounts' : 'Tanpa Diskon'];
       data = [0];
@@ -455,6 +471,27 @@ function renderDiscountSavingsChart(transactions, categorySavings, monthlySaving
       maintainAspectRatio: false,
       animation: {
         duration: 700
+      },
+      onClick: (event, elements) => {
+        if (elements && elements.length > 0) {
+          const index = elements[0].index;
+          if (mode === 'category') {
+            const cat = cats[index];
+            if (cat) {
+              openAnalyticsBreakdown({ type: 'discount-category', value: cat });
+            }
+          } else {
+            const mObj = monthlySavings[index];
+            if (mObj) {
+              openAnalyticsBreakdown({ type: 'discount-month', value: mObj.key, label: mObj.label });
+            }
+          }
+        }
+      },
+      onHover: (event, elements) => {
+        if (event.native && event.native.target) {
+          event.native.target.style.cursor = elements && elements.length ? 'pointer' : 'default';
+        }
       },
       plugins: {
         legend: {
@@ -596,6 +633,24 @@ function renderOgiveOrHistogramChart(monthlySpendList, dailySpendList) {
         responsive: true,
         maintainAspectRatio: false,
         animation: { duration: 600, easing: 'easeOutQuart' },
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const targetItem = dataList[index];
+            if (targetItem) {
+              openAnalyticsBreakdown({
+                type: isDaily ? 'daily' : 'monthly-item',
+                value: targetItem.key,
+                label: targetItem.label
+              });
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event.native && event.native.target) {
+            event.native.target.style.cursor = elements && elements.length ? 'pointer' : 'default';
+          }
+        },
         plugins: {
           legend: {
             display: true,
@@ -720,6 +775,24 @@ function renderOgiveOrHistogramChart(monthlySpendList, dailySpendList) {
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         animation: { duration: 750, easing: 'easeOutQuart' },
+        onClick: (event, elements) => {
+          if (elements && elements.length > 0) {
+            const index = elements[0].index;
+            const targetItem = dataList[index];
+            if (targetItem) {
+              openAnalyticsBreakdown({
+                type: isDaily ? 'daily' : 'monthly-item',
+                value: targetItem.key,
+                label: targetItem.label
+              });
+            }
+          }
+        },
+        onHover: (event, elements) => {
+          if (event.native && event.native.target) {
+            event.native.target.style.cursor = elements && elements.length ? 'pointer' : 'default';
+          }
+        },
         plugins: {
           legend: {
             display: true,
@@ -873,6 +946,315 @@ function loadMultiMonthSampleData() {
 }
 
 /**
+ * Active breakdown modal state
+ */
+let currentBreakdownConfig = null;
+
+/**
+ * Open Analytics Breakdown Bottom Sheet Modal
+ */
+function openAnalyticsBreakdown(config) {
+  const modal = document.getElementById('analytics-breakdown-modal');
+  if (!modal) return;
+
+  currentBreakdownConfig = config;
+  const searchInput = document.getElementById('analytics-breakdown-search-input');
+  if (searchInput) searchInput.value = '';
+
+  renderBreakdownContent('');
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Close Analytics Breakdown Bottom Sheet Modal
+ */
+function closeAnalyticsBreakdown() {
+  const modal = document.getElementById('analytics-breakdown-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+/**
+ * Open History Detail Modal from inside Breakdown Modal
+ */
+function openHistoryDetailFromBreakdown(trxId) {
+  closeAnalyticsBreakdown();
+  if (typeof openHistoryDetail === 'function') {
+    openHistoryDetail(trxId);
+  }
+}
+
+/**
+ * Render Breakdown Content based on currentBreakdownConfig and search query
+ */
+function renderBreakdownContent(searchQuery = '') {
+  if (!currentBreakdownConfig) return;
+
+  const titleEl = document.getElementById('analytics-breakdown-title');
+  const subEl = document.getElementById('analytics-breakdown-subtitle');
+  const iconWrap = document.getElementById('analytics-breakdown-icon-wrap');
+  const iconEl = document.getElementById('analytics-breakdown-icon');
+  const statTotal = document.getElementById('breakdown-stat-total');
+  const statSaved = document.getElementById('breakdown-stat-saved');
+  const statCount = document.getElementById('breakdown-stat-count');
+  const contentEl = document.getElementById('analytics-breakdown-content');
+
+  const period = AppState.analyticsPeriod || 'all';
+  const transactions = getFilteredHistory(period);
+  const q = (searchQuery || '').trim().toLowerCase();
+
+  let title = 'Rincian Transaksi & Produk';
+  let subtitle = 'Semua transaksi dan produk yang berkontribusi';
+  let iconName = 'layers';
+  let iconBgClass = 'bg-brand';
+
+  // Filter function for items
+  let itemFilter = (item, trx) => true;
+
+  if (currentBreakdownConfig.type === 'all') {
+    title = AppState.lang === 'en' ? 'All Purchases & Products' : 'Rincian Seluruh Transaksi & Produk';
+    subtitle = AppState.lang === 'en' ? 'Every purchase and product in the selected period' : 'Daftar semua belanjaan dan produk pada periode terpilih';
+    iconName = 'credit-card';
+    iconBgClass = 'bg-brand';
+    itemFilter = () => true;
+  } else if (currentBreakdownConfig.type === 'discounts' || currentBreakdownConfig.type === 'discount-all') {
+    title = AppState.lang === 'en' ? 'Discount Savings Breakdown' : 'Rincian Penghematan Diskon';
+    subtitle = AppState.lang === 'en' ? 'All items and purchases with promo discounts' : 'Produk dan transaksi yang mendapatkan potongan harga promo';
+    iconName = 'tag';
+    iconBgClass = 'bg-emerald';
+    itemFilter = (item) => {
+      const orig = Number(item.originalPrice) || 0;
+      const finalP = Number(item.finalUnitPrice) || orig;
+      return (orig - finalP) > 0 || !!item.discountString;
+    };
+  } else if (currentBreakdownConfig.type === 'category') {
+    const cat = currentBreakdownConfig.value || 'Semua';
+    title = AppState.lang === 'en' ? `Category: ${cat}` : `Kategori: ${cat}`;
+    subtitle = AppState.lang === 'en' ? `Purchased products under "${cat}"` : `Produk yang dibeli dalam kategori "${cat}"`;
+    iconName = 'pie-chart';
+    iconBgClass = 'bg-amber';
+    itemFilter = (item) => (item.category || 'Lainnya') === cat;
+  } else if (currentBreakdownConfig.type === 'top-cat') {
+    const stats = calculateAnalyticsMetrics(transactions);
+    let topCatName = '-';
+    let topCatAmount = 0;
+    for (const [c, amt] of Object.entries(stats.categorySpend)) {
+      if (amt > topCatAmount) {
+        topCatAmount = amt;
+        topCatName = c;
+      }
+    }
+    title = AppState.lang === 'en' ? `Top Category: ${topCatName}` : `Kategori Terbesar: ${topCatName}`;
+    subtitle = AppState.lang === 'en' ? `Largest spending category in selected period` : `Kategori pengeluaran terbesar pada periode ini`;
+    iconName = 'pie-chart';
+    iconBgClass = 'bg-amber';
+    itemFilter = (item) => (item.category || 'Lainnya') === topCatName;
+  } else if (currentBreakdownConfig.type === 'monthly') {
+    title = AppState.lang === 'en' ? 'Monthly Purchases Breakdown' : 'Rincian Belanja per Bulan';
+    subtitle = AppState.lang === 'en' ? 'Timeline of monthly transactions and goods' : 'Rincian transaksi belanja dan barang tiap bulan';
+    iconName = 'trending-up';
+    iconBgClass = 'bg-indigo';
+    itemFilter = () => true;
+  } else if (currentBreakdownConfig.type === 'discount-category') {
+    const cat = currentBreakdownConfig.value || 'Semua';
+    title = AppState.lang === 'en' ? `Discounts in: ${cat}` : `Diskon Kategori: ${cat}`;
+    subtitle = AppState.lang === 'en' ? `Discounted items under category "${cat}"` : `Produk berdiskon di bawah kategori "${cat}"`;
+    iconName = 'tag';
+    iconBgClass = 'bg-emerald';
+    itemFilter = (item) => {
+      const matchCat = (item.category || 'Lainnya') === cat;
+      const orig = Number(item.originalPrice) || 0;
+      const finalP = Number(item.finalUnitPrice) || orig;
+      return matchCat && ((orig - finalP) > 0 || !!item.discountString);
+    };
+  } else if (currentBreakdownConfig.type === 'discount-month') {
+    const mLabel = currentBreakdownConfig.label || currentBreakdownConfig.value || '';
+    title = AppState.lang === 'en' ? `Discounts in: ${mLabel}` : `Diskon Bulan: ${mLabel}`;
+    subtitle = AppState.lang === 'en' ? `Discounts and promo savings during ${mLabel}` : `Penghematan diskon belanja pada ${mLabel}`;
+    iconName = 'calendar';
+    iconBgClass = 'bg-emerald';
+    itemFilter = (item, trx) => {
+      const d = new Date(trx.timestamp || Date.now());
+      const mKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const matchMonth = mKey === currentBreakdownConfig.value || trx.monthName === currentBreakdownConfig.value;
+      const orig = Number(item.originalPrice) || 0;
+      const finalP = Number(item.finalUnitPrice) || orig;
+      return matchMonth && ((orig - finalP) > 0 || !!item.discountString);
+    };
+  } else if (currentBreakdownConfig.type === 'monthly-item') {
+    const mLabel = currentBreakdownConfig.label || currentBreakdownConfig.value || '';
+    title = AppState.lang === 'en' ? `Purchases in: ${mLabel}` : `Belanja Bulan: ${mLabel}`;
+    subtitle = AppState.lang === 'en' ? `All items bought in ${mLabel}` : `Seluruh barang yang dibeli pada ${mLabel}`;
+    iconName = 'calendar';
+    iconBgClass = 'bg-indigo';
+    itemFilter = (item, trx) => {
+      const d = new Date(trx.timestamp || Date.now());
+      const mKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      return mKey === currentBreakdownConfig.value || trx.monthName === currentBreakdownConfig.value;
+    };
+  } else if (currentBreakdownConfig.type === 'daily') {
+    const dLabel = currentBreakdownConfig.label || currentBreakdownConfig.value || '';
+    title = AppState.lang === 'en' ? `Purchases on: ${dLabel}` : `Belanja Tanggal: ${dLabel}`;
+    subtitle = AppState.lang === 'en' ? `All items bought on this date` : `Seluruh barang yang dibeli pada tanggal ini`;
+    iconName = 'calendar';
+    iconBgClass = 'bg-brand';
+    itemFilter = (item, trx) => {
+      const d = new Date(trx.timestamp || Date.now());
+      const dKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      return dKey === currentBreakdownConfig.value;
+    };
+  }
+
+  if (titleEl) titleEl.textContent = title;
+  if (subEl) subEl.textContent = subtitle;
+  if (iconEl) iconEl.setAttribute('data-lucide', iconName);
+  if (iconWrap) {
+    iconWrap.className = `icon-circle ${iconBgClass}`;
+  }
+
+  // Filter transactions and items
+  let totalMatchingSpend = 0;
+  let totalMatchingSaved = 0;
+  let totalMatchingProducts = 0;
+  const matchingTrxList = [];
+
+  transactions.forEach(trx => {
+    if (!Array.isArray(trx.items)) return;
+
+    const matchingItems = trx.items.filter(item => {
+      if (!itemFilter(item, trx)) return false;
+      if (q) {
+        const nameMatch = (item.name || '').toLowerCase().includes(q);
+        const catMatch = (item.category || '').toLowerCase().includes(q);
+        const storeMatch = (trx.monthName || '').toLowerCase().includes(q);
+        return nameMatch || catMatch || storeMatch;
+      }
+      return true;
+    });
+
+    if (matchingItems.length > 0) {
+      let trxSpend = 0;
+      let trxSaved = 0;
+
+      matchingItems.forEach(item => {
+        const orig = Number(item.originalPrice) || 0;
+        const finalP = Number(item.finalUnitPrice) || orig;
+        const qty = Number(item.qty) || 1;
+        const itemSubtotal = Number(item.subtotal) || (finalP * qty);
+        const itemSavings = Math.max(0, (orig - finalP) * qty);
+
+        trxSpend += itemSubtotal;
+        trxSaved += itemSavings;
+        totalMatchingProducts += qty;
+      });
+
+      totalMatchingSpend += trxSpend;
+      totalMatchingSaved += trxSaved;
+
+      matchingTrxList.push({
+        trx,
+        items: matchingItems,
+        trxSpend,
+        trxSaved
+      });
+    }
+  });
+
+  // Update Summary Stats Chips
+  if (statTotal) statTotal.textContent = formatRupiah(totalMatchingSpend);
+  if (statSaved) statSaved.textContent = formatRupiah(totalMatchingSaved);
+  if (statCount) {
+    statCount.textContent = `${totalMatchingProducts} ${AppState.lang === 'en' ? 'Items' : 'Produk'} / ${matchingTrxList.length} Trx`;
+  }
+
+  // Render cards
+  if (!contentEl) return;
+
+  if (matchingTrxList.length === 0) {
+    contentEl.innerHTML = `
+      <div class="breakdown-empty-state">
+        <i data-lucide="inbox"></i>
+        <h4>${AppState.lang === 'en' ? 'No Matching Items Found' : 'Tidak Ada Data Produk Ditemukan'}</h4>
+        <p>${q ? (AppState.lang === 'en' ? 'Try searching with another keyword.' : 'Coba kata kunci pencarian lain.') : (AppState.lang === 'en' ? 'No items in this period.' : 'Belum ada produk untuk periode ini.')}</p>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  const locale = AppState.lang === 'en' ? 'en-US' : 'id-ID';
+
+  contentEl.innerHTML = matchingTrxList.map(({ trx, items, trxSpend, trxSaved }) => {
+    const dateFormatted = new Date(trx.timestamp || Date.now()).toLocaleDateString(locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+
+    return `
+      <div class="breakdown-trx-card">
+        <div class="breakdown-trx-header" onclick="openHistoryDetailFromBreakdown('${trx.id}')" title="Klik untuk membuka detail riwayat transaksi">
+          <div class="breakdown-trx-meta">
+            <span class="breakdown-trx-date"><i data-lucide="calendar"></i> ${dateFormatted}</span>
+            <span class="breakdown-trx-badge">${escapeHtml(trx.monthName || (AppState.lang === 'en' ? 'Trip' : 'Belanja'))}</span>
+          </div>
+          <div class="breakdown-trx-total-wrap">
+            <span class="breakdown-trx-sum">${formatRupiah(trxSpend)}</span>
+            <span class="breakdown-detail-btn">${AppState.lang === 'en' ? 'Detail' : 'Detail'} <i data-lucide="chevron-right"></i></span>
+          </div>
+        </div>
+
+        <div class="breakdown-items-list">
+          ${items.map(item => {
+            const cat = item.category || 'Lainnya';
+            const catColor = CATEGORY_COLORS[cat] || DEFAULT_CAT_COLOR;
+            const orig = Number(item.originalPrice) || 0;
+            const finalP = Number(item.finalUnitPrice) || orig;
+            const qty = Number(item.qty) || 1;
+            const itemSubtotal = Number(item.subtotal) || (finalP * qty);
+            const itemSavings = Math.max(0, (orig - finalP) * qty);
+
+            return `
+              <div class="breakdown-item-row">
+                <div class="breakdown-item-left">
+                  <span class="breakdown-item-icon">${catColor.icon || '📦'}</span>
+                  <div class="breakdown-item-info">
+                    <strong class="breakdown-item-name">${escapeHtml(item.name)}</strong>
+                    <div class="breakdown-item-tags">
+                      <span class="breakdown-item-cat-badge" style="background:${catColor.bg}22; color:${catColor.border}; border-color:${catColor.border}55;">
+                        ${escapeHtml(cat)}
+                      </span>
+                      <span class="breakdown-item-calc">
+                        ${qty} ${escapeHtml(item.unit || 'pcs')} × ${formatRupiah(finalP)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="breakdown-item-right">
+                  <strong class="breakdown-item-subtotal">${formatRupiah(itemSubtotal)}</strong>
+                  ${itemSavings > 0 ? `
+                    <span class="breakdown-saving-pill" title="Diskon: ${escapeHtml(item.discountString || '')}">
+                      <i data-lucide="tag"></i> Hemat ${formatRupiah(itemSavings)}
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+window.openAnalyticsBreakdown = openAnalyticsBreakdown;
+window.closeAnalyticsBreakdown = closeAnalyticsBreakdown;
+window.openHistoryDetailFromBreakdown = openHistoryDetailFromBreakdown;
+
+/**
  * Initialize event listeners for the Analytics Tab
  */
 function initAnalyticsEvents() {
@@ -901,6 +1283,42 @@ function initAnalyticsEvents() {
     refreshBtn.addEventListener('click', () => {
       renderAnalyticsTab();
       showToast(AppState.lang === 'en' ? 'Charts refreshed!' : 'Grafik disegarkan!');
+    });
+  }
+
+  // 4 Top Key Metric Summary Cards Click Triggers (Breakdown)
+  const cardTotalSpend = document.getElementById('stat-card-total-spend');
+  const cardTotalSaved = document.getElementById('stat-card-total-saved');
+  const cardTopCat = document.getElementById('stat-card-top-cat');
+  const cardAvgMonth = document.getElementById('stat-card-avg-month');
+
+  if (cardTotalSpend) {
+    cardTotalSpend.addEventListener('click', () => openAnalyticsBreakdown({ type: 'all' }));
+  }
+  if (cardTotalSaved) {
+    cardTotalSaved.addEventListener('click', () => openAnalyticsBreakdown({ type: 'discounts' }));
+  }
+  if (cardTopCat) {
+    cardTopCat.addEventListener('click', () => openAnalyticsBreakdown({ type: 'top-cat' }));
+  }
+  if (cardAvgMonth) {
+    cardAvgMonth.addEventListener('click', () => openAnalyticsBreakdown({ type: 'monthly' }));
+  }
+
+  // Breakdown modal close handlers & live search
+  const closeBreakdownBtn = document.getElementById('close-analytics-breakdown-btn');
+  const closeBreakdownBackdrop = document.getElementById('close-analytics-breakdown-backdrop');
+  const breakdownSearchInput = document.getElementById('analytics-breakdown-search-input');
+
+  if (closeBreakdownBtn) {
+    closeBreakdownBtn.addEventListener('click', closeAnalyticsBreakdown);
+  }
+  if (closeBreakdownBackdrop) {
+    closeBreakdownBackdrop.addEventListener('click', closeAnalyticsBreakdown);
+  }
+  if (breakdownSearchInput) {
+    breakdownSearchInput.addEventListener('input', (e) => {
+      renderBreakdownContent(e.target.value);
     });
   }
 

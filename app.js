@@ -511,17 +511,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 22. Firebase Authentication & Cloud Sync Triggers
   const authHeaderBtn = document.getElementById('auth-btn-header');
+  const drawerAuthProfileCard = document.getElementById('drawer-auth-profile-card');
   const closeAuthBtn = document.getElementById('close-auth-modal-btn');
   const closeAuthBackdrop = document.getElementById('close-auth-backdrop');
 
-  if (authHeaderBtn) authHeaderBtn.addEventListener('click', () => {
+  function handleProfileClick() {
+    // Immediately close sidebar drawer when profile is clicked to display Google sign-in
+    if (typeof closeDrawer === 'function') {
+      closeDrawer(true);
+    }
     AppState.pendingCheckout = false;
     const checkoutPrompt = document.getElementById('checkout-auth-prompt');
     const offlineBtn = document.getElementById('btn-save-offline-anyway');
     if (checkoutPrompt) checkoutPrompt.classList.add('hidden');
     if (offlineBtn) offlineBtn.classList.add('hidden');
     openAuthModal();
+  }
+
+  if (authHeaderBtn) authHeaderBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleProfileClick();
   });
+  if (drawerAuthProfileCard) drawerAuthProfileCard.addEventListener('click', handleProfileClick);
   if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
   if (closeAuthBackdrop) closeAuthBackdrop.addEventListener('click', closeAuthModal);
 
@@ -632,15 +643,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
   }
 
-  function closeDrawer() {
+  function closeDrawer(immediate = false) {
     if (!drawerOverlay) return;
     drawerOverlay.classList.remove('active');
-    setTimeout(() => {
-      if (!drawerOverlay.classList.contains('active')) {
-        drawerOverlay.classList.add('hidden');
-      }
-    }, 350);
+    if (immediate) {
+      drawerOverlay.classList.add('hidden');
+    } else {
+      setTimeout(() => {
+        if (!drawerOverlay.classList.contains('active')) {
+          drawerOverlay.classList.add('hidden');
+        }
+      }, 350);
+    }
   }
+  window.closeDrawer = closeDrawer;
 
   if (headerMenuBtn) headerMenuBtn.addEventListener('click', openDrawer);
   if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);

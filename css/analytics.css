@@ -403,3 +403,345 @@
   height: 14px;
   color: var(--color-emerald);
 }
+
+/* ====================================================================
+   CLICKABLE STAT CARDS & CHART BREAKDOWN MODAL STYLES
+   ==================================================================== */
+.analytics-stat-card.clickable {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.analytics-stat-card.clickable:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.analytics-stat-card.clickable:active {
+  transform: translateY(0);
+}
+
+.stat-card-tap-hint {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 3px;
+  opacity: 0.85;
+  transition: color 0.2s ease;
+}
+
+.stat-card-tap-hint i {
+  width: 10px;
+  height: 10px;
+  stroke-width: 2.5;
+}
+
+.analytics-stat-card.clickable:hover .stat-card-tap-hint {
+  color: var(--color-brand);
+}
+
+.cat-breakdown-row {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+}
+
+.cat-breakdown-row:hover {
+  background: var(--bg-surface-elevated);
+  transform: translateX(3px);
+}
+
+.cat-breakdown-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cat-breakdown-arrow {
+  width: 12px;
+  height: 12px;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.cat-breakdown-row:hover .cat-breakdown-arrow {
+  color: var(--color-brand);
+  opacity: 1;
+}
+
+/* Analytics Breakdown Bottom Sheet Modal */
+.breakdown-sheet-container {
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.breakdown-header-tools {
+  padding: 10px 18px 12px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.breakdown-summary-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.breakdown-summary-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.breakdown-chip {
+  flex: 1;
+  min-width: 105px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.breakdown-chip .chip-label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.breakdown-chip .chip-val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.breakdown-search-wrap .form-input {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 0.82rem;
+}
+
+.breakdown-sheet-body {
+  padding: 14px 18px 24px 18px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Transaction Card inside Breakdown */
+.breakdown-trx-card {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.breakdown-trx-header {
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.breakdown-trx-header:hover {
+  background: var(--bg-surface-hover);
+}
+
+.breakdown-trx-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breakdown-trx-date {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.breakdown-trx-date i {
+  width: 12px;
+  height: 12px;
+  color: var(--color-brand);
+}
+
+.breakdown-trx-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.breakdown-trx-total-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breakdown-trx-sum {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.breakdown-detail-btn {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.breakdown-detail-btn i {
+  width: 11px;
+  height: 11px;
+}
+
+/* Items List in Transaction Card */
+.breakdown-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.breakdown-item-row {
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.15s ease;
+}
+
+.breakdown-item-row:last-child {
+  border-bottom: none;
+}
+
+.breakdown-item-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.breakdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.breakdown-item-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.breakdown-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.breakdown-item-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breakdown-item-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.breakdown-item-cat-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+  line-height: 1.2;
+}
+
+.breakdown-item-calc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.breakdown-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.breakdown-item-subtotal {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.breakdown-saving-pill {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  background: var(--badge-emerald-bg, rgba(16, 185, 129, 0.15));
+  color: var(--badge-emerald-text, #10b981);
+  border: 1px solid var(--badge-emerald-border, rgba(16, 185, 129, 0.3));
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1.2;
+}
+
+.breakdown-saving-pill i {
+  width: 9px;
+  height: 9px;
+}
+
+.breakdown-empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text-muted);
+}
+
+.breakdown-empty-state i {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
