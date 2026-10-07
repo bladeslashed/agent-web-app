@@ -1,0 +1,790 @@
+/**
+ * Spending Analytics & Graphs Controller (Tab 3)
+ * Smart Grocery & Budget Safety Tracker
+ * 
+ * Features:
+ * 1. Category Spending Pie / Doughnut Chart
+ * 2. Discount Savings Bar Graph (by Category or Month)
+ * 3. Monthly Cumulative Spending Ogive Curve
+ * 4. Time Period Filter (All Time, 6M, 3M, 90D, 30D)
+ */
+
+let categoryPieChartInstance = null;
+let discountSavingsChartInstance = null;
+let ogiveChartInstance = null;
+
+// Category color palette for harmonious charts
+const CATEGORY_COLORS = {
+  'Bahan Pokok': { bg: '#38bdf8', border: '#0284c7', icon: '🌾' },
+  'Makanan Instan': { bg: '#fb923c', border: '#ea580c', icon: '🍜' },
+  'Bumbu & Masak': { bg: '#facc15', border: '#ca8a04', icon: '🧂' },
+  'Perlengkapan Mandi': { bg: '#34d399', border: '#059669', icon: '🧼' },
+  'Perlengkapan Cuci': { bg: '#818cf8', border: '#4f46e5', icon: '🧺' },
+  'Camilan': { bg: '#f472b6', border: '#db2777', icon: '🍪' },
+  'Lainnya': { bg: '#a78bfa', border: '#7c3aed', icon: '📦' }
+};
+
+const DEFAULT_CAT_COLOR = { bg: '#94a3b8', border: '#64748b', icon: '📦' };
+
+/**
+ * Filter transactions based on selected time window
+ */
+function getFilteredHistory(period = 'all') {
+  if (!Array.isArray(AppState.history)) return [];
+  if (period === 'all') return [...AppState.history];
+
+  const now = Date.now();
+  let cutoff = 0;
+
+  if (period === '30d') {
+    cutoff = now - (30 * 24 * 60 * 60 * 1000);
+  } else if (period === '90d') {
+    cutoff = now - (90 * 24 * 60 * 60 * 1000);
+  } else if (period === '3m') {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 3);
+    cutoff = d.getTime();
+  } else if (period === '6m') {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 6);
+    cutoff = d.getTime();
+  }
+
+  return AppState.history.filter(trx => (trx.timestamp || 0) >= cutoff);
+}
+
+/**
+ * Main render function for Analytics Tab
+ */
+function renderAnalyticsTab() {
+  const period = AppState.analyticsPeriod || 'all';
+  const filtered = getFilteredHistory(period);
+
+  const contentContainer = document.getElementById('analytics-content-container');
+  const emptyState = document.getElementById('analytics-empty-state');
+  const periodSummary = document.getElementById('filter-period-summary');
+
+  // Update Period Summary Badge
+  if (periodSummary) {
+    const t = I18N[AppState.lang] || I18N.id;
+    const labels = {
+      'all': t.periodAllTime || 'Semua Riwayat',
+      '6m': t.period6Months || '6 Bulan Terakhir',
+      '3m': t.period3Months || '3 Bulan Terakhir',
+      '90d': t.period90Days || '90 Hari Terakhir',
+      '30d': t.period30Days || '30 Hari Terakhir'
+    };
+    periodSummary.textContent = labels[period] || labels.all;
+  }
+
+  // Handle empty state
+  if (!filtered || filtered.length === 0) {
+    if (contentContainer) contentContainer.classList.add('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
+    updateSummaryStats([], 0, 0, {}, 0);
+    destroyAllCharts();
+    return;
+  }
+
+  if (contentContainer) contentContainer.classList.remove('hidden');
+  if (emptyState) emptyState.classList.add('hidden');
+
+  // Process data for charts
+  const stats = calculateAnalyticsMetrics(filtered);
+
+  // Update KPI Cards
+  updateSummaryStats(filtered, stats.totalSpend, stats.totalSaved, stats.categorySpend, stats.monthCount);
+
+  // Ensure Chart.js is loaded
+  if (typeof Chart === 'undefined') {
+    console.warn('Chart.js library is not yet loaded.');
+    return;
+  }
+
+  // Render the 3 Charts
+  renderCategoryPieChart(stats.categorySpend, stats.totalSpend);
+  renderDiscountSavingsChart(filtered, stats.categorySavings, stats.monthlySavings);
+  renderMonthlyOgiveChart(stats.monthlySpendList);
+
+  if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Destroy chart instances to prevent memory leaks and glitchy redraws
+ */
+function destroyAllCharts() {
+  if (categoryPieChartInstance) {
+    categoryPieChartInstance.destroy();
+    categoryPieChartInstance = null;
+  }
+  if (discountSavingsChartInstance) {
+    discountSavingsChartInstance.destroy();
+    discountSavingsChartInstance = null;
+  }
+  if (ogiveChartInstance) {
+    ogiveChartInstance.destroy();
+    ogiveChartInstance = null;
+  }
+}
+
+/**
+ * Calculate aggregated metrics from transaction history
+ */
+function calculateAnalyticsMetrics(transactions) {
+  let totalSpend = 0;
+  let totalSaved = 0;
+  const categorySpend = {};
+  const categorySavings = {};
+  const monthlySpendMap = new Map();
+  const monthlySavingsMap = new Map();
+
+  transactions.forEach(trx => {
+    const spend = Number(trx.totalSpend) || 0;
+    totalSpend += spend;
+
+    // Group by Month Key (YYYY-MM)
+    const dateObj = new Date(trx.timestamp || Date.now());
+    const monthKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+    const monthLabel = dateObj.toLocaleDateString(AppState.lang === 'en' ? 'en-US' : 'id-ID', {
+      month: 'short',
+      year: 'numeric'
+    });
+
+    if (!monthlySpendMap.has(monthKey)) {
+      monthlySpendMap.set(monthKey, { key: monthKey, label: monthLabel, amount: 0, timestamp: dateObj.getTime() });
+      monthlySavingsMap.set(monthKey, { key: monthKey, label: monthLabel, amount: 0 });
+    }
+    monthlySpendMap.get(monthKey).amount += spend;
+
+    // Process items in this transaction
+    if (Array.isArray(trx.items)) {
+      trx.items.forEach(item => {
+        const cat = item.category || 'Lainnya';
+        const itemSpend = Number(item.subtotal) || (Number(item.finalUnitPrice || item.originalPrice || 0) * (item.qty || 1));
+        
+        categorySpend[cat] = (categorySpend[cat] || 0) + itemSpend;
+
+        // Calculate discount savings
+        const orig = Number(item.originalPrice) || 0;
+        const finalPrice = Number(item.finalUnitPrice) || orig;
+        const qty = Number(item.qty) || 1;
+        const itemSavings = Math.max(0, (orig - finalPrice) * qty);
+
+        if (itemSavings > 0) {
+          totalSaved += itemSavings;
+          categorySavings[cat] = (categorySavings[cat] || 0) + itemSavings;
+          monthlySavingsMap.get(monthKey).amount += itemSavings;
+        }
+      });
+    }
+  });
+
+  // Sort months chronologically
+  const sortedMonths = Array.from(monthlySpendMap.values()).sort((a, b) => a.key.localeCompare(b.key));
+  const sortedMonthlySavings = Array.from(monthlySavingsMap.values()).sort((a, b) => a.key.localeCompare(b.key));
+
+  return {
+    totalSpend,
+    totalSaved,
+    categorySpend,
+    categorySavings,
+    monthlySpendList: sortedMonths,
+    monthlySavings: sortedMonthlySavings,
+    monthCount: sortedMonths.length
+  };
+}
+
+/**
+ * Update the 4 key summary metrics cards
+ */
+function updateSummaryStats(transactions, totalSpend, totalSaved, categorySpend, monthCount) {
+  const elTotalSpend = document.getElementById('stat-analytics-total-spend');
+  const elTrxCount = document.getElementById('stat-analytics-trx-count');
+  const elTotalSaved = document.getElementById('stat-analytics-total-saved');
+  const elSavingsPct = document.getElementById('stat-analytics-savings-percent');
+  const elTopCat = document.getElementById('stat-analytics-top-cat');
+  const elTopCatVal = document.getElementById('stat-analytics-top-cat-val');
+  const elAvgMonth = document.getElementById('stat-analytics-avg-month');
+  const elMonthCount = document.getElementById('stat-analytics-month-count');
+
+  if (elTotalSpend) elTotalSpend.textContent = formatRupiah(totalSpend);
+  if (elTrxCount) {
+    elTrxCount.textContent = AppState.lang === 'en'
+      ? `${transactions.length} Purchases`
+      : `${transactions.length} Transaksi`;
+  }
+
+  if (elTotalSaved) elTotalSaved.textContent = formatRupiah(totalSaved);
+  if (elSavingsPct) {
+    const normalTotal = totalSpend + totalSaved;
+    const pct = normalTotal > 0 ? ((totalSaved / normalTotal) * 100).toFixed(1) : 0;
+    elSavingsPct.textContent = AppState.lang === 'en'
+      ? `${pct}% saved from normal`
+      : `${pct}% hemat dari harga normal`;
+  }
+
+  // Top category
+  let topCatName = '-';
+  let topCatAmount = 0;
+  for (const [cat, amt] of Object.entries(categorySpend)) {
+    if (amt > topCatAmount) {
+      topCatAmount = amt;
+      topCatName = cat;
+    }
+  }
+
+  if (elTopCat) elTopCat.textContent = topCatName;
+  if (elTopCatVal) elTopCatVal.textContent = topCatAmount > 0 ? formatRupiah(topCatAmount) : 'Rp 0';
+
+  // Average per month
+  const safeMonths = Math.max(1, monthCount || 1);
+  const avgMonthly = totalSpend / safeMonths;
+  if (elAvgMonth) elAvgMonth.textContent = formatRupiah(Math.round(avgMonthly));
+  if (elMonthCount) {
+    elMonthCount.textContent = AppState.lang === 'en'
+      ? `${monthCount} Months recorded`
+      : `${monthCount} Bulan tercatat`;
+  }
+}
+
+/**
+ * Helper to get theme-aware chart colors and fonts
+ */
+function getChartThemeTokens() {
+  const isLight = document.documentElement.getAttribute('data-mode') === 'light' || AppState.themeMode === 'light';
+  return {
+    textColor: isLight ? '#475569' : '#94a3b8',
+    gridColor: isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.07)',
+    tooltipBg: isLight ? '#1e293b' : '#0f172a',
+    tooltipText: '#ffffff',
+    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif"
+  };
+}
+
+/**
+ * 1. Render Category Spending Pie / Doughnut Chart
+ */
+function renderCategoryPieChart(categorySpend, totalSpend) {
+  const canvas = document.getElementById('category-pie-chart');
+  if (!canvas) return;
+
+  const categories = Object.keys(categorySpend);
+  if (categories.length === 0) return;
+
+  const tokens = getChartThemeTokens();
+  const labels = [];
+  const data = [];
+  const bgColors = [];
+  const borderColors = [];
+
+  // Sort categories by spend descending
+  categories.sort((a, b) => categorySpend[b] - categorySpend[a]);
+
+  categories.forEach(cat => {
+    const val = categorySpend[cat];
+    const theme = CATEGORY_COLORS[cat] || DEFAULT_CAT_COLOR;
+    labels.push(cat);
+    data.push(val);
+    bgColors.push(theme.bg);
+    borderColors.push(theme.border);
+  });
+
+  if (categoryPieChartInstance) {
+    categoryPieChartInstance.destroy();
+  }
+
+  const ctx = canvas.getContext('2d');
+  categoryPieChartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 700
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: tokens.tooltipBg,
+          titleColor: tokens.tooltipText,
+          bodyColor: tokens.tooltipText,
+          bodyFont: { family: tokens.fontFamily, size: 12 },
+          titleFont: { family: tokens.fontFamily, size: 13, weight: 'bold' },
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const val = context.raw || 0;
+              const pct = totalSpend > 0 ? ((val / totalSpend) * 100).toFixed(1) : 0;
+              return ` ${formatRupiah(val)} (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Render Category Breakdown list below pie chart
+  renderCategoryBreakdownList(categories, categorySpend, totalSpend);
+}
+
+/**
+ * Render detailed category legend breakdown rows
+ */
+function renderCategoryBreakdownList(categories, categorySpend, totalSpend) {
+  const listEl = document.getElementById('category-breakdown-list');
+  if (!listEl) return;
+
+  listEl.innerHTML = categories.map(cat => {
+    const val = categorySpend[cat] || 0;
+    const pct = totalSpend > 0 ? ((val / totalSpend) * 100).toFixed(1) : 0;
+    const colorInfo = CATEGORY_COLORS[cat] || DEFAULT_CAT_COLOR;
+
+    return `
+      <div class="cat-breakdown-row">
+        <div class="cat-breakdown-left">
+          <span class="cat-color-dot" style="background-color: ${colorInfo.bg}"></span>
+          <span>${colorInfo.icon} ${cat}</span>
+        </div>
+        <div class="cat-breakdown-right">
+          <span class="cat-breakdown-amt">${formatRupiah(val)}</span>
+          <span class="cat-breakdown-pct">${pct}%</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * 2. Render Discount Savings Bar Graph (Amount saved from discounts)
+ */
+function renderDiscountSavingsChart(transactions, categorySavings, monthlySavings) {
+  const canvas = document.getElementById('discount-savings-chart');
+  if (!canvas) return;
+
+  const mode = AppState.discountChartMode || 'category';
+  const tokens = getChartThemeTokens();
+
+  let labels = [];
+  let data = [];
+
+  if (mode === 'category') {
+    const cats = Object.keys(categorySavings);
+    if (cats.length === 0) {
+      labels = [AppState.lang === 'en' ? 'No Discounts' : 'Tanpa Diskon'];
+      data = [0];
+    } else {
+      cats.sort((a, b) => categorySavings[b] - categorySavings[a]);
+      labels = cats.map(c => {
+        const icon = (CATEGORY_COLORS[c] && CATEGORY_COLORS[c].icon) ? CATEGORY_COLORS[c].icon + ' ' : '';
+        return icon + c;
+      });
+      data = cats.map(c => categorySavings[c]);
+    }
+  } else {
+    // Mode: Month
+    if (monthlySavings.length === 0) {
+      labels = ['-'];
+      data = [0];
+    } else {
+      labels = monthlySavings.map(m => m.label);
+      data = monthlySavings.map(m => m.amount);
+    }
+  }
+
+  if (discountSavingsChartInstance) {
+    discountSavingsChartInstance.destroy();
+  }
+
+  const ctx = canvas.getContext('2d');
+  
+  // Create Emerald Gradient
+  const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+  gradient.addColorStop(0, 'rgba(16, 185, 129, 0.85)');
+  gradient.addColorStop(1, 'rgba(5, 150, 105, 0.25)');
+
+  discountSavingsChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: AppState.lang === 'en' ? 'Discounts Saved' : 'Diskon Dihemat',
+        data: data,
+        backgroundColor: gradient,
+        borderColor: '#10b981',
+        borderWidth: 1.5,
+        borderRadius: 6,
+        maxBarThickness: 36
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 700
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: tokens.tooltipBg,
+          titleColor: tokens.tooltipText,
+          bodyColor: tokens.tooltipText,
+          bodyFont: { family: tokens.fontFamily, size: 12 },
+          titleFont: { family: tokens.fontFamily, size: 13, weight: 'bold' },
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const val = context.raw || 0;
+              return AppState.lang === 'en' ? ` Saved: ${formatRupiah(val)}` : ` Hemat: ${formatRupiah(val)}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            color: tokens.textColor,
+            font: { family: tokens.fontFamily, size: 11 }
+          }
+        },
+        y: {
+          grid: {
+            color: tokens.gridColor
+          },
+          ticks: {
+            color: tokens.textColor,
+            font: { family: tokens.fontFamily, size: 10 },
+            callback: function(val) {
+              if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Jt';
+              if (val >= 1000) return (val / 1000).toFixed(0) + 'rb';
+              return val;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/**
+ * 3. Render Monthly Spending Ogive (Cumulative Frequency Polygon)
+ * 
+ * An Ogive plots cumulative money spent over successive months:
+ * Month 1: S_1
+ * Month 2: S_1 + S_2
+ * Month 3: S_1 + S_2 + S_3
+ * Showing the progressive accumulation curve of expenditure over time.
+ */
+function renderMonthlyOgiveChart(monthlySpendList) {
+  const canvas = document.getElementById('ogive-chart');
+  if (!canvas) return;
+
+  const tokens = getChartThemeTokens();
+
+  if (!monthlySpendList || monthlySpendList.length === 0) return;
+
+  const labels = [];
+  const cumulativeData = [];
+  const individualMonthlyData = [];
+
+  let runningSum = 0;
+
+  monthlySpendList.forEach(m => {
+    labels.push(m.label);
+    individualMonthlyData.push(m.amount);
+    runningSum += m.amount;
+    cumulativeData.push(runningSum);
+  });
+
+  if (ogiveChartInstance) {
+    ogiveChartInstance.destroy();
+  }
+
+  const ctx = canvas.getContext('2d');
+
+  // Fill gradient under ogive line
+  const fillGradient = ctx.createLinearGradient(0, 0, 0, 240);
+  fillGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+  fillGradient.addColorStop(0.7, 'rgba(59, 130, 246, 0.08)');
+  fillGradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+  ogiveChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: AppState.lang === 'en' ? 'Cumulative Spend (Ogive)' : 'Akumulasi Kumulatif (Ogive)',
+          data: cumulativeData,
+          borderColor: '#3b82f6',
+          borderWidth: 3,
+          backgroundColor: fillGradient,
+          fill: true,
+          tension: 0.35,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#3b82f6',
+          pointBorderWidth: 2.5
+        },
+        {
+          label: AppState.lang === 'en' ? 'Monthly Spend' : 'Belanja Bulan Ini',
+          data: individualMonthlyData,
+          type: 'bar',
+          backgroundColor: 'rgba(148, 163, 184, 0.22)',
+          borderColor: 'rgba(148, 163, 184, 0.4)',
+          borderWidth: 1,
+          borderRadius: 4,
+          maxBarThickness: 24,
+          order: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      animation: {
+        duration: 800,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            color: tokens.textColor,
+            font: { family: tokens.fontFamily, size: 11, weight: '600' },
+            boxWidth: 12,
+            padding: 10
+          }
+        },
+        tooltip: {
+          backgroundColor: tokens.tooltipBg,
+          titleColor: tokens.tooltipText,
+          bodyColor: tokens.tooltipText,
+          bodyFont: { family: tokens.fontFamily, size: 12 },
+          titleFont: { family: tokens.fontFamily, size: 13, weight: 'bold' },
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(context) {
+              const val = context.raw || 0;
+              if (context.datasetIndex === 0) {
+                return AppState.lang === 'en'
+                  ? ` Ogive Kumulatif: ${formatRupiah(val)}`
+                  : ` Total Kumulatif (Ogive): ${formatRupiah(val)}`;
+              } else {
+                return AppState.lang === 'en'
+                  ? ` Monthly Spend: ${formatRupiah(val)}`
+                  : ` Belanja Bulan Ini: ${formatRupiah(val)}`;
+              }
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: tokens.gridColor
+          },
+          ticks: {
+            color: tokens.textColor,
+            font: { family: tokens.fontFamily, size: 11 }
+          }
+        },
+        y: {
+          grid: {
+            color: tokens.gridColor
+          },
+          ticks: {
+            color: tokens.textColor,
+            font: { family: tokens.fontFamily, size: 10 },
+            callback: function(val) {
+              if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Jt';
+              if (val >= 1000) return (val / 1000).toFixed(0) + 'rb';
+              return val;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/**
+ * Multi-Month Realistic Sample Generator for testing charts
+ */
+function loadMultiMonthSampleData() {
+  const now = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
+
+  const samples = [
+    {
+      id: 'sample_trx_1',
+      monthName: AppState.lang === 'en' ? 'July Grocery Stock' : 'Belanja Kos Juli',
+      timestamp: now - (92 * dayMs),
+      budgetCap: 500000,
+      totalSpend: 382000,
+      items: [
+        { id: 's1', name: 'Beras Ramos 5kg', category: 'Bahan Pokok', unit: 'pack', qty: 1, originalPrice: 75000, discountString: '10', finalUnitPrice: 67500, subtotal: 67500 },
+        { id: 's2', name: 'Minyak Goreng 2L', category: 'Bahan Pokok', unit: 'liter', qty: 2, originalPrice: 38000, discountString: '20', finalUnitPrice: 30400, subtotal: 60800 },
+        { id: 's3', name: 'Telur Ayam 1kg', category: 'Bahan Pokok', unit: 'kg', qty: 2, originalPrice: 31000, discountString: '', finalUnitPrice: 31000, subtotal: 62000 },
+        { id: 's4', name: 'Mie Goreng Dus', category: 'Makanan Instan', unit: 'pack', qty: 1, originalPrice: 120000, discountString: '15', finalUnitPrice: 102000, subtotal: 102000 },
+        { id: 's5', name: 'Sabun Mandi Pack', category: 'Perlengkapan Mandi', unit: 'pack', qty: 1, originalPrice: 42000, discountString: '25', finalUnitPrice: 31500, subtotal: 31500 },
+        { id: 's6', name: 'Biskuit Roma Kelapa', category: 'Camilan', unit: 'pack', qty: 4, originalPrice: 16000, discountString: '50+20', finalUnitPrice: 6400, subtotal: 25600 },
+        { id: 's7', name: 'Garam & Kecap Manis', category: 'Bumbu & Masak', unit: 'botol', qty: 2, originalPrice: 16300, discountString: '', finalUnitPrice: 16300, subtotal: 32600 }
+      ]
+    },
+    {
+      id: 'sample_trx_2',
+      monthName: AppState.lang === 'en' ? 'August Mid-Month' : 'Belanja Kos Agustus',
+      timestamp: now - (63 * dayMs),
+      budgetCap: 500000,
+      totalSpend: 428000,
+      items: [
+        { id: 's8', name: 'Beras Ramos 5kg', category: 'Bahan Pokok', unit: 'pack', qty: 1, originalPrice: 75000, discountString: '', finalUnitPrice: 75000, subtotal: 75000 },
+        { id: 's9', name: 'Deterjen Bubuk 1.8kg', category: 'Perlengkapan Cuci', unit: 'pack', qty: 1, originalPrice: 38000, discountString: '20', finalUnitPrice: 30400, subtotal: 30400 },
+        { id: 's10', name: 'Pembersih Lantai', category: 'Perlengkapan Cuci', unit: 'botol', qty: 1, originalPrice: 22000, discountString: '10', finalUnitPrice: 19800, subtotal: 19800 },
+        { id: 's11', name: 'Susu UHT Cokelat 1L', category: 'Makanan Instan', unit: 'pcs', qty: 3, originalPrice: 20000, discountString: '50+20', finalUnitPrice: 8000, subtotal: 24000 },
+        { id: 's12', name: 'Kopi Kapal Api Bag', category: 'Makanan Instan', unit: 'pack', qty: 2, originalPrice: 28000, discountString: '', finalUnitPrice: 28000, subtotal: 56000 },
+        { id: 's13', name: 'Daging Ayam Fillet', category: 'Bahan Pokok', unit: 'kg', qty: 2, originalPrice: 52000, discountString: '10', finalUnitPrice: 46800, subtotal: 93600 },
+        { id: 's14', name: 'Keripik Kentang', category: 'Camilan', unit: 'pack', qty: 3, originalPrice: 18000, discountString: '20', finalUnitPrice: 14400, subtotal: 43200 },
+        { id: 's15', name: 'Pasta Gigi & Sikat', category: 'Perlengkapan Mandi', unit: 'pack', qty: 2, originalPrice: 22000, discountString: '50', finalUnitPrice: 11000, subtotal: 22000 },
+        { id: 's16', name: 'Bawang Merah & Putih', category: 'Bumbu & Masak', unit: 'kg', qty: 1, originalPrice: 34000, discountString: '', finalUnitPrice: 34000, subtotal: 34000 },
+        { id: 's17', name: 'Tisu Toilet 4-Roll', category: 'Lainnya', unit: 'pack', qty: 1, originalPrice: 30000, discountString: '', finalUnitPrice: 30000, subtotal: 30000 }
+      ]
+    },
+    {
+      id: 'sample_trx_3',
+      monthName: AppState.lang === 'en' ? 'September Essentials' : 'Belanja Kos September',
+      timestamp: now - (31 * dayMs),
+      budgetCap: 500000,
+      totalSpend: 395000,
+      items: [
+        { id: 's18', name: 'Beras Ramos 5kg', category: 'Bahan Pokok', unit: 'pack', qty: 1, originalPrice: 74000, discountString: '10', finalUnitPrice: 66600, subtotal: 66600 },
+        { id: 's19', name: 'Minyak Goreng 2L', category: 'Bahan Pokok', unit: 'liter', qty: 1, originalPrice: 36000, discountString: '', finalUnitPrice: 36000, subtotal: 36000 },
+        { id: 's20', name: 'Telur Ayam 1kg', category: 'Bahan Pokok', unit: 'kg', qty: 2, originalPrice: 29000, discountString: '', finalUnitPrice: 29000, subtotal: 58000 },
+        { id: 's21', name: 'Nugget Ayam 500g', category: 'Makanan Instan', unit: 'pack', qty: 2, originalPrice: 48000, discountString: '25', finalUnitPrice: 36000, subtotal: 72000 },
+        { id: 's22', name: 'Pewangi Pakaian', category: 'Perlengkapan Cuci', unit: 'pack', qty: 2, originalPrice: 24000, discountString: '50+20', finalUnitPrice: 9600, subtotal: 19200 },
+        { id: 's23', name: 'Sabun Cuci Piring', category: 'Perlengkapan Cuci', unit: 'pack', qty: 2, originalPrice: 17000, discountString: '', finalUnitPrice: 17000, subtotal: 34000 },
+        { id: 's24', name: 'Wafer Cokelat Kaleng', category: 'Camilan', unit: 'kaleng', qty: 1, originalPrice: 38000, discountString: '30', finalUnitPrice: 26600, subtotal: 26600 },
+        { id: 's25', name: 'Bumbu Racik Instan', category: 'Bumbu & Masak', unit: 'pack', qty: 6, originalPrice: 4500, discountString: '', finalUnitPrice: 4500, subtotal: 27000 },
+        { id: 's26', name: 'Shampo Anti Ketombe', category: 'Perlengkapan Mandi', unit: 'botol', qty: 1, originalPrice: 32000, discountString: '20', finalUnitPrice: 25600, subtotal: 25600 },
+        { id: 's27', name: 'Kantong Sampah Roll', category: 'Lainnya', unit: 'pack', qty: 2, originalPrice: 15000, discountString: '', finalUnitPrice: 15000, subtotal: 30000 }
+      ]
+    },
+    {
+      id: 'sample_trx_4',
+      monthName: AppState.lang === 'en' ? 'October Fresh Market' : 'Belanja Kos Oktober',
+      timestamp: now - (5 * dayMs),
+      budgetCap: 500000,
+      totalSpend: 310000,
+      items: [
+        { id: 's28', name: 'Beras Ramos 5kg', category: 'Bahan Pokok', unit: 'pack', qty: 1, originalPrice: 74000, discountString: '10', finalUnitPrice: 66600, subtotal: 66600 },
+        { id: 's29', name: 'Telur Ayam 1kg', category: 'Bahan Pokok', unit: 'kg', qty: 2, originalPrice: 28500, discountString: '', finalUnitPrice: 28500, subtotal: 57000 },
+        { id: 's30', name: 'Mie Instan Kuah 10pcs', category: 'Makanan Instan', unit: 'pack', qty: 1, originalPrice: 35000, discountString: '', finalUnitPrice: 35000, subtotal: 35000 },
+        { id: 's31', name: 'Sabun Mandi Refill 450ml', category: 'Perlengkapan Mandi', unit: 'pack', qty: 2, originalPrice: 28000, discountString: '50+20', finalUnitPrice: 11200, subtotal: 22400 },
+        { id: 's32', name: 'Deterjen Cair Matic', category: 'Perlengkapan Cuci', unit: 'pack', qty: 1, originalPrice: 36000, discountString: '20', finalUnitPrice: 28800, subtotal: 28800 },
+        { id: 's33', name: 'Camilan Kacang & Keripik', category: 'Camilan', unit: 'pack', qty: 3, originalPrice: 17000, discountString: '15', finalUnitPrice: 14450, subtotal: 43350 },
+        { id: 's34', name: 'Kecap & Sambal Botol', category: 'Bumbu & Masak', unit: 'botol', qty: 2, originalPrice: 18000, discountString: '', finalUnitPrice: 18000, subtotal: 36000 },
+        { id: 's35', name: 'Spons Cuci & Plastik Wrap', category: 'Lainnya', unit: 'pcs', qty: 1, originalPrice: 20850, discountString: '', finalUnitPrice: 20850, subtotal: 20850 }
+      ]
+    }
+  ];
+
+  AppState.history = samples;
+  saveHistoryToStorage();
+  renderHistoryTab();
+  updateComparatorBadges();
+  renderAnalyticsTab();
+
+  showToast(AppState.lang === 'en'
+    ? 'Sample multi-month shopping data loaded successfully!'
+    : 'Data sampel belanja 4 bulan berhasil dimuat!');
+}
+
+/**
+ * Initialize event listeners for the Analytics Tab
+ */
+function initAnalyticsEvents() {
+  // Period filter pills
+  const periodContainer = document.getElementById('analytics-period-filters');
+  if (periodContainer) {
+    periodContainer.addEventListener('click', (e) => {
+      const pill = e.target.closest('.period-pill');
+      if (!pill) return;
+      const period = pill.getAttribute('data-period');
+      if (!period) return;
+
+      AppState.analyticsPeriod = period;
+
+      periodContainer.querySelectorAll('.period-pill').forEach(p => {
+        p.classList.toggle('active', p === pill);
+      });
+
+      renderAnalyticsTab();
+    });
+  }
+
+  // Refresh button
+  const refreshBtn = document.getElementById('refresh-analytics-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      renderAnalyticsTab();
+      showToast(AppState.lang === 'en' ? 'Charts refreshed!' : 'Grafik disegarkan!');
+    });
+  }
+
+  // Bar chart mode toggle (category vs month)
+  const toggleCat = document.getElementById('toggle-disc-cat');
+  const toggleMonth = document.getElementById('toggle-disc-month');
+
+  if (toggleCat) {
+    toggleCat.addEventListener('click', () => {
+      AppState.discountChartMode = 'category';
+      toggleCat.classList.add('active');
+      if (toggleMonth) toggleMonth.classList.remove('active');
+      renderAnalyticsTab();
+    });
+  }
+
+  if (toggleMonth) {
+    toggleMonth.addEventListener('click', () => {
+      AppState.discountChartMode = 'month';
+      toggleMonth.classList.add('active');
+      if (toggleCat) toggleCat.classList.remove('active');
+      renderAnalyticsTab();
+    });
+  }
+
+  // Load sample button in empty state
+  const loadSampleBtn = document.getElementById('load-sample-analytics-btn');
+  if (loadSampleBtn) {
+    loadSampleBtn.addEventListener('click', loadMultiMonthSampleData);
+  }
+}

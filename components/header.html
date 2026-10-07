@@ -12,14 +12,17 @@
     </div>
     <div class="header-actions">
       <!-- Dark / Light Mode Toggle Button -->
-      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang"
+        aria-label="Ganti Mode Tampilan">
         <i data-lucide="moon" id="mode-toggle-icon"></i>
       </button>
       <!-- Language Toggle Button (ID / EN) -->
-      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language"
+        aria-label="Ganti Bahasa">
         <span id="lang-indicator">EN</span>
       </button>
-      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google"
+        aria-label="Akun Pengguna">
         <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
         <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
       </button>
@@ -54,16 +57,19 @@
         <span id="budget-status-dot" class="dot"></span>
         <span id="budget-status-text">Dompet Aman (0%)</span>
       </div>
-      
-      <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
-      <div id="header-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
-        <span class="comp-icon">-</span>
-        <span class="comp-label">vs Bulan Lalu</span>
-      </div>
 
       <div class="remaining-stat">
         <span id="budget-remaining-label">Sisa Saldo:</span>
         <strong id="header-budget-remaining">Rp 500.000</strong>
+      </div>
+    </div>
+
+    <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
+    <div class="budget-comparator-subrow" id="header-comparator-subrow">
+      <div id="header-comparator-badge" class="spending-comparator-badge comp-none"
+        title="Perbandingan Belanja vs Bulan Lalu">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
       </div>
     </div>
 

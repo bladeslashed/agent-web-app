@@ -18,6 +18,7 @@ const ASSETS_TO_CACHE = [
   './css/navigation.css',
   './css/cart.css',
   './css/history.css',
+  './css/analytics.css',
   './css/settings.css',
   './css/modals.css',
   // Modular JS
@@ -28,6 +29,8 @@ const ASSETS_TO_CACHE = [
   './js/budget.js',
   './js/cart.js',
   './js/history.js',
+  './js/analytics.js',
+  './js/lib/chart.umd.js',
   './js/shelf.js',
   './js/theme.js',
   './js/auth.js',
@@ -68,11 +71,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Direct network bypass for Firebase Auth, Google APIs, and Firestore
-  if (url.hostname.includes('googleapis.com') || 
-      url.hostname.includes('google.com') || 
-      url.hostname.includes('gstatic.com') || 
-      url.hostname.includes('firebaseio.com') || 
-      url.hostname.includes('firebaseapp.com')) {
+  if (url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('google.com') ||
+    url.hostname.includes('gstatic.com') ||
+    url.hostname.includes('firebaseio.com') ||
+    url.hostname.includes('firebaseapp.com')) {
     return;
   }
 
@@ -86,7 +89,7 @@ self.addEventListener('fetch', (event) => {
             if (networkResponse && networkResponse.status === 200) {
               caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
             }
-          }).catch(() => {});
+          }).catch(() => { });
           return cachedResponse;
         }
         return fetch(event.request).then((response) => {

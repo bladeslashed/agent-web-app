@@ -23,6 +23,7 @@ function buildIndexHtml() {
   const headerHtml = readComponent('components/header.html');
   const cartTabHtml = readComponent('components/cart-tab.html');
   const historyTabHtml = readComponent('components/history-tab.html');
+  const analyticsTabHtml = readComponent('components/analytics-tab.html');
   const settingsTabHtml = readComponent('components/settings-tab.html');
   const navHtml = readComponent('components/navigation.html');
   const addItemModalHtml = readComponent('components/modals/add-item-modal.html');
@@ -62,6 +63,10 @@ function buildIndexHtml() {
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
+  <!-- Chart.js CDN & Local Fallback for Offline PWA Support -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>if (typeof Chart === 'undefined') { document.write('<script src="js/lib/chart.umd.js"><\\/script>'); }</script>
+
   <!-- Modular Stylesheet (Master stylesheet imports css/*.css) -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -82,7 +87,10 @@ function buildIndexHtml() {
         <!-- COMPONENT: TAB 2 RIWAYAT (components/history-tab.html) -->
         ${historyTabHtml}
 
-        <!-- COMPONENT: TAB 3 ANGGARAN & AKUN (components/settings-tab.html) -->
+        <!-- COMPONENT: TAB 3 GRAFIK & ANALISIS (components/analytics-tab.html) -->
+        ${analyticsTabHtml}
+
+        <!-- COMPONENT: TAB 4 ANGGARAN & AKUN (components/settings-tab.html) -->
         ${settingsTabHtml}
 
       </main>
@@ -127,6 +135,7 @@ function buildIndexHtml() {
   <script src="js/theme.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/modals.js"></script>
+  <script src="js/analytics.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

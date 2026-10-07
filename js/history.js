@@ -141,6 +141,7 @@ function openHistoryDetail(trxId) {
         modal.classList.add('hidden');
         renderHistoryTab();
         renderCartItems();
+        if (typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
         showToast(AppState.lang === 'en' ? 'History record deleted.' : 'Catatan riwayat berhasil dihapus.');
       }
     };
@@ -191,15 +192,16 @@ function performCheckoutTransaction() {
   saveHistoryToStorage();
   saveCartToStorage();
 
-  // If user is authenticated, immediately save to Firestore cloud
+  // If user is authenticated, save to Firestore cloud silently in background (no sync toast)
   if (currentUser && typeof syncStateToFirestore === 'function') {
-    syncStateToFirestore(true);
+    syncStateToFirestore(false);
   }
 
   // Update UI views
   renderCartItems();
   renderHistoryTab();
   updateComparatorBadges();
+  if (typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
 
   showToast(AppState.lang === 'en'
     ? 'Shopping trip saved to history and comparator!'

@@ -98,8 +98,8 @@ function setTheme(themeName) {
   };
 
   const displayName = themeNames[themeName] || themeName;
-  const msg = AppState.lang === 'en' 
-    ? `Theme set to: ${displayName}` 
+  const msg = AppState.lang === 'en'
+    ? `Theme set to: ${displayName}`
     : `Tema diganti ke: ${displayName}`;
 
   if (typeof showToast === 'function') {
@@ -119,12 +119,16 @@ function setThemeMode(mode) {
   applyThemeToDOM(AppState.theme, mode);
   updateThemeUI(AppState.theme, mode);
 
-  const modeName = mode === 'dark' 
+  const modeName = mode === 'dark'
     ? (AppState.lang === 'en' ? 'Dark Mode' : 'Mode Gelap')
     : (AppState.lang === 'en' ? 'Light Mode' : 'Mode Terang');
 
   if (typeof showToast === 'function') {
     showToast(`${modeName} ${AppState.lang === 'en' ? 'activated' : 'diaktifkan'}`);
+  }
+
+  if (typeof renderAnalyticsTab === 'function' && AppState.activeTab === 'tab-grafik') {
+    renderAnalyticsTab();
   }
 }
 

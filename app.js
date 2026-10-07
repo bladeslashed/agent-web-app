@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       AppState.activeTab = targetTab;
       if (targetTab === 'tab-riwayat') renderHistoryTab();
       if (targetTab === 'tab-belanja') renderCartItems();
+      if (targetTab === 'tab-grafik' && typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
       if (window.lucide) lucide.createIcons();
     });
   });
@@ -260,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cartList) {
     cartList.addEventListener('click', (e) => {
       const btn = e.target.closest('button');
-      
+
       // Allow tapping card-item-info to edit
       if (!btn) {
         const itemInfo = e.target.closest('.card-item-info');
@@ -609,6 +610,11 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerCartPushAnimation();
       }
     });
+  }
+
+  // 25. Initialize Analytics Tab Events
+  if (typeof initAnalyticsEvents === 'function') {
+    initAnalyticsEvents();
   }
 });
 

@@ -48,10 +48,34 @@ const I18N = {
     catDrinks: 'Minuman & Susu',
     catBath: 'Mandi & Rawat',
     catClean: 'Cuci & Rumah',
-    catSnacks: 'Camilan',
-    tabBelanja: 'Troli Belanja',
+    tabBelanja: 'Troli',
     tabRiwayat: 'Riwayat',
-    tabAnggaran: 'Anggaran & Akun',
+    tabGrafik: 'Grafik',
+    tabAnggaran: 'Pengaturan',
+    analyticsSectionTitle: 'Grafik & Tren Belanja',
+    analyticsSectionSubtitle: 'Visualisasi kategori, penghematan diskon, dan ogive bulanan',
+    periodLabel: 'Periode Waktu:',
+    periodAllTime: 'Semua Riwayat',
+    period6Months: '6 Bulan Terakhir',
+    period3Months: '3 Bulan Terakhir',
+    period90Days: '90 Hari Terakhir',
+    period30Days: '30 Hari Terakhir',
+    statTotalSpend: 'Total Belanja',
+    statTotalSaved: 'Total Hemat Diskon',
+    statTopCat: 'Kategori Terbesar',
+    statAvgMonth: 'Rata-rata / Bulan',
+    chartCatTitle: 'Pengeluaran per Kategori',
+    chartCatSub: 'Porsi pengeluaran berdasarkan kategori barang',
+    chartDiscTitle: 'Uang Dihemat dari Diskon',
+    chartDiscSub: 'Total rupiah yang dihemat dari promo & diskon bertingkat',
+    chartOgiveTitle: 'Kurva Ogive Pengeluaran Bulanan',
+    chartOgiveSub: 'Akumulasi pengeluaran belanja dari bulan ke bulan',
+    ogiveBadge: 'Ogive Kumulatif',
+    ogiveInfoTitle: 'Apa itu Kurva Ogive?',
+    ogiveInfoDesc: 'Grafik Ogive (frekuensi kumulatif) menunjukkan total pengeluaran uang belanja yang terus terakumulasi seiring waktu, memperlihatkan laju pengeluaran bulanan Anda.',
+    emptyAnalyticsTitle: 'Belum Ada Data Grafik',
+    emptyAnalyticsDesc: 'Tidak ada riwayat transaksi pada periode waktu ini. Selesaikan transaksi di Troli atau muat sampel riwayat multi-bulan untuk melihat grafik.',
+    loadAnalyticsSample: 'Muat Riwayat Sampel Multi-Bulan',
     authTitle: 'Akun & Sinkronisasi Cloud',
     authSubtitle: 'Tersambung ke Firebase Firestore (shop-tracked)',
     authPromoTitle: 'Simpan Aman di Cloud',
@@ -133,11 +157,34 @@ const I18N = {
     catInstant: 'Noodles & Food',
     catDrinks: 'Drinks & Milk',
     catBath: 'Bath & Care',
-    catClean: 'Laundry & Home',
-    catSnacks: 'Snacks',
-    tabBelanja: 'Grocery Cart',
+    tabBelanja: 'Cart',
     tabRiwayat: 'History',
-    tabAnggaran: 'Budget & Account',
+    tabGrafik: 'Charts',
+    tabAnggaran: 'Settings',
+    analyticsSectionTitle: 'Spending Analytics & Trends',
+    analyticsSectionSubtitle: 'Category breakdown, discount savings, and monthly ogive curve',
+    periodLabel: 'Time Period:',
+    periodAllTime: 'All Time History',
+    period6Months: 'Last 6 Months',
+    period3Months: 'Last 3 Months',
+    period90Days: 'Last 90 Days',
+    period30Days: 'Last 30 Days',
+    statTotalSpend: 'Total Spending',
+    statTotalSaved: 'Total Discount Savings',
+    statTopCat: 'Top Category',
+    statAvgMonth: 'Average / Month',
+    chartCatTitle: 'Spending by Category',
+    chartCatSub: 'Expense breakdown across grocery categories',
+    chartDiscTitle: 'Money Saved from Discounts',
+    chartDiscSub: 'Cumulative savings from promos & tiered discounts',
+    chartOgiveTitle: 'Monthly Spending Ogive Curve',
+    chartOgiveSub: 'Cumulative spending accumulation month over month',
+    ogiveBadge: 'Cumulative Ogive',
+    ogiveInfoTitle: 'What is an Ogive Curve?',
+    ogiveInfoDesc: 'An Ogive (cumulative frequency polygon) illustrates how total grocery expenses accumulate progressively over consecutive months.',
+    emptyAnalyticsTitle: 'No Chart Data Available',
+    emptyAnalyticsDesc: 'No purchase history found for this time period. Complete transactions or load multi-month sample data to generate charts.',
+    loadAnalyticsSample: 'Load Multi-Month Sample Data',
     authTitle: 'Account & Cloud Sync',
     authSubtitle: 'Connected to Firebase Firestore (shop-tracked)',
     authPromoTitle: 'Secure Cloud Storage',
@@ -318,8 +365,53 @@ function applyLanguage(lang) {
   if (navBelanjaLabel) navBelanjaLabel.textContent = t.tabBelanja;
   const navRiwayatLabel = document.querySelector('#nav-tab-riwayat .nav-label');
   if (navRiwayatLabel) navRiwayatLabel.textContent = t.tabRiwayat;
+  const navGrafikLabel = document.querySelector('#nav-tab-grafik .nav-label');
+  if (navGrafikLabel) navGrafikLabel.textContent = t.tabGrafik;
   const navAnggaranLabel = document.querySelector('#nav-tab-anggaran .nav-label');
   if (navAnggaranLabel) navAnggaranLabel.textContent = t.tabAnggaran;
+
+  // Analytics Tab UI Translations
+  const anTitle = document.getElementById('analytics-section-title');
+  if (anTitle) anTitle.textContent = t.analyticsSectionTitle;
+  const anSub = document.getElementById('analytics-section-subtitle');
+  if (anSub) anSub.textContent = t.analyticsSectionSubtitle;
+  const filterPeriodLabel = document.getElementById('filter-period-label');
+  if (filterPeriodLabel) filterPeriodLabel.textContent = t.periodLabel;
+  const labelStatSpend = document.getElementById('label-stat-total-spend');
+  if (labelStatSpend) labelStatSpend.textContent = t.statTotalSpend;
+  const labelStatSaved = document.getElementById('label-stat-total-saved');
+  if (labelStatSaved) labelStatSaved.textContent = t.statTotalSaved;
+  const labelStatTopCat = document.getElementById('label-stat-top-cat');
+  if (labelStatTopCat) labelStatTopCat.textContent = t.statTopCat;
+  const labelStatAvgMonth = document.getElementById('label-stat-avg-month');
+  if (labelStatAvgMonth) labelStatAvgMonth.textContent = t.statAvgMonth;
+
+  const chartCatTitle = document.getElementById('chart-cat-title');
+  if (chartCatTitle) chartCatTitle.textContent = t.chartCatTitle;
+  const chartCatSub = document.getElementById('chart-cat-sub');
+  if (chartCatSub) chartCatSub.textContent = t.chartCatSub;
+
+  const chartDiscTitle = document.getElementById('chart-disc-title');
+  if (chartDiscTitle) chartDiscTitle.textContent = t.chartDiscTitle;
+  const chartDiscSub = document.getElementById('chart-disc-sub');
+  if (chartDiscSub) chartDiscSub.textContent = t.chartDiscSub;
+
+  const chartOgiveTitle = document.getElementById('chart-ogive-title');
+  if (chartOgiveTitle) chartOgiveTitle.textContent = t.chartOgiveTitle;
+  const chartOgiveSub = document.getElementById('chart-ogive-sub');
+  if (chartOgiveSub) chartOgiveSub.textContent = t.chartOgiveSub;
+
+  const ogiveInfoTitle = document.getElementById('ogive-info-title');
+  if (ogiveInfoTitle) ogiveInfoTitle.textContent = t.ogiveInfoTitle;
+  const ogiveInfoDesc = document.getElementById('ogive-info-desc');
+  if (ogiveInfoDesc) ogiveInfoDesc.textContent = t.ogiveInfoDesc;
+
+  const emptyAnTitle = document.getElementById('empty-analytics-title');
+  if (emptyAnTitle) emptyAnTitle.textContent = t.emptyAnalyticsTitle;
+  const emptyAnDesc = document.getElementById('empty-analytics-desc');
+  if (emptyAnDesc) emptyAnDesc.textContent = t.emptyAnalyticsDesc;
+  const labelLoadAnSample = document.getElementById('label-load-analytics-sample');
+  if (labelLoadAnSample) labelLoadAnSample.textContent = t.loadAnalyticsSample;
 
   // Checkout Success Modal
   const checkoutSuccessHeading = document.getElementById('checkout-success-heading');
@@ -351,6 +443,7 @@ function applyLanguage(lang) {
   if (typeof updateBudgetSafetyUI === 'function') updateBudgetSafetyUI();
   if (typeof updateComparatorBadges === 'function') updateComparatorBadges();
   if (typeof renderHistoryTab === 'function') renderHistoryTab();
+  if (typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
   if (window.lucide) lucide.createIcons();
 }
 

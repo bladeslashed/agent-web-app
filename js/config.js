@@ -47,5 +47,7 @@ const AppState = {
   themeMode: localStorage.getItem('smart_grocery_mode') || 'dark',
   pendingCheckout: false,
   shelfCategoryFilter: 'all',
-  shelfSearchQuery: ''
+  shelfSearchQuery: '',
+  analyticsPeriod: 'all',
+  discountChartMode: 'category'
 };

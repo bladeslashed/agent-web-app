@@ -29,6 +29,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
+  <!-- Chart.js CDN & Local Fallback for Offline PWA Support -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>if (typeof Chart === 'undefined') { document.write('<script src="js/lib/chart.umd.js"><\/script>'); }</script>
+
   <!-- Modular Stylesheet (Master stylesheet imports css/*.css) -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -52,14 +56,17 @@
     </div>
     <div class="header-actions">
       <!-- Dark / Light Mode Toggle Button -->
-      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang" aria-label="Ganti Mode Tampilan">
+      <button id="mode-toggle-btn" class="icon-btn theme-mode-btn" title="Ganti Mode Gelap / Terang"
+        aria-label="Ganti Mode Tampilan">
         <i data-lucide="moon" id="mode-toggle-icon"></i>
       </button>
       <!-- Language Toggle Button (ID / EN) -->
-      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language" aria-label="Ganti Bahasa">
+      <button id="lang-toggle-btn" class="icon-btn lang-badge-btn" title="Ganti Bahasa / Switch Language"
+        aria-label="Ganti Bahasa">
         <span id="lang-indicator">EN</span>
       </button>
-      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google" aria-label="Akun Pengguna">
+      <button id="auth-btn-header" class="icon-btn auth-avatar-btn" title="Masuk dengan Akun Google"
+        aria-label="Akun Pengguna">
         <span id="auth-header-avatar" class="avatar-placeholder"><i data-lucide="user"></i></span>
         <span id="auth-header-indicator" class="auth-sync-dot" title="Status Cloud Firebase"></span>
       </button>
@@ -94,16 +101,19 @@
         <span id="budget-status-dot" class="dot"></span>
         <span id="budget-status-text">Dompet Aman (0%)</span>
       </div>
-      
-      <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
-      <div id="header-comparator-badge" class="spending-comparator-badge comp-none" title="Perbandingan Belanja vs Bulan Lalu">
-        <span class="comp-icon">-</span>
-        <span class="comp-label">vs Bulan Lalu</span>
-      </div>
 
       <div class="remaining-stat">
         <span id="budget-remaining-label">Sisa Saldo:</span>
         <strong id="header-budget-remaining">Rp 500.000</strong>
+      </div>
+    </div>
+
+    <!-- Spending Comparator Badge vs Last Month (Top Budget Bar) -->
+    <div class="budget-comparator-subrow" id="header-comparator-subrow">
+      <div id="header-comparator-badge" class="spending-comparator-badge comp-none"
+        title="Perbandingan Belanja vs Bulan Lalu">
+        <span class="comp-icon">-</span>
+        <span class="comp-label">vs Bulan Lalu</span>
       </div>
     </div>
 
@@ -257,7 +267,189 @@
   </div>
 </section>
 
-        <!-- COMPONENT: TAB 3 ANGGARAN & AKUN (components/settings-tab.html) -->
+        <!-- COMPONENT: TAB 3 GRAFIK & ANALISIS (components/analytics-tab.html) -->
+        <!-- TAB 3: GRAFIK & ANALISIS PENGELUARAN -->
+<section id="tab-grafik" class="tab-view">
+  <!-- Section Title -->
+  <div class="section-title-wrap">
+    <div>
+      <h2 id="analytics-section-title" class="section-title">Grafik & Tren Belanja</h2>
+      <p id="analytics-section-subtitle" class="section-subtitle">Visualisasi kategori, penghematan diskon, dan ogive bulanan</p>
+    </div>
+    <button id="refresh-analytics-btn" class="icon-btn-secondary" title="Segarkan Grafik" aria-label="Segarkan Grafik">
+      <i data-lucide="refresh-cw"></i>
+    </button>
+  </div>
+
+  <!-- Time Period Filter Bar (All Time, 6 Bulan, 3 Bulan, 90 Hari, 30 Hari) -->
+  <div class="analytics-filter-card">
+    <div class="filter-header">
+      <div class="filter-title-wrap">
+        <i data-lucide="calendar"></i>
+        <span id="filter-period-label">Periode Waktu:</span>
+      </div>
+      <span id="filter-period-summary" class="filter-summary-badge">Semua Riwayat</span>
+    </div>
+    <div class="analytics-filter-pills" id="analytics-period-filters">
+      <button type="button" class="period-pill active" data-period="all" id="pill-period-all">Semua</button>
+      <button type="button" class="period-pill" data-period="6m" id="pill-period-6m">6 Bulan</button>
+      <button type="button" class="period-pill" data-period="3m" id="pill-period-3m">3 Bulan</button>
+      <button type="button" class="period-pill" data-period="90d" id="pill-period-90d">90 Hari</button>
+      <button type="button" class="period-pill" data-period="30d" id="pill-period-30d">30 Hari</button>
+    </div>
+  </div>
+
+  <!-- Key Metrics Summary Cards Grid -->
+  <div class="analytics-summary-grid">
+    <div class="analytics-stat-card">
+      <div class="stat-card-icon bg-brand">
+        <i data-lucide="credit-card"></i>
+      </div>
+      <div class="stat-card-info">
+        <span class="stat-card-label" id="label-stat-total-spend">Total Belanja</span>
+        <strong class="stat-card-val text-brand" id="stat-analytics-total-spend">Rp 0</strong>
+        <span class="stat-card-sub" id="stat-analytics-trx-count">0 Transaksi</span>
+      </div>
+    </div>
+
+    <div class="analytics-stat-card">
+      <div class="stat-card-icon bg-emerald">
+        <i data-lucide="tag"></i>
+      </div>
+      <div class="stat-card-info">
+        <span class="stat-card-label" id="label-stat-total-saved">Total Hemat Diskon</span>
+        <strong class="stat-card-val text-emerald" id="stat-analytics-total-saved">Rp 0</strong>
+        <span class="stat-card-sub" id="stat-analytics-savings-percent">0% hemat</span>
+      </div>
+    </div>
+
+    <div class="analytics-stat-card">
+      <div class="stat-card-icon bg-amber">
+        <i data-lucide="pie-chart"></i>
+      </div>
+      <div class="stat-card-info">
+        <span class="stat-card-label" id="label-stat-top-cat">Kategori Terbesar</span>
+        <strong class="stat-card-val text-amber" id="stat-analytics-top-cat">-</strong>
+        <span class="stat-card-sub" id="stat-analytics-top-cat-val">Rp 0</span>
+      </div>
+    </div>
+
+    <div class="analytics-stat-card">
+      <div class="stat-card-icon bg-indigo">
+        <i data-lucide="trending-up"></i>
+      </div>
+      <div class="stat-card-info">
+        <span class="stat-card-label" id="label-stat-avg-month">Rata-rata / Bulan</span>
+        <strong class="stat-card-val text-indigo" id="stat-analytics-avg-month">Rp 0</strong>
+        <span class="stat-card-sub" id="stat-analytics-month-count">0 Bulan</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Container (Charts) -->
+  <div id="analytics-content-container">
+
+    <!-- CHART CARD 1: Pie Chart - Pengeluaran per Kategori -->
+    <div class="glass-card chart-card mt-3">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <div class="icon-circle bg-amber">
+            <i data-lucide="pie-chart"></i>
+          </div>
+          <div>
+            <h3 id="chart-cat-title">Pengeluaran per Kategori</h3>
+            <p id="chart-cat-sub">Porsi pengeluaran berdasarkan kategori barang</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-canvas-container pie-container">
+        <canvas id="category-pie-chart"></canvas>
+      </div>
+
+      <!-- Category Legend Breakdown List -->
+      <div id="category-breakdown-list" class="category-breakdown-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- CHART CARD 2: Bar Graph - Penghematan dari Diskon -->
+    <div class="glass-card chart-card mt-3">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <div class="icon-circle bg-emerald">
+            <i data-lucide="bar-chart-2"></i>
+          </div>
+          <div>
+            <h3 id="chart-disc-title">Uang Dihemat dari Diskon</h3>
+            <p id="chart-disc-sub">Total rupiah yang dihemat dari promo & diskon bertingkat</p>
+          </div>
+        </div>
+        <!-- Toggle Bar View: per kategori vs per bulan -->
+        <div class="chart-toggle-group">
+          <button type="button" class="chart-toggle-btn active" data-mode="category" id="toggle-disc-cat">Kategori</button>
+          <button type="button" class="chart-toggle-btn" data-mode="month" id="toggle-disc-month">Bulan</button>
+        </div>
+      </div>
+
+      <div class="chart-canvas-container bar-container">
+        <canvas id="discount-savings-chart"></canvas>
+      </div>
+
+      <div class="chart-footer-note">
+        <i data-lucide="sparkles"></i>
+        <span id="disc-footer-note">Menghitung akumulasi potongan harga dari promo bertingkat setiap transaksi.</span>
+      </div>
+    </div>
+
+    <!-- CHART CARD 3: Ogive - Pengeluaran Bulanan Kumulatif -->
+    <div class="glass-card chart-card mt-3">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <div class="icon-circle bg-brand">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div>
+            <h3 id="chart-ogive-title">Kurva Ogive Pengeluaran Bulanan</h3>
+            <p id="chart-ogive-sub">Akumulasi pengeluaran belanja dari bulan ke bulan</p>
+          </div>
+        </div>
+        <div class="ogive-badge">
+          <span>Ogive Kumulatif</span>
+        </div>
+      </div>
+
+      <div class="chart-canvas-container line-container">
+        <canvas id="ogive-chart"></canvas>
+      </div>
+
+      <div class="ogive-explainer-box">
+        <div class="explainer-icon"><i data-lucide="info"></i></div>
+        <div class="explainer-text">
+          <strong id="ogive-info-title">Apa itu Kurva Ogive?</strong>
+          <p id="ogive-info-desc">Grafik Ogive (frekuensi kumulatif) menunjukkan total pengeluaran uang belanja yang terus terakumulasi seiring waktu, memperlihatkan laju pengeluaran bulanan Anda.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty State Analytics (Visible when no history exists in chosen period) -->
+  <div id="analytics-empty-state" class="empty-state hidden">
+    <div class="empty-illustration">
+      <i data-lucide="line-chart"></i>
+    </div>
+    <h3 id="empty-analytics-title">Belum Ada Data Grafik</h3>
+    <p id="empty-analytics-desc">Tidak ada riwayat transaksi pada periode waktu ini. Selesaikan transaksi di Troli atau muat sampel riwayat multi-bulan untuk melihat grafik.</p>
+    <div class="empty-actions">
+      <button type="button" id="load-sample-analytics-btn" class="btn-accent">
+        <i data-lucide="sparkles"></i> <span id="label-load-analytics-sample">Muat Riwayat Sampel Multi-Bulan</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+        <!-- COMPONENT: TAB 4 ANGGARAN & AKUN (components/settings-tab.html) -->
         <!-- TAB 3: ANGGARAN & PENGATURAN (Budget Safety Cap & Firebase Account) -->
 <section id="tab-anggaran" class="tab-view">
   <div class="section-title-wrap">
@@ -501,19 +693,25 @@
       <i data-lucide="shopping-cart"></i>
       <span id="nav-cart-badge" class="badge-count hidden">0</span>
     </div>
-    <span class="nav-label">Troli Belanja</span>
+    <span class="nav-label" id="nav-label-cart">Troli</span>
   </button>
   <button class="nav-item" data-tab="tab-riwayat" id="nav-tab-riwayat">
     <div class="nav-icon-wrap">
       <i data-lucide="history"></i>
     </div>
-    <span class="nav-label">Riwayat</span>
+    <span class="nav-label" id="nav-label-history">Riwayat</span>
+  </button>
+  <button class="nav-item" data-tab="tab-grafik" id="nav-tab-grafik">
+    <div class="nav-icon-wrap">
+      <i data-lucide="pie-chart"></i>
+    </div>
+    <span class="nav-label" id="nav-label-grafik">Grafik</span>
   </button>
   <button class="nav-item" data-tab="tab-anggaran" id="nav-tab-anggaran">
     <div class="nav-icon-wrap">
       <i data-lucide="settings"></i>
     </div>
-    <span class="nav-label">Anggaran & Akun</span>
+    <span class="nav-label" id="nav-label-settings">Pengaturan</span>
   </button>
 </nav>
 
@@ -1147,6 +1345,7 @@
   <script src="js/theme.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/modals.js"></script>
+  <script src="js/analytics.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
