@@ -1,0 +1,14 @@
+{
+  "appId": "com.smartgrocery.tracker",
+  "appName": "Smart Grocery",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "backgroundColor": "#0f172a",
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  }
+}
