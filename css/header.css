@@ -339,16 +339,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--color-drawer-icon-fg, #ffffff);
   flex-shrink: 0;
+  background: var(--color-brand);
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
 }
 
 .drawer-icon-box.bg-brand {
-  background: var(--color-brand);
+  background: var(--color-drawer-icon-bg, var(--color-brand));
 }
 
-.drawer-icon-box.bg-emerald {
-  background: var(--color-accent, #10b981);
+.drawer-icon-box.bg-emerald,
+.drawer-icon-box.bg-accent {
+  background: var(--color-drawer-accent-bg, var(--color-accent, var(--color-brand)));
 }
 
 .drawer-item-desc {

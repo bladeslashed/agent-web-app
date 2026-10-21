@@ -17,6 +17,19 @@ function loadStateFromStorage() {
     const savedHistory = localStorage.getItem(STORAGE_KEYS.HISTORY);
     if (savedHistory) AppState.history = JSON.parse(savedHistory);
 
+    const savedDeletedHist = localStorage.getItem(STORAGE_KEYS.DELETED_HISTORY);
+    if (savedDeletedHist) {
+      try {
+        AppState.deletedHistoryIds = JSON.parse(savedDeletedHist);
+        if (!Array.isArray(AppState.deletedHistoryIds)) AppState.deletedHistoryIds = [];
+      } catch (e) {
+        AppState.deletedHistoryIds = [];
+      }
+    }
+    if (AppState.deletedHistoryIds.length > 0 && Array.isArray(AppState.history)) {
+      AppState.history = AppState.history.filter(h => h && h.id && !AppState.deletedHistoryIds.includes(h.id));
+    }
+
     const savedLang = localStorage.getItem(STORAGE_KEYS.LANG);
     if (savedLang && (savedLang === 'id' || savedLang === 'en')) {
       AppState.lang = savedLang;
@@ -31,6 +44,7 @@ function loadStateFromStorage() {
  */
 function saveCartToStorage(triggerCloudSync = true) {
   AppState.lastLocalUpdate = Date.now();
+  localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, AppState.lastLocalUpdate.toString());
   localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(AppState.cart));
   if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
     scheduleCloudSync();

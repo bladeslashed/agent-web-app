@@ -219,9 +219,21 @@ function triggerCartPushAnimation() {
   if (!unit) return;
 
   // Reset animation class to re-trigger CSS keyframes
-  unit.classList.remove('run-animation');
+  unit.classList.remove('run-animation', 'wheels-rolling');
+  if (unit._wheelTimer) clearTimeout(unit._wheelTimer);
   void unit.offsetWidth; // force reflow
   unit.classList.add('run-animation');
+
+  // Once the 1.8s entrance roll finishes, keep the wheels rolling continuously
+  unit._wheelTimer = setTimeout(() => {
+    unit.classList.add('wheels-rolling');
+  }, 1800);
+
+  unit.onanimationend = (e) => {
+    if (e.animationName === 'pushCartToCenter' || e.animationName === 'spinWheels') {
+      unit.classList.add('wheels-rolling');
+    }
+  };
 
   // Also play sound effect
   playCheckoutSound();
@@ -306,5 +318,10 @@ function openCheckoutSuccessModal(trx) {
 function closeCheckoutSuccessModal() {
   const modal = document.getElementById('checkout-success-modal');
   if (modal) modal.classList.add('hidden');
+  const unit = document.getElementById('cart-pusher-unit');
+  if (unit) {
+    if (unit._wheelTimer) clearTimeout(unit._wheelTimer);
+    unit.classList.remove('run-animation', 'wheels-rolling');
+  }
 }
 

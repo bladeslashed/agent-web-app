@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const budgetInput = document.getElementById('input-budget-cap');
   if (budgetInput) budgetInput.value = AppState.budgetCap;
 
+  // Set Mute Sync Notifications Toggle value
+  const muteSyncToggle = document.getElementById('toggle-mute-sync');
+  if (muteSyncToggle) {
+    muteSyncToggle.checked = Boolean(AppState.muteSyncNotifications);
+  }
+
   // 5. Navigation Tab Switching
   const navButtons = document.querySelectorAll('.bottom-nav .nav-item');
   const tabViews = document.querySelectorAll('.tab-view');
@@ -407,6 +413,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // 16b. Mute Sync Notifications Toggle Event
+  if (muteSyncToggle) {
+    muteSyncToggle.addEventListener('change', (e) => {
+      AppState.muteSyncNotifications = e.target.checked;
+      localStorage.setItem(STORAGE_KEYS.MUTE_SYNC, e.target.checked ? 'true' : 'false');
+      if (typeof scheduleCloudSync === 'function') {
+        scheduleCloudSync();
+      }
+      const t = I18N[AppState.lang] || {};
+      const toastMsg = e.target.checked
+        ? (t.muteSyncEnabledToast || (AppState.lang === 'en' ? 'Sync pop-up notifications muted.' : 'Pop-up sinkronisasi dinonaktifkan.'))
+        : (t.muteSyncDisabledToast || (AppState.lang === 'en' ? 'Sync pop-up notifications re-enabled.' : 'Pop-up sinkronisasi diaktifkan kembali.'));
+      showToast(toastMsg, 'info');
+    });
+  }
+
   // 17. Danger Actions: Reset Data
   const resetHistoryBtn = document.getElementById('reset-history-only-btn');
   const resetAllBtn = document.getElementById('reset-all-data-btn');
@@ -417,8 +439,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'Delete all shopping history records?'
         : 'Yakin ingin menghapus seluruh riwayat belanja? Pembanding harga bulan lalu akan direset.';
       if (confirm(confirmMsg)) {
+        const deletedIds = (AppState.history || []).map(h => h.id);
+        AppState.deletedHistoryIds = [...new Set([...(AppState.deletedHistoryIds || []), ...deletedIds])];
+        localStorage.setItem(STORAGE_KEYS.DELETED_HISTORY, JSON.stringify(AppState.deletedHistoryIds));
         AppState.history = [];
         saveHistoryToStorage();
+        if (currentUser && typeof syncStateToFirestore === 'function') {
+          syncStateToFirestore(false);
+        }
         renderHistoryTab();
         renderCartItems();
         updateComparatorBadges();

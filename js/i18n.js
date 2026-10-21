@@ -95,6 +95,10 @@ const I18N = {
     promptLoginToast: 'Silakan masuk dengan Gmail untuk menyimpan riwayat belanja ke cloud.',
     savedOfflineToast: 'Belanja tersimpan di perangkat ini (offline).',
     checkoutSavedCloudToast: 'Belanja tersimpan & otomatis disinkronkan ke Cloud Firestore!',
+    muteSyncTitle: 'Bisukan Pop-up Sinkronisasi',
+    muteSyncDesc: 'Sembunyikan notifikasi saat data tersinkronisasi otomatis dengan cloud',
+    muteSyncEnabledToast: 'Pop-up sinkronisasi dinonaktifkan.',
+    muteSyncDisabledToast: 'Pop-up sinkronisasi diaktifkan kembali.',
     deleteHistoryConfirm: (title) => `Hapus catatan riwayat "${title}"?`,
     deleteHistorySuccess: 'Catatan riwayat berhasil dihapus.',
     checkoutSuccessTitle: 'Belanja Berhasil Disimpan!',
@@ -220,6 +224,10 @@ const I18N = {
     promptLoginToast: 'Please sign in with Google to save your shopping history to the cloud.',
     savedOfflineToast: 'Shopping trip saved to this device (offline).',
     checkoutSavedCloudToast: 'Shopping receipt successfully saved to Cloud Firestore!',
+    muteSyncTitle: 'Mute Sync Pop-ups',
+    muteSyncDesc: 'Hide notification pop-ups when data is auto-synced with cloud',
+    muteSyncEnabledToast: 'Sync pop-up notifications muted.',
+    muteSyncDisabledToast: 'Sync pop-up notifications re-enabled.',
     deleteHistoryConfirm: (title) => `Delete shopping record "${title}"?`,
     deleteHistorySuccess: 'Shopping record deleted successfully.',
     checkoutSuccessTitle: 'Purchase Completed & Saved!',
@@ -502,6 +510,12 @@ function applyLanguage(lang) {
   if (historyEditModalTitle) historyEditModalTitle.textContent = t.historyEditTitle;
   const historyEditModalSub = document.getElementById('history-edit-modal-sub');
   if (historyEditModalSub) historyEditModalSub.textContent = t.historyEditSub;
+
+  // Mute Sync Notifications Toggle Labels
+  const labelMuteSyncTitle = document.getElementById('label-mute-sync-title');
+  if (labelMuteSyncTitle && t.muteSyncTitle) labelMuteSyncTitle.textContent = t.muteSyncTitle;
+  const labelMuteSyncDesc = document.getElementById('label-mute-sync-desc');
+  if (labelMuteSyncDesc && t.muteSyncDesc) labelMuteSyncDesc.textContent = t.muteSyncDesc;
 
   // Refresh dynamic UI views
   if (typeof updateBudgetSafetyUI === 'function') updateBudgetSafetyUI();

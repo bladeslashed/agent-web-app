@@ -274,15 +274,28 @@ function bindFirestoreSync(user) {
 
       // Budget Cap
       if (typeof data.budgetCap === 'number' && data.budgetCap !== AppState.budgetCap) {
-        if (data.lastUpdated && data.lastUpdated > (AppState.lastLocalUpdate || 0)) {
+        if (!AppState.lastLocalUpdate || (data.lastUpdated && data.lastUpdated >= AppState.lastLocalUpdate)) {
           AppState.budgetCap = data.budgetCap;
           saveBudgetCapToStorage(false);
           hasBudgetChanged = true;
         }
       }
 
-      // Merge History: preserve pre-login local history and sync with cloud history
+      // Deleted History IDs
+      if (Array.isArray(data.deletedHistoryIds)) {
+        const mergedDeleted = [...new Set([...(AppState.deletedHistoryIds || []), ...data.deletedHistoryIds])];
+        if (mergedDeleted.length !== (AppState.deletedHistoryIds || []).length) {
+          AppState.deletedHistoryIds = mergedDeleted;
+          localStorage.setItem(STORAGE_KEYS.DELETED_HISTORY, JSON.stringify(mergedDeleted));
+        }
+      }
+
+      // Merge History: preserve pre-login local history and sync with cloud history, respecting deletions
       let remoteHistory = Array.isArray(data.history) ? data.history : [];
+      const deletedSet = new Set(AppState.deletedHistoryIds || []);
+      remoteHistory = remoteHistory.filter(h => h && h.id && !deletedSet.has(h.id));
+      AppState.history = (AppState.history || []).filter(h => h && h.id && !deletedSet.has(h.id));
+
       let mergedHistory = mergeHistories(AppState.history, remoteHistory);
       const hasUnsyncedLocalHistory = AppState.history.some(loc => !remoteHistory.some(rem => rem.id === loc.id));
 
@@ -292,19 +305,63 @@ function bindFirestoreSync(user) {
         hasHistoryChanged = true;
       }
 
+      // Custom Themes Syncing
+      let hasCustomThemesChanged = false;
+      if (Array.isArray(data.customThemes)) {
+        const remoteIds = new Set(data.customThemes.map(t => t.id));
+        const unsyncedThemes = (AppState.customThemes || []).filter(t => !remoteIds.has(t.id));
+        if (unsyncedThemes.length > 0) {
+          AppState.customThemes = [...data.customThemes, ...unsyncedThemes];
+          if (typeof saveCustomThemesToStorage === 'function') saveCustomThemesToStorage(false);
+          scheduleCloudSync();
+          hasCustomThemesChanged = true;
+        } else if (JSON.stringify(AppState.customThemes) !== JSON.stringify(data.customThemes)) {
+          AppState.customThemes = data.customThemes;
+          if (typeof saveCustomThemesToStorage === 'function') saveCustomThemesToStorage(false);
+          hasCustomThemesChanged = true;
+        }
+        if (hasCustomThemesChanged && typeof renderCustomThemesList === 'function') {
+          renderCustomThemesList();
+        }
+      }
+
+      // Selected Theme & Theme Mode Syncing
+      if (data.theme && (data.theme !== AppState.theme || (data.themeMode && data.themeMode !== AppState.themeMode))) {
+        if (!AppState.lastLocalUpdate || (data.lastUpdated && data.lastUpdated >= AppState.lastLocalUpdate)) {
+          const nextTheme = data.theme;
+          const nextMode = data.themeMode || AppState.themeMode;
+          AppState.theme = nextTheme;
+          AppState.themeMode = nextMode;
+          localStorage.setItem(STORAGE_KEYS.THEME, nextTheme);
+          localStorage.setItem(STORAGE_KEYS.MODE, nextMode);
+          if (typeof applyThemeToDOM === 'function') applyThemeToDOM(nextTheme, nextMode);
+          if (typeof updateThemeUI === 'function') updateThemeUI(nextTheme, nextMode);
+        }
+      }
+
+      // Mute Sync Notifications Preference
+      if (typeof data.muteSyncNotifications === 'boolean' && data.muteSyncNotifications !== AppState.muteSyncNotifications) {
+        AppState.muteSyncNotifications = data.muteSyncNotifications;
+        localStorage.setItem(STORAGE_KEYS.MUTE_SYNC, data.muteSyncNotifications ? 'true' : 'false');
+        const muteToggle = document.getElementById('toggle-mute-sync');
+        if (muteToggle) muteToggle.checked = AppState.muteSyncNotifications;
+      }
+
       // If user had local history before login that was not on Firestore, push it to cloud now!
       if (hasUnsyncedLocalHistory) {
         scheduleCloudSync();
       }
 
-      if (hasCartChanged || hasBudgetChanged || hasHistoryChanged) {
+      if (hasCartChanged || hasBudgetChanged || hasHistoryChanged || hasCustomThemesChanged) {
         renderCartItems();
         renderHistoryTab();
         updateBudgetSafetyUI();
         updateComparatorBadges();
         const budgetInput = document.getElementById('input-budget-cap');
         if (budgetInput) budgetInput.value = AppState.budgetCap;
-        showToast(AppState.lang === 'en' ? 'Data synced from Cloud Firestore!' : 'Data disinkronkan dari Cloud Firestore!', 'info');
+        if (!AppState.muteSyncNotifications) {
+          showToast(AppState.lang === 'en' ? 'Data synced from Cloud Firestore!' : 'Data disinkronkan dari Cloud Firestore!', 'info');
+        }
       }
 
       updateCloudStatusBadge('synced', AppState.lang === 'en' ? 'Auto-synced' : 'Tersinkronisasi Otomatis');
@@ -433,6 +490,11 @@ async function syncStateToFirestore(immediate = false) {
       cart: AppState.cart || [],
       budgetCap: typeof AppState.budgetCap === 'number' ? AppState.budgetCap : 500000,
       history: AppState.history || [],
+      deletedHistoryIds: AppState.deletedHistoryIds || [],
+      customThemes: AppState.customThemes || [],
+      theme: AppState.theme || 'mint',
+      themeMode: AppState.themeMode || 'dark',
+      muteSyncNotifications: Boolean(AppState.muteSyncNotifications),
       activeBaselineId: AppState.activeBaselineId || null,
       lastUpdated: Date.now(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -442,8 +504,9 @@ async function syncStateToFirestore(immediate = false) {
 
     await userDocRef.set(cleanPayload, { merge: true });
     AppState.lastLocalUpdate = Date.now();
+    localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, AppState.lastLocalUpdate.toString());
     updateCloudStatusBadge('synced', AppState.lang === 'en' ? 'Auto-synced' : 'Tersinkronisasi Otomatis');
-    if (immediate) {
+    if (immediate && !AppState.muteSyncNotifications) {
       showToast(AppState.lang === 'en' ? 'Data saved to Cloud Firestore!' : 'Data berhasil disinkronkan ke Cloud Firestore!', 'success');
     }
   } catch (error) {

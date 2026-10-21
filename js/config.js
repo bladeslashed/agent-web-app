@@ -33,16 +33,19 @@ const STORAGE_KEYS = {
   LANG: 'smart_grocery_lang',
   THEME: 'smart_grocery_theme',
   MODE: 'smart_grocery_mode',
-  CUSTOM_THEMES: 'smart_grocery_custom_themes'
+  CUSTOM_THEMES: 'smart_grocery_custom_themes',
+  MUTE_SYNC: 'smart_grocery_mute_sync',
+  DELETED_HISTORY: 'smart_grocery_deleted_history',
+  LAST_UPDATE: 'smart_grocery_last_update'
 };
 
 const AppState = {
-  budgetCap: 500000,
+  budgetCap: Number(localStorage.getItem('smart_grocery_budget_cap')) || 500000,
   cart: [],
   history: [],
   activeTab: 'tab-belanja',
   deferredInstallPrompt: null,
-  lastLocalUpdate: Date.now(),
+  lastLocalUpdate: Number(localStorage.getItem('smart_grocery_last_update')) || 0,
   lang: localStorage.getItem('smart_grocery_lang') || 'id',
   theme: localStorage.getItem('smart_grocery_theme') || 'mint',
   themeMode: localStorage.getItem('smart_grocery_mode') || 'dark',
@@ -53,6 +56,8 @@ const AppState = {
   discountChartMode: 'category',
   ogiveGranularity: 'monthly',
   ogiveDisplayType: 'ogive',
-  customThemes: []
+  customThemes: [],
+  deletedHistoryIds: [],
+  muteSyncNotifications: localStorage.getItem('smart_grocery_mute_sync') === 'true'
 };
 

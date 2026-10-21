@@ -717,14 +717,17 @@
   100% { transform: translateY(21px); }
 }
 
-/* Wheels Rotation Animation during cart roll-in */
+/* Wheels Rotation Animation during cart roll-in and continuous idle rolling */
 .wheel-spinner {
   transform-box: fill-box;
   transform-origin: center;
   display: block;
 }
-.cart-pusher-unit.run-animation .wheel-spinner {
+.cart-pusher-unit.run-animation:not(.wheels-rolling) .wheel-spinner {
   animation: spinWheels 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.cart-pusher-unit.wheels-rolling .wheel-spinner {
+  animation: spinWheelsContinuous 1.4s linear infinite !important;
 }
 @keyframes spinWheels {
   0% { transform: rotate(-1080deg); }
@@ -732,6 +735,10 @@
   82% { transform: rotate(-12deg); }
   93% { transform: rotate(4deg); }
   100% { transform: rotate(0deg); }
+}
+@keyframes spinWheelsContinuous {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Shopper's Arms Push Strain Motion */

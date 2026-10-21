@@ -202,9 +202,12 @@ function loadCustomThemesFromStorage() {
 /**
  * Save Custom Themes to localStorage
  */
-function saveCustomThemesToStorage() {
+function saveCustomThemesToStorage(triggerCloudSync = true) {
   try {
     localStorage.setItem(STORAGE_KEYS.CUSTOM_THEMES, JSON.stringify(AppState.customThemes));
+    if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
+      scheduleCloudSync();
+    }
   } catch (e) {
     console.error('Failed saving custom themes:', e);
   }
@@ -389,10 +392,14 @@ function applyThemeToDOM(theme, mode) {
     customStyleTag.innerHTML = `
       [data-theme="${customTheme.id}"][data-mode="dark"] {
         --color-brand: ${darkColors.brand};
+        --color-accent: ${darkColors.accent};
         --color-brand-glow: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.35);
+        --color-brand-darker: rgba(${Math.max(0, rgbDarkBrand.r - 40)}, ${Math.max(0, rgbDarkBrand.g - 40)}, ${Math.max(0, rgbDarkBrand.b - 40)}, 0.95);
+        --color-brand-contrast: ${(0.299 * rgbDarkBrand.r + 0.587 * rgbDarkBrand.g + 0.114 * rgbDarkBrand.b) / 255 > 0.65 ? '#061a14' : '#ffffff'};
         --border-focus: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.6);
         --border-subtle: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.2);
         --bg-body: #050a0e;
+        --bg-desktop: radial-gradient(circle at 50% 20%, rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.28) 0%, ${darkColors.header} 40%, ${darkColors.surface} 80%, #030712 100%);
         --bg-app: ${darkColors.surface};
         --bg-surface: ${darkColors.surface};
         --bg-surface-elevated: ${darkElevated};
@@ -407,6 +414,8 @@ function applyThemeToDOM(theme, mode) {
         --color-menu-card-bg: ${darkMenuCard};
         --color-menu-card-hover: ${darkMenuHover};
         --color-menu-border: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.25);
+        --color-drawer-icon-bg: ${darkColors.brand};
+        --color-drawer-accent-bg: ${darkColors.accent};
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
         --text-subtle: rgba(${rgbDarkBrand.r}, ${rgbDarkBrand.g}, ${rgbDarkBrand.b}, 0.85);
@@ -417,10 +426,14 @@ function applyThemeToDOM(theme, mode) {
 
       [data-theme="${customTheme.id}"][data-mode="light"] {
         --color-brand: ${lightColors.brand};
+        --color-accent: ${lightColors.accent};
         --color-brand-glow: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.22);
+        --color-brand-darker: rgba(${Math.max(0, rgbLightBrand.r - 35)}, ${Math.max(0, rgbLightBrand.g - 35)}, ${Math.max(0, rgbLightBrand.b - 35)}, 0.95);
+        --color-brand-contrast: ${(0.299 * rgbLightBrand.r + 0.587 * rgbLightBrand.g + 0.114 * rgbLightBrand.b) / 255 > 0.65 ? '#061a14' : '#ffffff'};
         --border-focus: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.45);
         --border-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.16);
         --bg-body: #f1f5f9;
+        --bg-desktop: radial-gradient(circle at 50% 20%, ${lightColors.header} 0%, ${lightColors.surface} 60%, rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.16) 100%);
         --bg-app: ${lightColors.surface};
         --bg-surface: ${lightColors.surface};
         --bg-surface-elevated: ${lightElevated};
@@ -435,6 +448,8 @@ function applyThemeToDOM(theme, mode) {
         --color-menu-card-bg: ${lightMenuCard};
         --color-menu-card-hover: ${lightMenuHover};
         --color-menu-border: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.2);
+        --color-drawer-icon-bg: ${lightColors.brand};
+        --color-drawer-accent-bg: ${lightColors.accent};
         --text-main: #0f172a;
         --text-muted: #475569;
         --text-subtle: rgba(${rgbLightBrand.r}, ${rgbLightBrand.g}, ${rgbLightBrand.b}, 0.9);
@@ -506,7 +521,7 @@ function updateThemeUI(theme, mode) {
 /**
  * Change the active color theme
  */
-function setTheme(themeName) {
+function setTheme(themeName, triggerCloudSync = true) {
   const isCustom = AppState.customThemes.some(ct => ct.id === themeName);
   if (!THEME_META_COLORS[themeName] && !isCustom) return;
 
@@ -515,6 +530,10 @@ function setTheme(themeName) {
 
   applyThemeToDOM(themeName, AppState.themeMode);
   updateThemeUI(themeName, AppState.themeMode);
+
+  if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
+    scheduleCloudSync();
+  }
 
   let displayName = THEME_DISPLAY_NAMES[themeName] || themeName;
   if (isCustom) {
@@ -538,7 +557,7 @@ function setTheme(themeName) {
 /**
  * Change the active theme mode ('dark' or 'light')
  */
-function setThemeMode(mode) {
+function setThemeMode(mode, triggerCloudSync = true) {
   if (mode !== 'dark' && mode !== 'light') return;
 
   AppState.themeMode = mode;
@@ -546,6 +565,10 @@ function setThemeMode(mode) {
 
   applyThemeToDOM(AppState.theme, mode);
   updateThemeUI(AppState.theme, mode);
+
+  if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
+    scheduleCloudSync();
+  }
 
   const modeName = mode === 'dark'
     ? (AppState.lang === 'en' ? 'Dark Mode' : 'Mode Gelap')
@@ -678,10 +701,14 @@ function deleteCustomTheme(id) {
 
   if (confirm(confirmMsg)) {
     AppState.customThemes = AppState.customThemes.filter(t => t.id !== id);
-    saveCustomThemesToStorage();
+    saveCustomThemesToStorage(true);
 
     if (AppState.theme === id) {
-      setTheme('mint');
+      setTheme('mint', true);
+    }
+
+    if (currentUser && typeof syncStateToFirestore === 'function') {
+      syncStateToFirestore(false);
     }
 
     renderCustomThemesList();

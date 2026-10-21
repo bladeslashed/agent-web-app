@@ -5,6 +5,7 @@
 
 function saveHistoryToStorage(triggerCloudSync = true) {
   AppState.lastLocalUpdate = Date.now();
+  localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, AppState.lastLocalUpdate.toString());
   localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(AppState.history));
   if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
     scheduleCloudSync();
@@ -13,6 +14,7 @@ function saveHistoryToStorage(triggerCloudSync = true) {
 
 function saveBudgetCapToStorage(triggerCloudSync = true) {
   AppState.lastLocalUpdate = Date.now();
+  localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, AppState.lastLocalUpdate.toString());
   localStorage.setItem(STORAGE_KEYS.BUDGET_CAP, AppState.budgetCap.toString());
   if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
     scheduleCloudSync();
@@ -21,18 +23,20 @@ function saveBudgetCapToStorage(triggerCloudSync = true) {
 
 /**
  * Merge local history with cloud history, avoiding duplicate IDs
- * and ensuring history created before login is preserved and uploaded to cloud.
+ * and ensuring deleted records are never resurrected.
  */
 function mergeHistories(localHist, remoteHist) {
   const map = new Map();
+  const deletedSet = new Set(AppState.deletedHistoryIds || []);
+
   if (Array.isArray(remoteHist)) {
     remoteHist.forEach(item => {
-      if (item && item.id) map.set(item.id, item);
+      if (item && item.id && !deletedSet.has(item.id)) map.set(item.id, item);
     });
   }
   if (Array.isArray(localHist)) {
     localHist.forEach(item => {
-      if (item && item.id) map.set(item.id, item);
+      if (item && item.id && !deletedSet.has(item.id)) map.set(item.id, item);
     });
   }
   return Array.from(map.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -144,8 +148,15 @@ function openHistoryDetail(trxId) {
         ? `Delete shopping record "${trx.monthName}"?`
         : `Hapus catatan riwayat "${trx.monthName}"?`;
       if (confirm(confirmMsg)) {
+        if (!AppState.deletedHistoryIds.includes(trxId)) {
+          AppState.deletedHistoryIds.push(trxId);
+          localStorage.setItem(STORAGE_KEYS.DELETED_HISTORY, JSON.stringify(AppState.deletedHistoryIds));
+        }
         AppState.history = AppState.history.filter(h => h.id !== trxId);
         saveHistoryToStorage();
+        if (currentUser && typeof syncStateToFirestore === 'function') {
+          syncStateToFirestore(false);
+        }
         modal.classList.add('hidden');
         renderHistoryTab();
         renderCartItems();
