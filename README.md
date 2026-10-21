@@ -172,5 +172,45 @@ npm run deploy
 
 ---
 
+## 🤖 Android APK Wrapper (Capacitor)
+
+The repository includes a production-grade native Android wrapper built with **Capacitor 7**, enabling 100% offline-first execution, native hardware access, and standalone `.apk` distribution.
+
+### Android Project Structure
+- `capacitor.config.json`: Configuration defining `appId: com.smartgrocery.tracker`, web directory (`www`), and HTTPS scheme.
+- `scripts/prepare-www.js`: Automated staging script that bundles client-side runtime assets into `www/` (excluding dev tooling, `node_modules`, and raw source components).
+- `scripts/generate-android-icons.js`: Generates high-resolution adaptive, squircle, and round launcher mipmaps across all standard Android densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`).
+- `android/`: Full Gradle-based native Android Studio project with preconfigured permissions, launch splash, and custom brand theme colors.
+
+### Building & Syncing the APK
+
+1. **Stage & Sync Assets**:
+   Whenever web components, CSS, or JS are modified, run:
+   ```bash
+   npm run cap:sync
+   ```
+   *(This automatically executes `build.js`, stages clean assets into `www/`, and syncs them to `android/app/src/main/assets/public/`)*
+
+2. **Open in Android Studio**:
+   ```bash
+   npm run cap:open
+   ```
+   *(Or launch Android Studio and open the `android/` directory)*
+
+3. **Build APK via Command Line**:
+   If the Android SDK (`ANDROID_HOME`) is configured on your machine, you can build directly:
+   ```bash
+   npm run cap:build
+   ```
+   Or navigate into `android/` and run:
+   ```bash
+   cd android
+   ./gradlew assembleDebug
+   ```
+   The compiled APK will be output to:
+   `android/app/build/outputs/apk/debug/app-debug.apk`
+
+---
+
 ## 📄 License
 This project is licensed under the MIT License.

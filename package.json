@@ -5,6 +5,11 @@
   "scripts": {
     "start": "serve -p 5000 .",
     "build": "node build.js",
+    "prepare:www": "node build.js && node scripts/prepare-www.js",
+    "cap:sync": "npm run prepare:www && npx cap sync android",
+    "cap:open": "npx cap open android",
+    "cap:build": "npm run cap:sync && cd android && gradlew.bat assembleDebug",
+    "generate:icons": "node generate-icons.js && node scripts/generate-android-icons.js",
     "deploy": "firebase deploy --only hosting,firestore",
     "emulators": "firebase emulators:start --only firestore"
   },
@@ -17,9 +22,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
     "chart.js": "^4.5.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "playwright": "^1.63.0"
   }
 }
