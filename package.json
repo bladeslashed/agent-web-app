@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Smart Grocery & Budget Safety Tracker - Mobile PWA for Supermarket Shoppers & Students",
   "scripts": {
-    "start": "serve -p 5000 .",
+    "start": "node scripts/server.js",
     "build": "node build.js",
     "prepare:www": "node build.js && node scripts/prepare-www.js",
     "cap:sync": "npm run prepare:www && npx cap sync android",
