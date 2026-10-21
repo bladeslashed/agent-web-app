@@ -4,13 +4,14 @@
    ==================================================================== */
 
 /* Universal Spending Comparator Badges */
+/* Universal Spending Comparator Badges */
 .spending-comparator-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
+  gap: 6px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
@@ -19,11 +20,12 @@
 
 .spending-comparator-badge span {
   white-space: nowrap;
+  font-feature-settings: var(--font-feature-numeric);
 }
 
 .spending-comparator-badge .comp-icon {
   font-weight: 900;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   line-height: 1;
 }
 
@@ -57,21 +59,35 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card), var(--card-bevel);
+  position: relative;
+  overflow: hidden;
+}
+
+.monthly-comparison-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-brand), transparent);
+  opacity: 0.5;
 }
 
 .comp-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .comp-card-header h3 {
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.015em;
 }
 
 .comp-stats-grid {
@@ -80,9 +96,10 @@
   align-items: center;
   gap: 12px;
   background: var(--bg-surface-elevated);
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .comp-stat-col {
@@ -92,14 +109,16 @@
 .comp-stat-col .stat-title {
   font-size: 0.7rem;
   color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-  margin-bottom: 2px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 3px;
 }
 .comp-stat-col .stat-num {
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.02em;
+  font-feature-settings: var(--font-feature-numeric);
 }
 
 .comp-arrow-divider {
@@ -109,14 +128,15 @@
 }
 
 .comp-badge-large {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 900;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
 }
 .comp-badge-large.comp-none {
@@ -128,13 +148,13 @@
   background: var(--badge-rose-bg);
   color: var(--badge-rose-text);
   border: 1.5px solid var(--badge-rose-border);
-  box-shadow: 0 0 12px var(--badge-rose-bg);
+  box-shadow: 0 0 14px var(--badge-rose-bg);
 }
 .comp-badge-large.comp-down {
   background: var(--badge-emerald-bg);
   color: var(--badge-emerald-text);
   border: 1.5px solid var(--badge-emerald-border);
-  box-shadow: 0 0 12px var(--badge-emerald-bg);
+  box-shadow: 0 0 14px var(--badge-emerald-bg);
 }
 .comp-badge-large.comp-equal {
   background: var(--badge-amber-bg);
@@ -143,50 +163,67 @@
 }
 
 .comp-summary-note {
-  margin-top: 10px;
-  font-size: 0.78rem;
+  margin-top: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
-/* History Cards List */
+/* History Cards List (Supermarket Receipt Slips) */
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .history-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+  box-shadow: var(--shadow-card), var(--card-bevel);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
+
+/* Perforated receipt top accent */
+.history-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  border-top: 2px dashed rgba(255, 255, 255, 0.08);
+}
+
 .history-card:hover {
   background: var(--bg-surface-elevated);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
 }
 .history-card:active {
-  transform: scale(0.99);
+  transform: translateY(1px) scale(0.99);
 }
 
 .history-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .history-month-tag {
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 .history-status-tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 7px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
 }
 .history-status-tag.safe {
@@ -206,11 +243,15 @@
   align-items: flex-end;
 }
 .history-total-val {
-  font-size: 1.1rem;
+  font-size: 1.18rem;
   font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.02em;
+  font-feature-settings: var(--font-feature-numeric);
 }
 .history-items-count {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
+  font-weight: 600;
 }
+

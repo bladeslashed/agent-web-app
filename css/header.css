@@ -476,74 +476,125 @@
 /* ====================================================================
    STICKY BUDGET SAFETY CAP CARD
    ==================================================================== */
+/* ====================================================================
+   STICKY BUDGET SAFETY CAP CARD (Aisle Cockpit)
+   ==================================================================== */
 .budget-safety-cap {
   background: var(--bg-surface);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
-  border: 1.5px solid var(--border-subtle);
+  padding: 14px 16px;
+  border: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   box-sizing: border-box;
   max-width: 100%;
-  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-card), var(--card-bevel);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Subtle physical top rim highlight */
+.budget-safety-cap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-brand), transparent);
+  opacity: 0.6;
 }
 
 .budget-cap-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  gap: 12px;
+}
+
+.budget-stat {
+  min-width: 0;
 }
 
 .budget-stat .label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.72rem;
   color: var(--text-muted);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 2px;
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
 }
 
 .budget-stat .val {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-main);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  font-feature-settings: var(--font-feature-numeric);
+}
+
+.budget-stat.text-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .budget-stat .val.highlight {
-  font-size: 1.18rem;
+  font-size: 1.38rem;
   font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  font-feature-settings: var(--font-feature-numeric);
 }
 
 /* Real-Time Meter Progress Bar */
 .meter-container {
   width: 100%;
+  padding: 2px 0;
 }
 
 .meter-bar-track {
   width: 100%;
-  height: 9px;
+  height: 10px;
   background: var(--meter-track-bg);
   border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .meter-bar-fill {
   height: 100%;
   width: 0%;
   border-radius: var(--radius-full);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s;
+  position: relative;
+}
+
+.meter-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  filter: blur(1px);
 }
 
 /* Bottom Stats Row */
 .budget-cap-row.bottom-row {
   align-items: center;
   font-size: 0.74rem;
-  padding-top: 3px;
+  padding-top: 2px;
   gap: 8px;
   display: flex;
   justify-content: space-between;
@@ -552,34 +603,45 @@
 }
 
 .status-indicator-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
   white-space: nowrap;
   flex-shrink: 0;
+  transition: all 0.25s ease;
 }
 
 .status-indicator-badge .dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .remaining-stat {
   font-weight: 600;
+  font-size: 0.75rem;
   color: var(--text-muted);
   display: flex;
-  gap: 4px;
+  gap: 5px;
   white-space: nowrap;
   flex-shrink: 0;
   text-align: right;
   align-items: baseline;
+  background: var(--bg-surface-elevated);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
 }
 
 .remaining-stat strong {
   color: var(--text-main);
-  white-space: nowrap;
+  font-weight: 700;
+  font-feature-settings: var(--font-feature-numeric);
 }
 
 /* Spending Comparator Subrow in Header Card */
@@ -597,17 +659,26 @@
 
 /* Status-Based Dynamic Theme */
 .budget-safety-cap.status-safe {
-  border-color: rgba(16, 185, 129, 0.35);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08), var(--card-bevel);
+}
+
+.budget-safety-cap.status-safe::before {
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
 }
 
 .budget-safety-cap.status-safe .meter-bar-fill {
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.budget-safety-cap.status-safe .status-indicator-badge {
+  background: var(--badge-emerald-bg);
+  border: 1px solid var(--badge-emerald-border);
 }
 
 .budget-safety-cap.status-safe .status-indicator-badge .dot {
   background: var(--badge-emerald-text);
-  box-shadow: 0 0 8px var(--badge-emerald-text);
+  box-shadow: 0 0 6px var(--badge-emerald-text);
 }
 
 .budget-safety-cap.status-safe #budget-status-text {
@@ -615,17 +686,26 @@
 }
 
 .budget-safety-cap.status-warning {
-  border-color: rgba(245, 158, 11, 0.45);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.12), var(--card-bevel);
+}
+
+.budget-safety-cap.status-warning::before {
+  background: linear-gradient(90deg, transparent, #f59e0b, transparent);
 }
 
 .budget-safety-cap.status-warning .meter-bar-fill {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  background: linear-gradient(90deg, #d97706, #fbbf24);
+}
+
+.budget-safety-cap.status-warning .status-indicator-badge {
+  background: var(--badge-amber-bg);
+  border: 1px solid var(--badge-amber-border);
 }
 
 .budget-safety-cap.status-warning .status-indicator-badge .dot {
   background: var(--badge-amber-text);
-  box-shadow: 0 0 8px var(--badge-amber-text);
+  box-shadow: 0 0 6px var(--badge-amber-text);
 }
 
 .budget-safety-cap.status-warning #budget-status-text {
@@ -633,19 +713,28 @@
 }
 
 .budget-safety-cap.status-danger {
-  border-color: rgba(244, 63, 94, 0.6);
+  border-color: rgba(244, 63, 94, 0.55);
   background: rgba(244, 63, 94, 0.04);
-  box-shadow: 0 0 20px rgba(244, 63, 94, 0.2);
+  box-shadow: 0 4px 24px rgba(244, 63, 94, 0.22), var(--card-bevel);
   animation: shakeWarning 0.3s ease-in-out;
+}
+
+.budget-safety-cap.status-danger::before {
+  background: linear-gradient(90deg, transparent, #f43f5e, transparent);
 }
 
 .budget-safety-cap.status-danger .meter-bar-fill {
   background: linear-gradient(90deg, #e11d48, #fb7185);
 }
 
+.budget-safety-cap.status-danger .status-indicator-badge {
+  background: var(--badge-rose-bg);
+  border: 1px solid var(--badge-rose-border);
+}
+
 .budget-safety-cap.status-danger .status-indicator-badge .dot {
   background: var(--badge-rose-text);
-  box-shadow: 0 0 10px var(--badge-rose-text);
+  box-shadow: 0 0 8px var(--badge-rose-text);
 }
 
 .budget-safety-cap.status-danger #budget-status-text {
