@@ -6,7 +6,17 @@
       "firestore.rules",
       ".firebaserc",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "android/**",
+      "scripts/**",
+      "www/**",
+      "*.apk",
+      "**/*.apk",
+      "**/*.exe",
+      "**/*.bat",
+      "**/*.cmd",
+      "**/*.sh",
+      "**/*.jar"
     ]
   },
   "firestore": {
