@@ -1,5 +1,5 @@
 // Service Worker for Smart Grocery & Budget Safety Tracker
-const CACHE_NAME = 'smart-grocery-v1.4.0';
+const CACHE_NAME = 'smart-grocery-v1.4.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

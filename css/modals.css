@@ -12,6 +12,10 @@
   justify-content: center;
 }
 
+.bottom-sheet-overlay.hidden {
+  display: none !important;
+}
+
 .bottom-sheet-backdrop {
   position: absolute;
   inset: 0;
