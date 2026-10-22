@@ -506,10 +506,21 @@ document.addEventListener('DOMContentLoaded', () => {
       navigator.serviceWorker.register('./service-worker.js')
         .then(reg => {
           console.log('[PWA] Service Worker registered with scope:', reg.scope);
+          // Check for service worker updates immediately on page load
+          reg.update().catch(() => {});
         })
         .catch(err => {
           console.log('[PWA] Service Worker registration failed:', err);
         });
+
+      // When the new service worker activates, reload page once to display latest changes
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
     });
   }
 

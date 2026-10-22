@@ -1,5 +1,5 @@
 // Service Worker for Smart Grocery & Budget Safety Tracker
-const CACHE_NAME = 'smart-grocery-v1.3.0';
+const CACHE_NAME = 'smart-grocery-v1.4.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -63,7 +63,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - Cache-first with network fallback for local assets, network-first for external CDNs
+// Fetch event
 self.addEventListener('fetch', (event) => {
   // Only handle GET requests
   if (event.request.method !== 'GET') return;
@@ -76,6 +76,24 @@ self.addEventListener('fetch', (event) => {
     url.hostname.includes('gstatic.com') ||
     url.hostname.includes('firebaseio.com') ||
     url.hostname.includes('firebaseapp.com')) {
+    return;
+  }
+
+  // Navigation requests (HTML pages) -> Network-First with Cache fallback for seamless updates & offline support
+  if (event.request.mode === 'navigate' || (url.origin === location.origin && (url.pathname === '/' || url.pathname.endsWith('.html')))) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match('./index.html').then((cachedIndex) => cachedIndex || caches.match(event.request));
+        })
+    );
     return;
   }
 
