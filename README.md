@@ -39,14 +39,22 @@
 - Edit item name, base price, quantity, discount type/value, and category at any time.
 - Smooth swipe/tap item removal, counter adjustment, and clear cart options.
 
-### 6. 🎨 5 Harmonious Color Themes & Flawless Light/Dark Mode
+### 6. 🎨 12 Harmonious Color Themes & Flawless Light/Dark Mode
 - Seamless transitions between **Dark Mode** and **Light Mode** across all elements.
-- 5 curated color palettes:
-  - 🌿 **Emerald Mint** (Clean fresh supermarket aesthetic)
-  - 🌌 **Midnight Slate** (High-tech contrast)
-  - 👑 **Indigo Royal** (Deep navy elegance)
-  - 🌅 **Sunset Amber** (Warm vibrant tones)
-  - 🌸 **Rose Quartz** (Modern chic pastel)
+- 12 curated color palettes:
+  - 🌌 **Midnight Slate** (Deep Tech Blue)
+  - 🌿 **Mint Tracker** (Shopping Tracker Mint Green)
+  - 🛒 **Emerald Market** (Fresh Supermarket Green)
+  - 🌅 **Sunset Tangerine** (Warm Amber)
+  - 💜 **Cyber Violet** (Neon Lavender)
+  - 🍓 **Rose Berry** (Vibrant Crimson)
+  - ⚡ **Cyber Violet Preset** (Neon Glow & Cyan)
+  - 🍊 **Sunset Amber** (Warm Orange Glow)
+  - 🌊 **Ocean Deep** (Abyssal Azure)
+  - 🌹 **Rose Velvet** (Deep Berry Velvet)
+  - 🍋 **Neon Lime** (Electric Citrus)
+  - 🧊 **Clean Minimal** (Nordic Teal & Slate)
+- Plus an interactive custom theme designer with 2D color grid and role-based customization!
 
 ### 7. ☁️ Offline-First + Firebase Cloud Sync
 - **Offline-First**: All data is automatically saved locally in `localStorage`. You can shop inside supermarkets without an active cellular connection.

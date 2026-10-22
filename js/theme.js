@@ -3,12 +3,18 @@
  * Smart Grocery & Budget Safety Tracker
  * 
  * Supports Built-in Visual Themes with Dark & Light Mode:
- * 1. mint (Shopping Tracker Mint Green - matches icons/shoppingtracker.png)
- * 2. midnight (Slate Blue)
+ * 1. midnight (Deep Tech Blue)
+ * 2. mint (Shopping Tracker Mint Green - matches icons/shoppingtracker.png)
  * 3. emerald (Supermarket Green)
  * 4. sunset (Tangerine Amber)
  * 5. violet (Cyberpunk Lavender)
  * 6. rose (Berry Coral)
+ * 7. cyber-violet (Neon Glow & Cyan)
+ * 8. sunset-amber (Warm Orange Glow)
+ * 9. ocean-deep (Abyssal Azure)
+ * 10. rose-velvet (Deep Berry Velvet)
+ * 11. neon-lime (Electric Citrus)
+ * 12. clean-minimal (Nordic Teal & Slate)
  * + Advanced User-Created Custom Themes with 2D Color Grid, Multi-Color Roles & Base Mode!
  */
 
