@@ -1,11 +1,12 @@
 // Service Worker for Smart Grocery & Budget Safety Tracker
-const CACHE_NAME = 'smart-grocery-v1.4.1';
+const CACHE_NAME = 'smart-grocery-v1.4.2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
   './app.js',
   './manifest.json',
+  './icons/shoppingtracker.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   // Audio SFX

@@ -39,6 +39,24 @@
           <label for="edit-history-budget" class="form-label">Batas Anggaran Saat Itu (Rp)</label>
           <input type="number" id="edit-history-budget" class="form-input" min="0" step="5000">
         </div>
+
+        <div class="form-group full-width">
+          <div class="label-with-action">
+            <label for="edit-history-location-select" class="form-label mb-0">Lokasi Supermarket / Toko</label>
+            <button type="button" id="btn-toggle-custom-location-edit" class="btn-text-accent text-xs">
+              <i data-lucide="plus-circle"></i> <span>Tambah Lokasi Baru</span>
+            </button>
+          </div>
+          <select id="edit-history-location-select" class="form-select mt-1"></select>
+          <div id="edit-custom-location-box" class="custom-location-box hidden mt-2">
+            <div class="input-with-action">
+              <input type="text" id="edit-custom-location-input" class="form-input" placeholder="Contoh: Lotte Mart Grocery - Puri Indah">
+              <button type="button" id="btn-save-custom-location-edit" class="btn-sm btn-accent">
+                <i data-lucide="check"></i> <span>Gunakan</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Items Section -->

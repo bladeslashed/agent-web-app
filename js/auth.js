@@ -325,6 +325,17 @@ function bindFirestoreSync(user) {
         }
       }
 
+      // Custom Locations Syncing
+      if (Array.isArray(data.locations)) {
+        const mergedLocs = [...new Set([...(AppState.locations || []), ...data.locations])];
+        if (mergedLocs.length !== (AppState.locations || []).length) {
+          AppState.locations = mergedLocs;
+          if (typeof saveLocationsToStorage === 'function') saveLocationsToStorage(false);
+          if (typeof populateAllLocationSelects === 'function') populateAllLocationSelects();
+          if (typeof renderSettingsLocationsList === 'function') renderSettingsLocationsList();
+        }
+      }
+
       // Selected Theme & Theme Mode Syncing
       if (data.theme && (data.theme !== AppState.theme || (data.themeMode && data.themeMode !== AppState.themeMode))) {
         if (!AppState.lastLocalUpdate || (data.lastUpdated && data.lastUpdated >= AppState.lastLocalUpdate)) {
@@ -492,6 +503,7 @@ async function syncStateToFirestore(immediate = false) {
       history: AppState.history || [],
       deletedHistoryIds: AppState.deletedHistoryIds || [],
       customThemes: AppState.customThemes || [],
+      locations: AppState.locations || [],
       theme: AppState.theme || 'mint',
       themeMode: AppState.themeMode || 'dark',
       muteSyncNotifications: Boolean(AppState.muteSyncNotifications),

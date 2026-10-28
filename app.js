@@ -34,6 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCartItems();
   renderHistoryTab();
   updateComparatorBadges();
+  if (typeof populateAllLocationSelects === 'function') {
+    populateAllLocationSelects();
+  }
+  if (typeof renderSettingsLocationsList === 'function') {
+    renderSettingsLocationsList();
+  }
 
   // Set Budget Cap Input value
   const budgetInput = document.getElementById('input-budget-cap');
@@ -63,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targetTab === 'tab-riwayat') renderHistoryTab();
       if (targetTab === 'tab-belanja') renderCartItems();
       if (targetTab === 'tab-grafik' && typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
+      if (targetTab === 'tab-anggaran' && typeof renderSettingsLocationsList === 'function') renderSettingsLocationsList();
       if (window.lucide) lucide.createIcons();
     });
   });
@@ -465,10 +472,13 @@ document.addEventListener('DOMContentLoaded', () => {
         AppState.budgetCap = 500000;
         AppState.cart = [];
         AppState.history = [];
+        AppState.locations = [];
         if (budgetInput) budgetInput.value = 500000;
         renderCartItems();
         renderHistoryTab();
         updateComparatorBadges();
+        if (typeof populateAllLocationSelects === 'function') populateAllLocationSelects();
+        if (typeof renderSettingsLocationsList === 'function') renderSettingsLocationsList();
         showToast(AppState.lang === 'en' ? 'All app data reset.' : 'Seluruh data aplikasi direset.');
       }
     });
@@ -719,6 +729,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // 27. Initialize History Edit Modal Events
   if (typeof initHistoryEditEvents === 'function') {
     initHistoryEditEvents();
+  }
+
+  // 28. Initialize Checkout Modal & Location Events
+  if (typeof initCheckoutModalEvents === 'function') {
+    initCheckoutModalEvents();
+  }
+  if (typeof initSettingsLocationsEvents === 'function') {
+    initSettingsLocationsEvents();
   }
 });
 

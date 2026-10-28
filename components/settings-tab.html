@@ -341,6 +341,35 @@
     </div>
   </div>
 
+  <!-- Lokasi Belanja & Supermarket Management Card -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-amber">
+        <i data-lucide="map-pin"></i>
+      </div>
+      <div>
+        <h3 id="locations-card-title">Daftar Lokasi Belanja &amp; Supermarket</h3>
+        <p id="locations-card-subtitle">Pilihan supermarket default &amp; kelola lokasi kustom tersimpan</p>
+      </div>
+    </div>
+
+    <div class="locations-management-body mt-3">
+      <div class="add-location-row">
+        <input type="text" id="input-new-location-settings" class="form-input" placeholder="Tambah lokasi (contoh: Lotte Mart Grocery - Puri Indah)">
+        <button type="button" id="btn-add-location-settings" class="btn-primary">
+          <i data-lucide="plus"></i> <span>Tambah</span>
+        </button>
+      </div>
+
+      <div class="locations-chips-section mt-3">
+        <label class="form-label text-xs">Lokasi Tersedia (Default &amp; Kustom):</label>
+        <div id="settings-locations-chips" class="locations-chips-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Danger Zone Reset Data -->
   <div class="glass-card mb-3 border-danger-subtle">
     <div class="card-icon-header">

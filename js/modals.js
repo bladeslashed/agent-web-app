@@ -266,6 +266,21 @@ function openCheckoutSuccessModal(trx) {
     statusTag.className = `history-status-tag ${isOver ? 'danger' : 'safe'}`;
   }
 
+  // Populate Date & Location metadata pills
+  const dateValEl = document.getElementById('checkout-success-date-val');
+  const locValEl = document.getElementById('checkout-success-location-val');
+  const locale = AppState.lang === 'en' ? 'en-US' : 'id-ID';
+  if (dateValEl) {
+    dateValEl.textContent = new Date(trx.timestamp || Date.now()).toLocaleDateString(locale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+  if (locValEl) {
+    locValEl.textContent = trx.location || (AppState.lang === 'en' ? 'Supermarket' : 'Supermarket');
+  }
+
   // Monthly Comparator insight
   if (compPill && compText) {
     const comp = typeof calculateSpendingComparison === 'function'

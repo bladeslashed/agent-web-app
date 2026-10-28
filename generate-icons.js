@@ -132,6 +132,36 @@ if (!fs.existsSync(iconsDir)) {
   fs.mkdirSync(iconsDir, { recursive: true });
 }
 
-fs.writeFileSync(path.join(iconsDir, 'icon-192.png'), createPng(192, 192, drawIcon));
-fs.writeFileSync(path.join(iconsDir, 'icon-512.png'), createPng(512, 512, drawIcon));
-console.log('Icons generated successfully!');
+const shoppingTrackerPath = path.join(iconsDir, 'shoppingtracker.png');
+if (fs.existsSync(shoppingTrackerPath)) {
+  try {
+    const { execSync } = require('child_process');
+    const psScript = `
+      Add-Type -AssemblyName System.Drawing
+      function Resize-Png($src, $dst, $w, $h) {
+        $img = [System.Drawing.Image]::FromFile($src)
+        $bmp = New-Object System.Drawing.Bitmap($w, $h)
+        $g = [System.Drawing.Graphics]::FromImage($bmp)
+        $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+        $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+        $g.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+        $g.DrawImage($img, 0, 0, $w, $h)
+        $bmp.Save($dst, [System.Drawing.Imaging.ImageFormat]::Png)
+        $g.Dispose(); $bmp.Dispose(); $img.Dispose()
+      }
+      Resize-Png "${shoppingTrackerPath.replace(/\\/g, '\\\\')}" "${path.join(iconsDir, 'icon-192.png').replace(/\\/g, '\\\\')}" 192 192
+      Resize-Png "${shoppingTrackerPath.replace(/\\/g, '\\\\')}" "${path.join(iconsDir, 'icon-512.png').replace(/\\/g, '\\\\')}" 512 512
+    `;
+    execSync(`powershell -NoProfile -Command "${psScript.replace(/"/g, '\"')}"`);
+    console.log('Icons generated from shoppingtracker.png successfully!');
+  } catch (err) {
+    console.warn('PowerShell resize fallback to canvas generator:', err.message);
+    fs.writeFileSync(path.join(iconsDir, 'icon-192.png'), createPng(192, 192, drawIcon));
+    fs.writeFileSync(path.join(iconsDir, 'icon-512.png'), createPng(512, 512, drawIcon));
+  }
+} else {
+  fs.writeFileSync(path.join(iconsDir, 'icon-192.png'), createPng(192, 192, drawIcon));
+  fs.writeFileSync(path.join(iconsDir, 'icon-512.png'), createPng(512, 512, drawIcon));
+  console.log('Icons generated successfully!');
+}

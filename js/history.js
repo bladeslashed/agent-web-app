@@ -22,6 +22,194 @@ function saveBudgetCapToStorage(triggerCloudSync = true) {
 }
 
 /**
+ * Save user custom locations to localStorage and Firestore
+ */
+function saveLocationsToStorage(triggerCloudSync = true) {
+  AppState.lastLocalUpdate = Date.now();
+  localStorage.setItem(STORAGE_KEYS.LAST_UPDATE, AppState.lastLocalUpdate.toString());
+  localStorage.setItem(STORAGE_KEYS.LOCATIONS, JSON.stringify(AppState.locations || []));
+  if (triggerCloudSync && typeof scheduleCloudSync === 'function') {
+    scheduleCloudSync();
+  }
+}
+
+/**
+ * Get all available locations: default options merged with user's custom locations
+ */
+function getAllLocations() {
+  const custom = Array.isArray(AppState.locations) ? AppState.locations : [];
+  const defaults = Array.isArray(DEFAULT_LOCATIONS) ? DEFAULT_LOCATIONS : [];
+  return [...new Set([...defaults, ...custom])];
+}
+
+/**
+ * Add a new custom location to the options
+ */
+function addCustomLocation(rawName) {
+  if (!rawName || typeof rawName !== 'string') return '';
+  const trimmed = rawName.trim();
+  if (!trimmed) return '';
+
+  if (!AppState.locations) AppState.locations = [];
+  if (!AppState.locations.includes(trimmed)) {
+    AppState.locations.push(trimmed);
+    saveLocationsToStorage(true);
+    populateAllLocationSelects();
+    renderSettingsLocationsList();
+    showToast(AppState.lang === 'en' ? `Location "${trimmed}" added!` : `Lokasi "${trimmed}" berhasil ditambahkan!`, 'success');
+  }
+  return trimmed;
+}
+
+/**
+ * Remove a custom location
+ */
+function removeCustomLocation(name) {
+  if (!AppState.locations) return;
+  AppState.locations = AppState.locations.filter(l => l !== name);
+  saveLocationsToStorage(true);
+  populateAllLocationSelects();
+  renderSettingsLocationsList();
+  showToast(AppState.lang === 'en' ? 'Location removed.' : 'Lokasi berhasil dihapus.', 'info');
+}
+
+/**
+ * Populate a single <select> element with grouped location options
+ */
+function populateLocationSelect(selectEl, selectedValue = '') {
+  if (!selectEl) return;
+  const customList = Array.isArray(AppState.locations) ? AppState.locations : [];
+  const defaultList = Array.isArray(DEFAULT_LOCATIONS) ? DEFAULT_LOCATIONS : [];
+
+  let html = '';
+  // Default Group
+  html += `<optgroup label="${AppState.lang === 'en' ? 'Popular Supermarkets' : 'Pilihan Populer Supermarket'}">`;
+  defaultList.forEach(loc => {
+    html += `<option value="${escapeHtml(loc)}" ${loc === selectedValue ? 'selected' : ''}>${escapeHtml(loc)}</option>`;
+  });
+  html += `</optgroup>`;
+
+  // Custom Group
+  if (customList.length > 0) {
+    html += `<optgroup label="${AppState.lang === 'en' ? 'Your Custom Locations' : 'Lokasi Kustom Anda'}">`;
+    customList.forEach(loc => {
+      html += `<option value="${escapeHtml(loc)}" ${loc === selectedValue ? 'selected' : ''}>${escapeHtml(loc)}</option>`;
+    });
+    html += `</optgroup>`;
+  }
+
+  // Add Custom Option
+  html += `<option value="__custom__">➕ ${AppState.lang === 'en' ? 'Add New Location...' : 'Tambah Lokasi Baru...'}</option>`;
+
+  selectEl.innerHTML = html;
+
+  if (selectedValue && !defaultList.includes(selectedValue) && !customList.includes(selectedValue)) {
+    const opt = document.createElement('option');
+    opt.value = selectedValue;
+    opt.textContent = selectedValue;
+    opt.selected = true;
+    selectEl.insertBefore(opt, selectEl.firstChild);
+  }
+}
+
+/**
+ * Populate both checkout and edit location selects
+ */
+function populateAllLocationSelects() {
+  const checkoutSelect = document.getElementById('checkout-location-select');
+  if (checkoutSelect) {
+    const currVal = checkoutSelect.value;
+    populateLocationSelect(checkoutSelect, currVal);
+  }
+
+  const editSelect = document.getElementById('edit-history-location-select');
+  if (editSelect) {
+    const currVal = editSelect.value;
+    populateLocationSelect(editSelect, currVal);
+  }
+}
+
+/**
+ * Render the Locations Management Chip list in Tab 4 (Settings)
+ */
+function renderSettingsLocationsList() {
+  const container = document.getElementById('settings-locations-chips');
+  if (!container) return;
+
+  const defaultList = Array.isArray(DEFAULT_LOCATIONS) ? DEFAULT_LOCATIONS : [];
+  const customList = Array.isArray(AppState.locations) ? AppState.locations : [];
+
+  let html = '';
+  // Custom locations first with delete button
+  customList.forEach(loc => {
+    html += `
+      <div class="location-chip is-custom">
+        <i data-lucide="map-pin"></i>
+        <span>${escapeHtml(loc)}</span>
+        <button type="button" class="location-chip-remove" data-location="${escapeHtml(loc)}" title="Hapus lokasi kustom ini" aria-label="Hapus lokasi">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+    `;
+  });
+
+  // Default locations
+  defaultList.forEach(loc => {
+    html += `
+      <div class="location-chip">
+        <i data-lucide="map-pin"></i>
+        <span>${escapeHtml(loc)}</span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // Add click listeners to remove custom locations
+  container.querySelectorAll('.location-chip-remove').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const loc = btn.getAttribute('data-location');
+      const confirmMsg = AppState.lang === 'en'
+        ? `Remove custom location "${loc}"?`
+        : `Hapus lokasi kustom "${loc}"?`;
+      if (confirm(confirmMsg)) {
+        removeCustomLocation(loc);
+      }
+    });
+  });
+
+  if (window.lucide) lucide.createIcons();
+}
+
+/**
+ * Wire Settings Tab Add Location Input & Button
+ */
+function initSettingsLocationsEvents() {
+  const addBtn = document.getElementById('btn-add-location-settings');
+  const inputEl = document.getElementById('input-new-location-settings');
+
+  if (addBtn && inputEl) {
+    addBtn.addEventListener('click', () => {
+      const val = inputEl.value.trim();
+      if (!val) {
+        showToast(AppState.lang === 'en' ? 'Please enter a location name' : 'Masukkan nama lokasi', 'warning');
+        return;
+      }
+      addCustomLocation(val);
+      inputEl.value = '';
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addBtn.click();
+      }
+    });
+  }
+}
+
+/**
  * Merge local history with cloud history, avoiding duplicate IDs
  * and ensuring deleted records are never resurrected.
  */
@@ -69,6 +257,8 @@ function renderHistoryTab() {
       year: 'numeric'
     });
 
+    const locationName = trx.location || (AppState.lang === 'en' ? 'General Store' : 'Lokasi Umum');
+
     const statusLabel = isOver
       ? (AppState.lang === 'en' ? 'Over Budget' : 'Over Budget')
       : (AppState.lang === 'en' ? 'Safe Budget' : 'Dompet Aman');
@@ -82,9 +272,20 @@ function renderHistoryTab() {
           </span>
         </div>
 
+        <div class="history-card-meta">
+          <span class="history-location-tag" title="Lokasi Belanja: ${escapeHtml(locationName)}">
+            <i data-lucide="map-pin"></i>
+            <span class="history-location-text">${escapeHtml(locationName)}</span>
+          </span>
+          <span class="history-date-subtext">
+            <i data-lucide="calendar"></i>
+            <span>${dateFormatted}</span>
+          </span>
+        </div>
+
         <div class="history-card-body">
           <span class="history-total-val">${formatRupiah(trx.totalSpend)}</span>
-          <span class="history-items-count">${(trx.items || []).length} item • ${dateFormatted}</span>
+          <span class="history-items-count">${(trx.items || []).length} item</span>
         </div>
       </div>
     `;
@@ -114,10 +315,28 @@ function openHistoryDetail(trxId) {
   const deleteBtn = document.getElementById('delete-this-history-btn');
 
   const locale = AppState.lang === 'en' ? 'en-US' : 'id-ID';
+  const formattedDateTime = new Date(trx.timestamp).toLocaleString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  const formattedDateOnly = new Date(trx.timestamp).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
   title.textContent = trx.monthName || (AppState.lang === 'en' ? 'Shopping Detail' : 'Detail Belanja');
-  dateEl.textContent = `${AppState.lang === 'en' ? 'Recorded at:' : 'Dicatat pada:'} ${new Date(trx.timestamp).toLocaleString(locale)}`;
+  dateEl.textContent = `${AppState.lang === 'en' ? 'Recorded at:' : 'Dicatat pada:'} ${formattedDateTime}`;
   totalEl.textContent = formatRupiah(trx.totalSpend);
   budgetEl.textContent = formatRupiah(trx.budgetCap);
+
+  const locValEl = document.getElementById('history-modal-location-val');
+  const dateValEl = document.getElementById('history-modal-date-val');
+  if (locValEl) locValEl.textContent = trx.location || (AppState.lang === 'en' ? 'General Store' : 'Lokasi Umum');
+  if (dateValEl) dateValEl.textContent = formattedDateOnly;
 
   const isOver = trx.totalSpend > trx.budgetCap;
   statusEl.textContent = isOver ? 'Over Budget' : (AppState.lang === 'en' ? 'Safe' : 'Aman');
@@ -171,47 +390,158 @@ function openHistoryDetail(trxId) {
 }
 
 /**
- * Execute checkout transaction, saving to local history and cloud
+ * Open Checkout Modal allowing user to select Date and Location
  */
-function performCheckoutTransaction() {
+function openCheckoutModal() {
   if (AppState.cart.length === 0) {
-    showToast(AppState.lang === 'en' ? 'Cart is empty!' : 'Troli masih kosong!', 'danger');
+    showToast(AppState.lang === 'en' ? 'Cart is empty!' : 'Troli belanja masih kosong!', 'danger');
+    return;
+  }
+
+  const modal = document.getElementById('checkout-modal');
+  if (!modal) {
+    // Fallback if modal not present in DOM
+    confirmCheckoutTransaction();
     return;
   }
 
   const totalSpend = AppState.cart.reduce((s, i) => s + i.subtotal, 0);
   const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const localDatetime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  // Default Trip Title
+  const defaultTitle = AppState.lang === 'en'
+    ? `Shopping ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+    : `Belanja ${now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}`;
+
+  const titleInput = document.getElementById('checkout-trip-title');
+  const dateInput = document.getElementById('checkout-trip-date');
+  const totalDisplay = document.getElementById('checkout-modal-total-display');
+  const itemsCount = document.getElementById('checkout-modal-items-count');
+  const statusBadge = document.getElementById('checkout-modal-status-badge');
+  const locationSelect = document.getElementById('checkout-location-select');
+  const customBox = document.getElementById('checkout-custom-location-box');
+  const customInput = document.getElementById('checkout-custom-location-input');
+
+  if (titleInput) titleInput.value = defaultTitle;
+  if (dateInput) dateInput.value = localDatetime;
+  if (totalDisplay) totalDisplay.textContent = formatRupiah(totalSpend);
+  if (itemsCount) {
+    itemsCount.textContent = `${AppState.cart.length} ${AppState.lang === 'en' ? 'items in cart' : 'barang di troli'}`;
+  }
+
+  const isOver = totalSpend > AppState.budgetCap;
+  if (statusBadge) {
+    statusBadge.textContent = isOver
+      ? (AppState.lang === 'en' ? 'Over Budget' : 'Over Budget')
+      : (AppState.lang === 'en' ? 'Safe Budget' : 'Dompet Aman');
+    statusBadge.className = `badge ${isOver ? 'danger' : 'safe'}`;
+  }
+
+  if (customBox) customBox.classList.add('hidden');
+  if (customInput) customInput.value = '';
+
+  if (locationSelect) {
+    populateLocationSelect(locationSelect, DEFAULT_LOCATIONS[0]);
+  }
+
+  modal.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+
+  setTimeout(() => {
+    if (titleInput) titleInput.select();
+  }, 100);
+}
+
+/**
+ * Close Checkout Modal
+ */
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkout-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+/**
+ * Confirm and save checkout transaction to history & Firebase
+ */
+function confirmCheckoutTransaction() {
+  if (AppState.cart.length === 0) {
+    showToast(AppState.lang === 'en' ? 'Cart is empty!' : 'Troli masih kosong!', 'danger');
+    closeCheckoutModal();
+    return;
+  }
+
+  const titleInput = document.getElementById('checkout-trip-title');
+  const dateInput = document.getElementById('checkout-trip-date');
+  const locationSelect = document.getElementById('checkout-location-select');
+  const customBox = document.getElementById('checkout-custom-location-box');
+  const customInput = document.getElementById('checkout-custom-location-input');
+
+  const now = new Date();
   const defaultMonthName = AppState.lang === 'en'
     ? `Shopping ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
     : `Belanja ${now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}`;
 
-  const promptMsg = AppState.lang === 'en'
-    ? 'Enter a title or note for this shopping trip:'
-    : 'Beri nama riwayat transaksi ini:';
+  const finalTitle = (titleInput && titleInput.value.trim()) || defaultMonthName;
 
-  const customTitle = prompt(promptMsg, defaultMonthName);
-  if (customTitle === null) return; // user cancelled
+  // 1. Transaction Date & Timestamp (Picked by user)
+  let finalTimestamp = Date.now();
+  if (dateInput && dateInput.value) {
+    const parsed = new Date(dateInput.value).getTime();
+    if (!isNaN(parsed)) finalTimestamp = parsed;
+  }
+  const locale = AppState.lang === 'en' ? 'en-US' : 'id-ID';
+  const finalFormattedDate = new Date(finalTimestamp).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // 2. Transaction Location (Picked or customized by user)
+  let finalLocation = 'Lotte Mart Grocery - Puri Indah';
+  if (customBox && !customBox.classList.contains('hidden') && customInput && customInput.value.trim()) {
+    finalLocation = addCustomLocation(customInput.value.trim());
+  } else if (locationSelect) {
+    if (locationSelect.value === '__custom__') {
+      if (customInput && customInput.value.trim()) {
+        finalLocation = addCustomLocation(customInput.value.trim());
+      } else {
+        const prompted = prompt(AppState.lang === 'en' ? 'Enter new store location:' : 'Masukkan nama lokasi supermarket baru:', 'Lotte Mart Grocery - Puri Indah');
+        if (prompted && prompted.trim()) {
+          finalLocation = addCustomLocation(prompted.trim());
+        }
+      }
+    } else {
+      finalLocation = locationSelect.value || finalLocation;
+    }
+  }
+
+  const totalSpend = AppState.cart.reduce((s, i) => s + i.subtotal, 0);
 
   const newHistoryRecord = {
     id: 'trx_' + Date.now(),
-    monthName: customTitle.trim() || defaultMonthName,
-    timestamp: Date.now(),
+    monthName: finalTitle,
+    timestamp: finalTimestamp,
+    date: finalFormattedDate,
+    location: finalLocation,
     budgetCap: AppState.budgetCap,
     totalSpend: totalSpend,
     items: [...AppState.cart]
   };
 
-  // Add to front of history
+  // Add to history and sort chronologically (newest first)
   AppState.history.unshift(newHistoryRecord);
+  AppState.history.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   // Empty active cart
   AppState.cart = [];
 
-  // Save locally
+  // Save to storage
   saveHistoryToStorage();
   saveCartToStorage();
 
-  // If user is authenticated, save to Firestore cloud silently in background (no sync toast)
+  // Save to Cloud Firestore
   if (currentUser && typeof syncStateToFirestore === 'function') {
     syncStateToFirestore(false);
   }
@@ -222,6 +552,8 @@ function performCheckoutTransaction() {
   updateComparatorBadges();
   if (typeof renderAnalyticsTab === 'function') renderAnalyticsTab();
 
+  closeCheckoutModal();
+
   showToast(AppState.lang === 'en'
     ? 'Shopping trip saved to history and comparator!'
     : 'Belanja selesai & tersimpan ke riwayat pembanding!');
@@ -230,10 +562,16 @@ function performCheckoutTransaction() {
   if (typeof openCheckoutSuccessModal === 'function') {
     openCheckoutSuccessModal(newHistoryRecord);
   } else {
-    // Fallback: switch directly to history tab
     const navRiwayat = document.getElementById('nav-tab-riwayat');
     if (navRiwayat) navRiwayat.click();
   }
+}
+
+/**
+ * Wrapper for checkout execution
+ */
+function performCheckoutTransaction() {
+  openCheckoutModal();
 }
 
 /**
@@ -259,8 +597,64 @@ function handleCheckoutRequest() {
       openAuthModal();
     }
   } else {
-    // User already authenticated: execute checkout directly
-    performCheckoutTransaction();
+    // User already authenticated: open checkout modal directly
+    openCheckoutModal();
+  }
+}
+
+/**
+ * Initialize Checkout Modal Event Listeners
+ */
+function initCheckoutModalEvents() {
+  const closeBtn = document.getElementById('close-checkout-modal-btn');
+  const backdrop = document.getElementById('close-checkout-modal-backdrop');
+  const cancelBtn = document.getElementById('btn-cancel-checkout');
+  const confirmBtn = document.getElementById('btn-confirm-checkout');
+  const toggleCustomBtn = document.getElementById('btn-toggle-custom-location-checkout');
+  const saveCustomBtn = document.getElementById('btn-save-custom-location-checkout');
+  const customBox = document.getElementById('checkout-custom-location-box');
+  const customInput = document.getElementById('checkout-custom-location-input');
+  const locationSelect = document.getElementById('checkout-location-select');
+
+  if (closeBtn) closeBtn.addEventListener('click', closeCheckoutModal);
+  if (backdrop) backdrop.addEventListener('click', closeCheckoutModal);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeCheckoutModal);
+  if (confirmBtn) confirmBtn.addEventListener('click', confirmCheckoutTransaction);
+
+  if (toggleCustomBtn && customBox) {
+    toggleCustomBtn.addEventListener('click', () => {
+      customBox.classList.toggle('hidden');
+      if (!customBox.classList.contains('hidden') && customInput) {
+        customInput.focus();
+      }
+    });
+  }
+
+  if (locationSelect && customBox) {
+    locationSelect.addEventListener('change', () => {
+      if (locationSelect.value === '__custom__') {
+        customBox.classList.remove('hidden');
+        if (customInput) customInput.focus();
+      } else {
+        customBox.classList.add('hidden');
+      }
+    });
+  }
+
+  if (saveCustomBtn && customInput) {
+    saveCustomBtn.addEventListener('click', () => {
+      const val = customInput.value.trim();
+      if (!val) {
+        showToast(AppState.lang === 'en' ? 'Please enter a location name' : 'Masukkan nama lokasi', 'warning');
+        return;
+      }
+      addCustomLocation(val);
+      if (locationSelect) {
+        populateLocationSelect(locationSelect, val);
+      }
+      if (customBox) customBox.classList.add('hidden');
+      customInput.value = '';
+    });
   }
 }
 
@@ -296,6 +690,16 @@ function openHistoryEditModal(trxId) {
     const pad = n => String(n).padStart(2, '0');
     dateEl.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
+
+  const locationSelect = document.getElementById('edit-history-location-select');
+  const customBox = document.getElementById('edit-custom-location-box');
+  const customInput = document.getElementById('edit-custom-location-input');
+
+  if (locationSelect) {
+    populateLocationSelect(locationSelect, trx.location || DEFAULT_LOCATIONS[0]);
+  }
+  if (customBox) customBox.classList.add('hidden');
+  if (customInput) customInput.value = '';
 
   renderHistoryEditItems();
   updateHistoryEditSummary();
@@ -475,6 +879,9 @@ function saveHistoryEdit() {
   const nameInput = document.getElementById('edit-history-name');
   const dateInput = document.getElementById('edit-history-date');
   const budgetInput = document.getElementById('edit-history-budget');
+  const locationSelect = document.getElementById('edit-history-location-select');
+  const customBox = document.getElementById('edit-custom-location-box');
+  const customInput = document.getElementById('edit-custom-location-input');
 
   const updatedName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : currentEditingTrx.monthName;
   const updatedBudget = budgetInput ? Math.max(0, parseInt(budgetInput.value, 10) || 0) : currentEditingTrx.budgetCap;
@@ -485,14 +892,39 @@ function saveHistoryEdit() {
     if (!isNaN(parsedDate)) updatedTimestamp = parsedDate;
   }
 
+  let updatedLocation = currentEditingTrx.location || DEFAULT_LOCATIONS[0];
+  if (customBox && !customBox.classList.contains('hidden') && customInput && customInput.value.trim()) {
+    updatedLocation = addCustomLocation(customInput.value.trim());
+  } else if (locationSelect) {
+    if (locationSelect.value === '__custom__') {
+      if (customInput && customInput.value.trim()) {
+        updatedLocation = addCustomLocation(customInput.value.trim());
+      }
+    } else {
+      updatedLocation = locationSelect.value || updatedLocation;
+    }
+  }
+
+  const locale = AppState.lang === 'en' ? 'en-US' : 'id-ID';
+  const updatedDate = new Date(updatedTimestamp).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
   const updatedTotal = editingItems.reduce((acc, it) => acc + (it.subtotal || 0), 0);
 
   // Apply changes to existing record
   currentEditingTrx.monthName = updatedName;
   currentEditingTrx.timestamp = updatedTimestamp;
+  currentEditingTrx.date = updatedDate;
+  currentEditingTrx.location = updatedLocation;
   currentEditingTrx.budgetCap = updatedBudget;
   currentEditingTrx.items = editingItems;
   currentEditingTrx.totalSpend = updatedTotal;
+
+  // Re-sort history chronologically
+  AppState.history.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   // Persist to storage
   saveHistoryToStorage();
@@ -526,6 +958,11 @@ function initHistoryEditEvents() {
   const addBtn = document.getElementById('btn-add-item-history-edit');
   const saveBtn = document.getElementById('btn-save-history-edit');
   const budgetInput = document.getElementById('edit-history-budget');
+  const toggleCustomBtn = document.getElementById('btn-toggle-custom-location-edit');
+  const saveCustomBtn = document.getElementById('btn-save-custom-location-edit');
+  const customBox = document.getElementById('edit-custom-location-box');
+  const customInput = document.getElementById('edit-custom-location-input');
+  const locationSelect = document.getElementById('edit-history-location-select');
 
   if (closeBtn) closeBtn.addEventListener('click', closeHistoryEditModal);
   if (cancelBtn) cancelBtn.addEventListener('click', closeHistoryEditModal);
@@ -533,5 +970,41 @@ function initHistoryEditEvents() {
   if (addBtn) addBtn.addEventListener('click', addHistoryEditItem);
   if (saveBtn) saveBtn.addEventListener('click', saveHistoryEdit);
   if (budgetInput) budgetInput.addEventListener('input', updateHistoryEditSummary);
+
+  if (toggleCustomBtn && customBox) {
+    toggleCustomBtn.addEventListener('click', () => {
+      customBox.classList.toggle('hidden');
+      if (!customBox.classList.contains('hidden') && customInput) {
+        customInput.focus();
+      }
+    });
+  }
+
+  if (locationSelect && customBox) {
+    locationSelect.addEventListener('change', () => {
+      if (locationSelect.value === '__custom__') {
+        customBox.classList.remove('hidden');
+        if (customInput) customInput.focus();
+      } else {
+        customBox.classList.add('hidden');
+      }
+    });
+  }
+
+  if (saveCustomBtn && customInput) {
+    saveCustomBtn.addEventListener('click', () => {
+      const val = customInput.value.trim();
+      if (!val) {
+        showToast(AppState.lang === 'en' ? 'Please enter a location name' : 'Masukkan nama lokasi', 'warning');
+        return;
+      }
+      addCustomLocation(val);
+      if (locationSelect) {
+        populateLocationSelect(locationSelect, val);
+      }
+      if (customBox) customBox.classList.add('hidden');
+      customInput.value = '';
+    });
+  }
 }
 

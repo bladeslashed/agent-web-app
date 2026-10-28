@@ -13,8 +13,8 @@
   
   <!-- Favicon and PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/shoppingtracker.png">
+  <link rel="apple-touch-icon" href="icons/shoppingtracker.png">
   
   <!-- Modern Font: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -919,6 +919,35 @@
     </div>
   </div>
 
+  <!-- Lokasi Belanja & Supermarket Management Card -->
+  <div class="glass-card mb-3">
+    <div class="card-icon-header">
+      <div class="icon-circle bg-amber">
+        <i data-lucide="map-pin"></i>
+      </div>
+      <div>
+        <h3 id="locations-card-title">Daftar Lokasi Belanja &amp; Supermarket</h3>
+        <p id="locations-card-subtitle">Pilihan supermarket default &amp; kelola lokasi kustom tersimpan</p>
+      </div>
+    </div>
+
+    <div class="locations-management-body mt-3">
+      <div class="add-location-row">
+        <input type="text" id="input-new-location-settings" class="form-input" placeholder="Tambah lokasi (contoh: Lotte Mart Grocery - Puri Indah)">
+        <button type="button" id="btn-add-location-settings" class="btn-primary">
+          <i data-lucide="plus"></i> <span>Tambah</span>
+        </button>
+      </div>
+
+      <div class="locations-chips-section mt-3">
+        <label class="form-label text-xs">Lokasi Tersedia (Default &amp; Kustom):</label>
+        <div id="settings-locations-chips" class="locations-chips-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Danger Zone Reset Data -->
   <div class="glass-card mb-3 border-danger-subtle">
     <div class="card-icon-header">
@@ -1155,6 +1184,18 @@
         <div class="summary-stat text-right">
           <span class="label">Status</span>
           <span id="history-modal-status" class="badge">Aman</span>
+        </div>
+      </div>
+
+      <!-- Lokasi & Waktu Transaksi Belanja -->
+      <div class="history-detail-meta-pill mt-2">
+        <div class="meta-pill-item">
+          <i data-lucide="calendar"></i>
+          <span id="history-modal-date-val">Tanggal Belanja</span>
+        </div>
+        <div class="meta-pill-item">
+          <i data-lucide="map-pin"></i>
+          <span id="history-modal-location-val">Lokasi Toko</span>
         </div>
       </div>
 
@@ -1564,6 +1605,12 @@
         </div>
       </div>
 
+      <!-- Date & Location Metadata Pill -->
+      <div class="checkout-success-meta-row mt-2">
+        <span class="success-meta-pill"><i data-lucide="calendar"></i> <span id="checkout-success-date-val">-</span></span>
+        <span class="success-meta-pill"><i data-lucide="map-pin"></i> <span id="checkout-success-location-val">Supermarket</span></span>
+      </div>
+
       <!-- Comparator Insight Pill -->
       <div id="checkout-success-comp-pill" class="success-comp-pill comp-none mt-2">
         <span class="comp-icon">-</span>
@@ -1583,6 +1630,106 @@
       </button>
     </div>
 
+  </div>
+</div>
+
+      <!-- Finalize Checkout & Pick Date/Location Modal (components/modals/checkout-modal.html) -->
+      <!-- MODAL: FINALISASI & CHECKOUT TRANSAKSI (PILIH TANGGAL & LOKASI) -->
+<div id="checkout-modal" class="bottom-sheet-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title">
+  <div class="bottom-sheet-backdrop" id="close-checkout-modal-backdrop"></div>
+  <div class="bottom-sheet-container checkout-dialog-container">
+    <div class="sheet-handle-bar"><span class="sheet-handle"></span></div>
+
+    <div class="sheet-header">
+      <div class="sheet-header-title-wrap">
+        <div class="icon-circle bg-brand">
+          <i data-lucide="receipt"></i>
+        </div>
+        <div>
+          <h3 id="checkout-modal-title" class="sheet-title">Selesaikan Belanja</h3>
+          <p class="sheet-subtitle" id="checkout-modal-subtitle">Tentukan tanggal dan lokasi supermarket untuk riwayat belanja</p>
+        </div>
+      </div>
+      <button id="close-checkout-modal-btn" class="icon-btn-close" aria-label="Tutup dialog checkout">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="sheet-body">
+      <!-- Ringkasan Anggaran Keranjang -->
+      <div class="checkout-modal-summary-banner mb-3">
+        <div class="summary-line-item">
+          <span class="label">Total Pengeluaran:</span>
+          <strong id="checkout-modal-total-display" class="highlight-val">Rp 0</strong>
+        </div>
+        <div class="summary-line-sub">
+          <span id="checkout-modal-items-count">0 barang di troli</span>
+          <span id="checkout-modal-status-badge" class="badge safe">Dompet Aman</span>
+        </div>
+      </div>
+
+      <!-- Form Inputs: Title, Date, Location -->
+      <form id="checkout-form" class="checkout-form-grid" onsubmit="return false;">
+        <!-- 1. Nama / Judul Transaksi -->
+        <div class="form-group mb-3">
+          <label for="checkout-trip-title" class="form-label">
+            <i data-lucide="tag" class="label-icon"></i>
+            <span>Nama / Judul Catatan Belanja</span>
+          </label>
+          <input type="text" id="checkout-trip-title" class="form-input" placeholder="Contoh: Belanja Bulanan Lotte Mart">
+        </div>
+
+        <!-- 2. Tanggal & Waktu Transaksi -->
+        <div class="form-group mb-3">
+          <label for="checkout-trip-date" class="form-label">
+            <i data-lucide="calendar" class="label-icon"></i>
+            <span>Tanggal &amp; Waktu Transaksi</span>
+          </label>
+          <input type="datetime-local" id="checkout-trip-date" class="form-input" required>
+          <span class="form-hint text-xs">Pilih tanggal dan jam saat transaksi ini dilakukan</span>
+        </div>
+
+        <!-- 3. Lokasi Supermarket / Toko -->
+        <div class="form-group mb-3">
+          <div class="label-with-action">
+            <label for="checkout-location-select" class="form-label mb-0">
+              <i data-lucide="map-pin" class="label-icon"></i>
+              <span>Lokasi Supermarket / Toko</span>
+            </label>
+            <button type="button" id="btn-toggle-custom-location-checkout" class="btn-text-accent text-xs">
+              <i data-lucide="plus-circle"></i> <span>Tambah Lokasi</span>
+            </button>
+          </div>
+
+          <div class="location-select-wrap mt-1">
+            <select id="checkout-location-select" class="form-select">
+              <!-- Populated dynamically via JS -->
+            </select>
+          </div>
+
+          <!-- Customizable Option: Box to Add New Location -->
+          <div id="checkout-custom-location-box" class="custom-location-box hidden mt-2">
+            <div class="input-with-action">
+              <input type="text" id="checkout-custom-location-input" class="form-input" placeholder="Contoh: Lotte Mart Grocery - Puri Indah">
+              <button type="button" id="btn-save-custom-location-checkout" class="btn-sm btn-accent">
+                <i data-lucide="check"></i> <span>Gunakan</span>
+              </button>
+            </div>
+            <span class="form-hint text-xs mt-1">Lokasi baru akan otomatis tersimpan ke pilihan supermarket Anda</span>
+          </div>
+        </div>
+
+        <!-- Modal Actions Footer -->
+        <div class="modal-actions-row mt-4">
+          <button type="button" id="btn-cancel-checkout" class="btn-secondary flex-1">
+            Batal
+          </button>
+          <button type="button" id="btn-confirm-checkout" class="btn-primary flex-1">
+            <i data-lucide="check-circle-2"></i> <span>Simpan ke Riwayat</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -1907,6 +2054,24 @@
         <div class="form-group">
           <label for="edit-history-budget" class="form-label">Batas Anggaran Saat Itu (Rp)</label>
           <input type="number" id="edit-history-budget" class="form-input" min="0" step="5000">
+        </div>
+
+        <div class="form-group full-width">
+          <div class="label-with-action">
+            <label for="edit-history-location-select" class="form-label mb-0">Lokasi Supermarket / Toko</label>
+            <button type="button" id="btn-toggle-custom-location-edit" class="btn-text-accent text-xs">
+              <i data-lucide="plus-circle"></i> <span>Tambah Lokasi Baru</span>
+            </button>
+          </div>
+          <select id="edit-history-location-select" class="form-select mt-1"></select>
+          <div id="edit-custom-location-box" class="custom-location-box hidden mt-2">
+            <div class="input-with-action">
+              <input type="text" id="edit-custom-location-input" class="form-input" placeholder="Contoh: Lotte Mart Grocery - Puri Indah">
+              <button type="button" id="btn-save-custom-location-edit" class="btn-sm btn-accent">
+                <i data-lucide="check"></i> <span>Gunakan</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

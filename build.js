@@ -34,6 +34,7 @@ function buildIndexHtml() {
   const customThemeModalHtml = readComponent('components/modals/custom-theme-modal.html');
   const historyEditModalHtml = readComponent('components/modals/history-edit-modal.html');
   const analyticsBreakdownModalHtml = readComponent('components/modals/analytics-breakdown-modal.html');
+  const checkoutModalHtml = readComponent('components/modals/checkout-modal.html');
 
   const compiledHtml = `<!DOCTYPE html>
 <html lang="id">
@@ -50,8 +51,8 @@ function buildIndexHtml() {
   
   <!-- Favicon and PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/shoppingtracker.png">
+  <link rel="apple-touch-icon" href="icons/shoppingtracker.png">
   
   <!-- Modern Font: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -116,6 +117,9 @@ function buildIndexHtml() {
 
       <!-- Animated Shopping Cart Checkout Success Popup (components/modals/checkout-success-modal.html) -->
       ${checkoutSuccessModalHtml}
+
+      <!-- Finalize Checkout & Pick Date/Location Modal (components/modals/checkout-modal.html) -->
+      ${checkoutModalHtml}
 
       <!-- Custom Theme Creator Modal (components/modals/custom-theme-modal.html) -->
       ${customThemeModalHtml}

@@ -24,6 +24,28 @@ let firestoreUnsubscribe = null;
 let isRemoteSyncInProgress = false;
 
 // ==========================================
+// DEFAULT SUPERMARKET & STORE LOCATIONS
+// ==========================================
+const DEFAULT_LOCATIONS = [
+  'Lotte Mart Grocery - Puri Indah',
+  'Super Indo - Intercon Kebon Jeruk',
+  'Hypermart - Puri Indah Mall',
+  'Grand Lucky Superstore - SCBD',
+  'Ranch Market - Pesanggrahan',
+  'Farmers Market - Mall Kelapa Gading',
+  'AEON Store - BSD City',
+  'Transmart Carrefour - Cempaka Putih',
+  'Hero Supermarket - Pondok Indah Mall',
+  'GS The Fresh Supermarket',
+  'Food Hall - Senayan City',
+  'Kem Chicks - Pacific Place',
+  'Papaya Fresh Gallery - Blok M',
+  'Alfamidi Super',
+  'Indomaret Fresh',
+  'Pasar Tradisional'
+];
+
+// ==========================================
 // STORAGE KEYS & APPLICATION STATE
 // ==========================================
 const STORAGE_KEYS = {
@@ -34,6 +56,7 @@ const STORAGE_KEYS = {
   THEME: 'smart_grocery_theme',
   MODE: 'smart_grocery_mode',
   CUSTOM_THEMES: 'smart_grocery_custom_themes',
+  LOCATIONS: 'smart_grocery_locations',
   MUTE_SYNC: 'smart_grocery_mute_sync',
   DELETED_HISTORY: 'smart_grocery_deleted_history',
   LAST_UPDATE: 'smart_grocery_last_update'
@@ -43,6 +66,7 @@ const AppState = {
   budgetCap: Number(localStorage.getItem('smart_grocery_budget_cap')) || 500000,
   cart: [],
   history: [],
+  locations: [],
   activeTab: 'tab-belanja',
   deferredInstallPrompt: null,
   lastLocalUpdate: Number(localStorage.getItem('smart_grocery_last_update')) || 0,

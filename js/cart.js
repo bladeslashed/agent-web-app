@@ -34,6 +34,18 @@ function loadStateFromStorage() {
     if (savedLang && (savedLang === 'id' || savedLang === 'en')) {
       AppState.lang = savedLang;
     }
+
+    const savedLocations = localStorage.getItem(STORAGE_KEYS.LOCATIONS);
+    if (savedLocations) {
+      try {
+        AppState.locations = JSON.parse(savedLocations);
+        if (!Array.isArray(AppState.locations)) AppState.locations = [];
+      } catch (e) {
+        AppState.locations = [];
+      }
+    } else {
+      AppState.locations = [];
+    }
   } catch (e) {
     console.error('Error loading data from localStorage', e);
   }
